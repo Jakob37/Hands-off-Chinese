@@ -4,6 +4,7 @@ import {
     TouchableOpacity,
     StyleSheet,
     View,
+    Pressable,
 } from 'react-native';
 import React from 'react';
 
@@ -42,19 +43,17 @@ function playSound(soundPath) {
 const AudioCard = ({label, english, chinese}) => {
 
     return (
-        <View>
-            <Text>{label}</Text>
+        <Text style={styles.container}>
+            <TouchableOpacity><Text style={{marginRight:10}}>{label}</Text></TouchableOpacity>
             <TouchableOpacity 
-                style={styles.container}
                 onPress={() => playSound(english)}>
-                    <Text>English</Text>
+                    <Text>Play English</Text>
             </TouchableOpacity>
-            <TouchableOpacity 
-                style={styles.container}
+            <TouchableOpacity
                 onPress={() => playSound(chinese)}>
-                    <Text>Chinese</Text>
+                    <Text>Play Chinese</Text>
             </TouchableOpacity>
-        </View>
+        </Text>
     );
 }
 
