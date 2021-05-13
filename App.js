@@ -27,6 +27,7 @@ import {
 } from 'react-native/Libraries/NewAppScreen';
 
 import { AudioCard } from './components/AudioCard';
+import { FileCard } from './components/FileCard';
 
 const Section = ({children, title}) => {
   const isDarkMode = useColorScheme() === 'dark';
@@ -81,6 +82,7 @@ const App = () => {
         </View>
         <AudioCard audioPath={sounds.english}></AudioCard>
         <AudioCard audioPath={sounds.chinese}></AudioCard>
+        <FileCard></FileCard>
       </ScrollView>
     </SafeAreaView>
   );
