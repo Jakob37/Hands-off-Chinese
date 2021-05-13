@@ -27,28 +27,7 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
-import { default as Sound } from 'react-native-sound';
-
-Sound.setCategory('Playback');
-
-function playSound() {
-  const appleSound = new Sound('ilikeapples_chinese.mp3', Sound.MAIN_BUNDLE, (error) => {
-    if (error) {
-      console.log('failed to load the sound', error);
-      return;
-    }
-    console.log('duration in seconds: ' + appleSound.getDuration() + 'number of channels: ' + appleSound.getNumberOfChannels());
-  
-    appleSound.play((success) => {
-      if (success) {
-        console.log('Successfully finished playing');
-      } else {
-        console.log('Playback failed due to audio decoding errors');
-      }
-    })
-  })
-}
-
+import { AudioCard } from './components/AudioCard';
 
 const Section = ({children, title}) => {
   const isDarkMode = useColorScheme() === 'dark';
@@ -76,10 +55,6 @@ const Section = ({children, title}) => {
   );
 };
 
-function pressCall() {
-  console.log('Press is called');
-  playSound();
-}
 
 const App = () => {
   const backgroundStyle = {
@@ -102,13 +77,8 @@ const App = () => {
             screen and then come back to see your edits!
           </Section>
           <LearnMoreLinks />
-          <TouchableOpacity onPress={pressCall}>
-            <Text>Test text</Text>
-          </TouchableOpacity>
         </View>
-        {/* <View>
-          style={backgroundStyle}
-        </View> */}
+        <AudioCard></AudioCard>
       </ScrollView>
     </SafeAreaView>
   );
