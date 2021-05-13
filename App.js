@@ -17,6 +17,7 @@ import {
   View,
   TouchableOpacity
 } from 'react-native';
+import { AudioPaths } from './components/AudioPaths';
 
 import {
   Colors,
@@ -55,9 +56,12 @@ const Section = ({children, title}) => {
   );
 };
 
-const sounds = {};
-sounds.english = 'ilikeapples_english.mp3';
-sounds.chinese = 'ilikeapples_chinese.mp3';
+const audioPaths = [];
+audioPaths.push(new AudioPaths('ilikeapples'));
+audioPaths.push(new AudioPaths('ilikeoranges'));
+audioPaths.push(new AudioPaths('ilikepears'));
+
+// console.log(audioPaths);
 
 const App = () => {
   const backgroundStyle = {
@@ -75,14 +79,14 @@ const App = () => {
           style={{
             backgroundColor: Colors.white,
           }}>
-          <Section title="Step One">
-            Remove this soon?
-          </Section>
-          <LearnMoreLinks />
         </View>
-        <AudioCard audioPath={sounds.english}></AudioCard>
-        <AudioCard audioPath={sounds.chinese}></AudioCard>
-        <FileCard></FileCard>
+        {audioPaths.map((audioPaths) => (
+          <AudioCard 
+            label={audioPaths.label}
+            english={audioPaths.english}
+            chinese={audioPaths.chinese}
+          ></AudioCard>
+        ))}
       </ScrollView>
     </SafeAreaView>
   );

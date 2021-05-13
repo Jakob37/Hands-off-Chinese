@@ -3,17 +3,22 @@ import {
     Text,
     TouchableOpacity,
     StyleSheet,
+    View,
 } from 'react-native';
 import React from 'react';
+
+import { AudioPaths } from './AudioPaths';
 
 import { default as Sound } from 'react-native-sound';
 
 Sound.setCategory('Playback');
 
 function playSound(soundPath) {
+
+    console.log(soundPath);
     const appleSound = new Sound(soundPath, Sound.MAIN_BUNDLE, (error) => {
-        if (error) {
-      console.log('failed to load the sound', error);
+    if (error) {
+      console.log('failed to load the sound', error, 'from path', soundPath);
       return;
     }
   
@@ -27,14 +32,29 @@ function playSound(soundPath) {
   })
 }
 
-const AudioCard = ({audioPath}) => {
+/**
+ * @param {object} param
+ * @param {string} param.audioPaths
+ * @param {string} param.english
+ * @param {string} param.chinese
+ * @returns {View}
+ */
+const AudioCard = ({label, english, chinese}) => {
 
     return (
-        <TouchableOpacity 
-        style={styles.container}
-        onPress={() => playSound(audioPath)}>
-            <Text>Click to play: {audioPath}</Text>
-        </TouchableOpacity>
+        <View>
+            <Text>{label}</Text>
+            <TouchableOpacity 
+                style={styles.container}
+                onPress={() => playSound(english)}>
+                    <Text>English</Text>
+            </TouchableOpacity>
+            <TouchableOpacity 
+                style={styles.container}
+                onPress={() => playSound(chinese)}>
+                    <Text>Chinese</Text>
+            </TouchableOpacity>
+        </View>
     );
 }
 
