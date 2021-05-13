@@ -3,15 +3,128 @@ import {
     Text,
     TouchableOpacity,
     StyleSheet,
+    PermissionsAndroid,
 } from 'react-native';
 import React from 'react';
 // import { default as RNFS } from 'react-native-fs';
 // const RNFS = require('react-native-fs');
-import RNFS from 'react-native-fs';
+import RNFS, { readFileRes } from 'react-native-fs';
 // console.log(RNFS.readDir);
-console.log(RNFS.DownloadDirectoryPath);
+// console.log(RNFS.DownloadDirectoryPath);
 
-RNFS.readDir(RNFS.DownloadDirectoryPath);
+const requestWriteExternalStoragePermission = async () => {
+  try {
+    const granted = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+      {
+        title: "Cool Photo App Camera Permission",
+        message:
+          "Cool Photo App needs access to your camera " +
+          "so you can take awesome pictures.",
+        buttonNeutral: "Ask Me Later",
+        buttonNegative: "Cancel",
+        buttonPositive: "OK"
+      }
+    );
+    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+      console.log("Writing permissions granted");
+    } else {
+      console.log("Writing permissions denied");
+    }
+  } catch (err) {
+    console.warn(err);
+  }
+};
+
+const requestReadExternalStoragePermission = async () => {
+  try {
+    const granted = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+      {
+        title: "Cool Photo App Camera Permission",
+        message:
+          "Cool Photo App needs access to your camera " +
+          "so you can take awesome pictures.",
+        buttonNeutral: "Ask Me Later",
+        buttonNegative: "Cancel",
+        buttonPositive: "OK"
+      }
+    );
+    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+      console.log("Reading permissions granted");
+    } else {
+      console.log("Reading permissions denied");
+    }
+  } catch (err) {
+    console.warn(err);
+  }
+};
+
+requestWriteExternalStoragePermission();
+requestReadExternalStoragePermission();
+
+console.log('New round');
+
+// const dirContent = RNFS.readdir(RNFS.DownloadDirectoryPath);
+// console.log(dirContent);
+
+console.log(RNFS.DocumentDirectoryPath);
+
+// console.log(ContentResolver.openInputStream);
+
+
+RNFS.copyFileRes('ilikeapples_english.mp3', `${RNFS.DocumentDirectoryPath}/test.mp3`)
+  .then((result) => {
+    console.log(result);
+  });
+
+RNFS.readdir(RNFS.DocumentDirectoryPath)
+  .then((result) => {
+    console.log('Got result ', result.map((res) => res));
+    // return Promise.all([RNFS.stat(result[0].path), result[0].path]);
+  });
+
+
+// RNFS.readFileRes('ilikeapples_english.mp3', 'UTF-8')
+//   .then((result) => {
+//     console.log(result);
+//   });
+
+//   .then((statResult) => {
+//     if (statResult[0].isFile()) {
+//       console.log('Found it!')
+//     }
+//   })
+
+// RNFS.copyFileRes('ilikeapples_chinese.mp3', RNFS.DocumentDirectoryPath)
+//   .then((result) => {
+//     console.log(result);
+//     return Promise.all([]);
+//   })
+
+// RNFS.readDir('./')
+//   .then((result) => {
+//     if (result) {
+//       console.log('success');
+//     } else {
+//       console.log('fail');
+//     }
+//     // console.log('result');
+//     // console.log('GOT RESULT', result.map((res) => res.name));
+//     // return Promise.all([RNFS.stat(result[0].path), result[0].path]);
+//   });
+
+// RNFS.readDir(RNFS.DocumentDirectoryPath)
+//   .then((result) => {
+//     console.log('GOT RESULT', result.map((res) => res.name));
+//     return Promise.all([RNFS.stat(result[0].path), result[0].path]);
+//   });
+
+// RNFS.readDir(RNFS.ExternalStorageDirectoryPath)
+//   .then((result) => {
+//     console.log('GOT RESULT', result.map((res) => res.name));
+//     return Promise.all([RNFS.stat(result[0].path), result[0].path]);
+//   });
 
 function loadFile(filePath) {
   console.log(`loading file from path: ${filePath}`);
