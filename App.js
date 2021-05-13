@@ -75,7 +75,7 @@ const App = () => {
             backgroundColor: Colors.white,
           }}>
           <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.js</Text> to change this
+            Remove this soon?
           </Section>
           <LearnMoreLinks />
         </View>

@@ -27,21 +27,13 @@ function playSound(soundPath) {
   })
 }
 
-function pressCall(arg) {
-    console.log('Press is called');
-    playSound(arg);
-}
-  
-
 const AudioCard = ({audioPath}) => {
 
     return (
         <TouchableOpacity 
         style={styles.container}
-        onPress={() => pressCall(audioPath)}>
-            <Text>
-                This is an audio card!
-            </Text>
+        onPress={() => playSound(audioPath)}>
+            <Text>Click to play: {audioPath}</Text>
         </TouchableOpacity>
     );
 }
