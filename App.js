@@ -7,7 +7,6 @@
  */
 
 import React from 'react';
-// import type {Node} from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -55,6 +54,9 @@ const Section = ({children, title}) => {
   );
 };
 
+const sounds = {};
+sounds.english = 'ilikeapples_english.mp3';
+sounds.chinese = 'ilikeapples_chinese.mp3';
 
 const App = () => {
   const backgroundStyle = {
@@ -74,11 +76,11 @@ const App = () => {
           }}>
           <Section title="Step One">
             Edit <Text style={styles.highlight}>App.js</Text> to change this
-            screen and then come back to see your edits!
           </Section>
           <LearnMoreLinks />
         </View>
-        <AudioCard></AudioCard>
+        <AudioCard audioPath={sounds.english}></AudioCard>
+        <AudioCard audioPath={sounds.chinese}></AudioCard>
       </ScrollView>
     </SafeAreaView>
   );
