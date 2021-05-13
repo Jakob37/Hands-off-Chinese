@@ -6,7 +6,7 @@
  * @flow strict-local
  */
 
-import React from 'react';
+import React from "react";
 import {
   SafeAreaView,
   ScrollView,
@@ -15,9 +15,11 @@ import {
   Text,
   useColorScheme,
   View,
-  TouchableOpacity
-} from 'react-native';
-import { AudioPaths } from './components/AudioPaths';
+  TouchableOpacity,
+} from "react-native";
+import { AudioPaths, getAudioPaths } from "./components/AudioPaths";
+
+// console.log(AudioPaths.getAudioPaths());
 
 import {
   Colors,
@@ -25,13 +27,13 @@ import {
   Header,
   LearnMoreLinks,
   ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+} from "react-native/Libraries/NewAppScreen";
 
-import { AudioCard } from './components/AudioCard';
-import { FileCard } from './components/FileCard';
+import { AudioCard } from "./components/AudioCard";
+import { FileCard } from "./components/FileCard";
 
-const Section = ({children, title}) => {
-  const isDarkMode = useColorScheme() === 'dark';
+const Section = ({ children, title }) => {
+  const isDarkMode = useColorScheme() === "dark";
   return (
     <View style={styles.sectionContainer}>
       <Text
@@ -40,7 +42,8 @@ const Section = ({children, title}) => {
           {
             color: isDarkMode ? Colors.white : Colors.black,
           },
-        ]}>
+        ]}
+      >
         {title}
       </Text>
       <Text
@@ -49,17 +52,22 @@ const Section = ({children, title}) => {
           {
             color: isDarkMode ? Colors.light : Colors.dark,
           },
-        ]}>
+        ]}
+      >
         {children}
       </Text>
     </View>
   );
 };
 
+
+
+// const audioPaths = AudioPaths.getAudioPaths();
+
 const audioPaths = [];
-audioPaths.push(new AudioPaths('ilikeapples'));
-audioPaths.push(new AudioPaths('ilikeoranges'));
-audioPaths.push(new AudioPaths('ilikepears'));
+audioPaths.push(new AudioPaths("ilikeapples"));
+audioPaths.push(new AudioPaths("ilikeoranges"));
+audioPaths.push(new AudioPaths("ilikepears"));
 
 // console.log(audioPaths);
 
@@ -70,18 +78,19 @@ const App = () => {
 
   return (
     <SafeAreaView style={backgroundStyle}>
-      <StatusBar barStyle={'light-content'} />
+      <StatusBar barStyle={"light-content"} />
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
+        style={backgroundStyle}
+      >
         <Header />
         <View
           style={{
             backgroundColor: Colors.white,
-          }}>
-        </View>
+          }}
+        />
         {audioPaths.map((audioPaths) => (
-          <AudioCard 
+          <AudioCard
             label={audioPaths.label}
             english={audioPaths.english}
             chinese={audioPaths.chinese}
@@ -99,15 +108,15 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 24,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   sectionDescription: {
     marginTop: 8,
     fontSize: 18,
-    fontWeight: '400',
+    fontWeight: "400",
   },
   highlight: {
-    fontWeight: '700',
+    fontWeight: "700",
   },
 });
 
