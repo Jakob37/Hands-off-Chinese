@@ -7,7 +7,7 @@
  */
 
 import React from 'react';
-import type {Node} from 'react';
+// import type {Node} from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -16,6 +16,7 @@ import {
   Text,
   useColorScheme,
   View,
+  TouchableOpacity
 } from 'react-native';
 
 import {
@@ -30,7 +31,26 @@ import { default as Sound } from 'react-native-sound';
 
 Sound.setCategory('Playback');
 
-const Section = ({children, title}): Node => {
+function playSound() {
+  const appleSound = new Sound('ilikeapples_chinese.mp3', Sound.MAIN_BUNDLE, (error) => {
+    if (error) {
+      console.log('failed to load the sound', error);
+      return;
+    }
+    console.log('duration in seconds: ' + appleSound.getDuration() + 'number of channels: ' + appleSound.getNumberOfChannels());
+  
+    appleSound.play((success) => {
+      if (success) {
+        console.log('Successfully finished playing');
+      } else {
+        console.log('Playback failed due to audio decoding errors');
+      }
+    })
+  })
+}
+
+
+const Section = ({children, title}) => {
   const isDarkMode = useColorScheme() === 'dark';
   return (
     <View style={styles.sectionContainer}>
@@ -56,30 +76,39 @@ const Section = ({children, title}): Node => {
   );
 };
 
-const App: () => Node = () => {
-  const isDarkMode = useColorScheme() === 'dark';
+function pressCall() {
+  console.log('Press is called');
+  playSound();
+}
 
+const App = () => {
   const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+    backgroundColor: Colors.lighter,
   };
 
   return (
     <SafeAreaView style={backgroundStyle}>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
+      <StatusBar barStyle={'light-content'} />
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
         style={backgroundStyle}>
         <Header />
         <View
           style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
+            backgroundColor: Colors.white,
           }}>
           <Section title="Step One">
             Edit <Text style={styles.highlight}>App.js</Text> to change this
-            screen and then come back to see your edits. testtesta
+            screen and then come back to see your edits!
           </Section>
           <LearnMoreLinks />
+          <TouchableOpacity onPress={pressCall}>
+            <Text>Test text</Text>
+          </TouchableOpacity>
         </View>
+        {/* <View>
+          style={backgroundStyle}
+        </View> */}
       </ScrollView>
     </SafeAreaView>
   );
