@@ -17,7 +17,7 @@ import {
   View,
   TouchableOpacity,
 } from "react-native";
-import { AudioPaths, getAudioPaths } from "./components/AudioPaths";
+import { AudioPaths } from "./components/AudioPaths";
 
 // console.log(AudioPaths.getAudioPaths());
 
@@ -31,6 +31,7 @@ import {
 
 import { AudioCard } from "./components/AudioCard";
 import { FileCard } from "./components/FileCard";
+import { AudioPlayerCard } from "./components/AudioPlayerCard";
 
 const Section = ({ children, title }) => {
   const isDarkMode = useColorScheme() === "dark";
@@ -96,6 +97,7 @@ const App = () => {
             chinese={audioPaths.chinese}
           ></AudioCard>
         ))}
+        <AudioPlayerCard />
       </ScrollView>
     </SafeAreaView>
   );
