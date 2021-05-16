@@ -13,17 +13,19 @@ async function startPlaying() {
 
         keepGoing = true;
 
-        const numberClips = audioPlayer.getNumberClips();
+        // const numberClips = audioPlayer.getNumberClips();
 
-        const playOne = () => {
-            if (keepGoing) {
-                audioPlayer.playIndex(0, playOne);
-            } else {
-                console.log('keepGoing is false, stopping!');
-            }
-        };
+        audioPlayer.play();
 
-        playOne();
+        // const playOne = () => {
+        //     if (keepGoing) {
+        //         audioPlayer.playRandom(audioPlayer.playRandom.bind(audioPlayer));
+        //     } else {
+        //         console.log('keepGoing is false, stopping!');
+        //     }
+        // };
+
+        // playOne();
 
         // audioPlayer.playPath('ilikeapples_chinese.mp3', () => {
         //     if ()
@@ -72,6 +74,7 @@ function load() {
 function stopPlaying() {
     console.log('Stop playing');
     keepGoing = false;
+    audioPlayer.stop();
 }
 
 const AudioPlayerCard = () => {

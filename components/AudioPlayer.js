@@ -1,4 +1,5 @@
 import { default as Sound } from "react-native-sound";
+import { getRandomFromArray } from "./util";
 
 Sound.setCategory("Playback");
 
@@ -6,6 +7,8 @@ class AudioPlayer {
 
     /** @type {Map<string,Sound>} */
     audio = new Map();
+
+    isPlaying = false;
 
     /**
      * @param {string[]} audioPaths 
@@ -20,35 +23,45 @@ class AudioPlayer {
     }
 
     /**
-     * @param {function} onSuccess
+     * @returns {string[]}
      */
+    _getPaths() {
+        return Array.from(this.audio.keys())
+    }
+
     playRandom() {
-        
+
+        const randomPath = getRandomFromArray(this._getPaths());
+        console.log('found path', randomPath);
+        this.playPath(randomPath);
     }
 
     /**
      * @param {number} index
-     * @param {function} onSuccess
      */
-    playIndex(index, onSuccess) {
-        const firstKey = Array.from(this.audio.keys())[index];
-        this.playPath(firstKey, onSuccess);
+    playIndex(index) {
+        console.log('All paths', this._getPaths(), 'index', index);
+        const firstKey = this._getPaths()[index];
+        this.playPath(firstKey);
     }
 
     /**
      * @param {string} path 
-     * @param {function} onSuccess 
      */
-    playPath(path, onSuccess) {
+    playPath(path) {
+        console.log('Attempting to play path', path);
         const firstAudio = this.audio.get(path);
         // const duration = firstAudio.getDuration();
         // firstAudio.play();
 
         firstAudio.play((success) => {
             if (success) {
-                onSuccess();
-                // console.log("Successfully finished playing");
-                // playSound(soundPath);
+                // onSuccess();
+                // this.dispatchEvent();
+                this.playEvent();
+
+                console.log("Successfully finished playing");
+                // this.playSound(soundPath);
             } else {
                 console.log("Playback failed due to audio decoding errors");
             }
@@ -62,6 +75,23 @@ class AudioPlayer {
      */
     getNumberClips() {
         return this.audio.size;
+    }
+
+    playEvent() {
+        if (this.isPlaying) {
+            this.playRandom();
+        }
+    }
+
+    play() {
+        console.log('Starting audio player');
+        this.isPlaying = true;
+        this.playEvent();
+    }
+
+    stop() {
+        console.log('Stopping audio player');
+        this.isPlaying = false;
     }
 }
 
