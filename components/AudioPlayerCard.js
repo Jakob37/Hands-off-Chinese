@@ -3,77 +3,28 @@ import { TouchableOpacity, View, Text } from "react-native";
 import { AudioPlayer, playSound, testLoad } from "./AudioPlayer";
 import { styles } from "./Stylesheet";
 
-let keepGoing = false;
-
-
 async function startPlaying() {
-
-
     if (audioPlayer != null) {
-
-        keepGoing = true;
-
-        // const numberClips = audioPlayer.getNumberClips();
-
         audioPlayer.play();
-
-        // const playOne = () => {
-        //     if (keepGoing) {
-        //         audioPlayer.playRandom(audioPlayer.playRandom.bind(audioPlayer));
-        //     } else {
-        //         console.log('keepGoing is false, stopping!');
-        //     }
-        // };
-
-        // playOne();
-
-        // audioPlayer.playPath('ilikeapples_chinese.mp3', () => {
-        //     if ()
-        // })
-
-        // let delayUntilNext = 0;
-        // for (let i = 0; i < numberClips; i++) {
-
-
-        //     console.log('Playing clip', i);
-        //     // await setTimeout(
-        //     //     () => {
-        //     //         delayUntilNext = audioPlayer.playIndex(i);
-        //     //     }, 
-        //     //     delayUntilNext
-        //     // );
-        // }
-
-        // const duration = audioPlayer.playIndex(0);
-        // console.log('Playing for duration:', duration);
-        // setTimeout(() => { audioPlayer.playIndex(1)}, duration);
     } else {
         console.log('No audio player loaded!');
     }
 }
 
-let chineseAudio = null;
-let englishAudio = null;
 let audioPlayer = null;
 
-
 function load() {
-    chineseAudio = testLoad('ilikeapples_chinese.mp3');
-    englishAudio = testLoad('ilikeapples_english.mp3');
+    console.log('Loading paths');
     const audioPaths = [
-        'ilikeapples_chinese.mp3',
-        'ilikeapples_english.mp3',
-        'ilikepears_chinese.mp3',
-        'ilikepears_english.mp3',
-        'ilikeoranges_chinese.mp3',
-        'ilikeoranges_english.mp3'
+        ['ilikeapples_english.mp3', 'ilikeapples_chinese.mp3'],
+        ['ilikepears_english.mp3', 'ilikepears_chinese.mp3'],
+        ['ilikeoranges_english.mp3', 'ilikeoranges_chinese.mp3']
     ];
-    audioPlayer = new AudioPlayer(audioPaths);
+    audioPlayer = new AudioPlayer(/** @type {[string,string][]} */ (audioPaths));
 }
 
 function stopPlaying() {
     console.log('Stop playing');
-    keepGoing = false;
     audioPlayer.stop();
 }
 

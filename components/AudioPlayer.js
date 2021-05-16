@@ -3,83 +3,74 @@ import { getRandomFromArray } from "./util";
 
 Sound.setCategory("Playback");
 
+class AudioPair {
+    englishPath;
+    chinesePath;
+    englishAudio;
+    chineseAudio;
+    constructor(englishPath, chinesePath) {
+        this.englishPath = englishPath;
+        this.chinesePath = chinesePath;
+        this.englishAudio = testLoad(englishPath);
+        this.chineseAudio = testLoad(chinesePath);
+    }
+}
+
 class AudioPlayer {
 
-    /** @type {Map<string,Sound>} */
-    audio = new Map();
+    /** @type {AudioPair[]} */
+    audio = [];
 
     isPlaying = false;
 
+    currentlyPlayingPair = null;
+
     /**
-     * @param {string[]} audioPaths 
+     * @param {[string,string][]} audioPathPairs
      */
-    constructor(audioPaths) {
-        // this.audioPaths = audioPaths;
-        for (const path of audioPaths) {
-            this.audio.set(path, testLoad(path));
+    constructor(audioPathPairs) {
+        for (const [english, chinese] of audioPathPairs) {
+            const audioPair = new AudioPair(english, chinese);
+            this.audio.push(audioPair);
         }
 
-        console.log(`Finished loading ${audioPaths.length} clips`);
-    }
-
-    /**
-     * @returns {string[]}
-     */
-    _getPaths() {
-        return Array.from(this.audio.keys())
+        console.log(`Finished loading ${audioPathPairs.length} clips`);
     }
 
     playRandom() {
 
-        const randomPath = getRandomFromArray(this._getPaths());
-        console.log('found path', randomPath);
-        this.playPath(randomPath);
-    }
-
-    /**
-     * @param {number} index
-     */
-    playIndex(index) {
-        console.log('All paths', this._getPaths(), 'index', index);
-        const firstKey = this._getPaths()[index];
-        this.playPath(firstKey);
-    }
-
-    /**
-     * @param {string} path 
-     */
-    playPath(path) {
-        console.log('Attempting to play path', path);
-        const firstAudio = this.audio.get(path);
-        // const duration = firstAudio.getDuration();
-        // firstAudio.play();
-
-        firstAudio.play((success) => {
+        const pair = getRandomFromArray(this.audio);
+        console.log('found pair', pair);
+        this.currentlyPlayingPair = pair;
+        // this.playPath(pair.englishAudio);
+        this.currentlyPlayingPair.englishAudio.play((success) => {
             if (success) {
-                // onSuccess();
-                // this.dispatchEvent();
                 this.playEvent();
-
                 console.log("Successfully finished playing");
-                // this.playSound(soundPath);
             } else {
                 console.log("Playback failed due to audio decoding errors");
             }
         });
-
-        // return duration * 1000;
     }
 
     /**
      * @returns {number}
      */
     getNumberClips() {
-        return this.audio.size;
+        return this.audio.length;
     }
 
     playEvent() {
         if (this.isPlaying) {
-            this.playRandom();
+            if (this.currentlyPlayingPair == null) {
+                this.playRandom();
+            } else {
+                const currAudio = this.currentlyPlayingPair;
+                this.currentlyPlayingPair = null;
+                currAudio.chineseAudio.play((success) => {
+                    this.playEvent();
+                })
+            }
         }
     }
 
