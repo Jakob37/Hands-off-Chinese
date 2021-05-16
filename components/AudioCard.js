@@ -10,32 +10,9 @@ import React from "react";
 
 import { AudioPaths } from "./AudioPaths";
 
-import { default as Sound } from "react-native-sound";
-
-Sound.setCategory("Playback");
-
-function playSound(soundPath) {
-    console.log(soundPath);
-    const appleSound = new Sound(soundPath, Sound.MAIN_BUNDLE, (error) => {
-        if (error) {
-            console.log(
-                "failed to load the sound",
-                error,
-                "from path",
-                soundPath
-            );
-            return;
-        }
-
-        appleSound.play((success) => {
-            if (success) {
-                console.log("Successfully finished playing");
-            } else {
-                console.log("Playback failed due to audio decoding errors");
-            }
-        });
-    });
-}
+// import { default as Sound } from "react-native-sound";
+import { styles } from "./Stylesheet";
+import { playSound } from "./AudioPlayer";
 
 /**
  * @param {object} param
@@ -61,35 +38,5 @@ const AudioCard = ({ label, english, chinese }) => {
         </View>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {
-        marginTop: 16,
-        marginBottom: 16,
-        paddingHorizontal: 24,
-    },
-    linkContainer: {
-        flexWrap: "wrap",
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
-        paddingVertical: 8,
-    },
-    link: {
-        flex: 2,
-        fontSize: 18,
-        fontWeight: "400",
-        color: "black",
-    },
-    description: {
-        flex: 3,
-        paddingVertical: 16,
-        fontWeight: "400",
-        fontSize: 18,
-    },
-    separator: {
-        height: StyleSheet.hairlineWidth,
-    },
-});
 
 export { AudioCard };
