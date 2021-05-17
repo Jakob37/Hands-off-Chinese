@@ -18,7 +18,7 @@ import { AudioPlayerCard } from "./components/AudioPlayerCard";
 import { TrackPlayerWrapper } from "./components/TrackPlayer";
 import Sound from "react-native-sound";
 
-console.log('Sound base', Sound.MAIN_BUNDLE);
+// console.log('Sound base', Sound.MAIN_BUNDLE);
 
 // const audioPaths = AudioPaths.getAudioPaths();
 
@@ -55,9 +55,10 @@ const App = () => {
             label={audioPaths.label}
             english={audioPaths.english}
             chinese={audioPaths.chinese}
+            key={audioPaths.label}
           ></AudioCard>
         ))}
-        <AudioPlayerCard />
+        <AudioPlayerCard key="audioPlayer" />
       </ScrollView>
     </SafeAreaView>
   );

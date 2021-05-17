@@ -16,14 +16,23 @@ class AudioPair {
     }
 }
 
+const AudioState = Object.freeze({
+    'stopped': 1,
+    'playing_english': 2,
+    'english_pause': 3,
+    'playing_chinese': 4,
+    'chinese_pause': 5
+})
+
 class AudioPlayer {
 
     /** @type {AudioPair[]} */
     audio = [];
+    audioState = AudioState.stopped;
+    currentlyPlayingPair = null;
+    delay = 3000;
 
     isPlaying = false;
-
-    currentlyPlayingPair = null;
 
     /**
      * @param {[string,string][]} audioPathPairs
@@ -37,10 +46,17 @@ class AudioPlayer {
         console.log(`Finished loading ${audioPathPairs.length} clips`);
     }
 
+    /**
+     * @param {number} delay 
+     */
+    setDelay(delay) {
+        this.delay = delay;
+    }
+
     playRandom() {
 
         const pair = getRandomFromArray(this.audio);
-        console.log('found pair', pair);
+        // console.log('found pair', pair);
         this.currentlyPlayingPair = pair;
         // this.playPath(pair.englishAudio);
         this.currentlyPlayingPair.englishAudio.play((success) => {
@@ -54,6 +70,15 @@ class AudioPlayer {
     }
 
     /**
+     * @param {number} duration 
+     */
+    playPause(duration) {
+        setTimeout(() => {
+            this.playEvent();
+        }, duration)
+    }
+
+    /**
      * @returns {number}
      */
     getNumberClips() {
@@ -61,27 +86,43 @@ class AudioPlayer {
     }
 
     playEvent() {
-        if (this.isPlaying) {
-            if (this.currentlyPlayingPair == null) {
-                this.playRandom();
-            } else {
-                const currAudio = this.currentlyPlayingPair;
-                this.currentlyPlayingPair = null;
-                currAudio.chineseAudio.play((success) => {
-                    this.playEvent();
-                })
-            }
+        if (!this.isPlaying) {
+            console.log('Not playing, returning!');
+            return;
+        }
+
+        if (this.audioState == AudioState.playing_english) {
+            this.playRandom();
+            this.audioState = AudioState.english_pause;
+        } else if (this.audioState == AudioState.english_pause) {
+            this.playPause(this.delay);
+            this.audioState = AudioState.playing_chinese;
+        } else if (this.audioState == AudioState.playing_chinese) {
+            const currAudio = this.currentlyPlayingPair;
+            // this.currentlyPlayingPair = null;
+            currAudio.chineseAudio.play((_success) => {
+                this.playEvent();
+            })
+            this.audioState = AudioState.chinese_pause;
+        } else if (this.audioState == AudioState.chinese_pause) {
+            this.playPause(this.delay);
+            this.audioState = AudioState.playing_english;
+        } else {
+            console.warn('Unknown situation for audio state:', this.audioState);
         }
     }
 
     play() {
         console.log('Starting audio player');
+        this.audioState = AudioState.playing_english;
         this.isPlaying = true;
         this.playEvent();
     }
 
     stop() {
-        console.log('Stopping audio player');
+        console.log('Stopping audio player!');
+        this.audioState = AudioState.stopped;
+        console.log(this.audioState);
         this.isPlaying = false;
     }
 }
