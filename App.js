@@ -23,9 +23,12 @@ import Sound from "react-native-sound";
 // const audioPaths = AudioPaths.getAudioPaths();
 
 const audioPaths = [];
-audioPaths.push(new AudioPaths("ilikeapples"));
-audioPaths.push(new AudioPaths("ilikeoranges"));
-audioPaths.push(new AudioPaths("ilikepears"));
+for (let i = 1; i <= 12; i++) {
+  audioPaths.push(new AudioPaths(`exercise${i}`))
+}
+// audioPaths.push(new AudioPaths("ilikeapples"));
+// audioPaths.push(new AudioPaths("ilikeoranges"));
+// audioPaths.push(new AudioPaths("ilikepears"));
 
 // const trackPlayer = new TrackPlayerWrapper();
 // trackPlayer.init();

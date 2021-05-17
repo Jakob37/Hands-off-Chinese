@@ -7,6 +7,11 @@ const styles = StyleSheet.create({
         marginBottom: 16,
         paddingHorizontal: 24,
     },
+    containerTight: {
+        marginTop: 4,
+        marginBottom: 4,
+        paddingHorizontal: 24,
+    },
     linkContainer: {
         flexWrap: "wrap",
         flexDirection: "row",

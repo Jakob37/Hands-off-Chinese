@@ -15,11 +15,15 @@ let audioPlayer = null;
 
 function load() {
     console.log('Loading paths');
-    const audioPaths = [
-        ['ilikeapples_english.mp3', 'ilikeapples_chinese.mp3'],
-        ['ilikepears_english.mp3', 'ilikepears_chinese.mp3'],
-        ['ilikeoranges_english.mp3', 'ilikeoranges_chinese.mp3']
-    ];
+    // const audioPaths = [
+    //     ['ilikeapples_english.mp3', 'ilikeapples_chinese.mp3'],
+    //     ['ilikepears_english.mp3', 'ilikepears_chinese.mp3'],
+    //     ['ilikeoranges_english.mp3', 'ilikeoranges_chinese.mp3']
+    // ];
+    const audioPaths = [];
+    for (let i = 1; i <= 12; i++) {
+        audioPaths.push([`exercise${i}_english.mp3`, `exercise${i}_chinese.mp3`]);
+    }
     audioPlayer = new AudioPlayer(/** @type {[string,string][]} */ (audioPaths));
 }
 

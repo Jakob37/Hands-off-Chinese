@@ -24,12 +24,12 @@ import { playSound } from "./AudioPlayer";
 const AudioCard = ({ label, english, chinese }) => {
     return (
         <View>
-            <Text style={styles.container}>
+            <Text style={styles.containerTight}>
                 <TouchableOpacity>
                     <Text style={{ marginRight: 10 }}>{label}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => playSound(english)}>
-                    <Text>Play English</Text>
+                    <Text style={{ marginRight: 10 }}>Play English</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => playSound(chinese)}>
                     <Text>Play Chinese</Text>
