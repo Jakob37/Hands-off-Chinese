@@ -1,14 +1,17 @@
 const { AudioPaths } = require("./AudioPaths");
 
-function testPrint() {
-    console.log('test print');
-}
-
 class AudioLibrary {
     /** @type {AudioPaths[]} */
     audioPaths;
+    /** @type {[string,string][]} */
+    pathPairs;
+
+    /**
+     * @param {AudioPaths[]} audioPaths 
+     */
     constructor(audioPaths) {
         this.audioPaths = audioPaths;
+        this.pathPairs = /** @type {[string, string][]} */ (audioPaths.map((paths) => [paths.english, paths.chinese]));
     }
 }
 

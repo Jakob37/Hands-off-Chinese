@@ -23,14 +23,14 @@ class App extends React.Component {
                 <ScrollView contentInsetAdjustmentBehavior="automatic">
                     <Header header="Hands-off Chinese"></Header>
                     <Menu></Menu>
-                    {audioPaths.map((audioPaths) => (
+                    {/* {audioPaths.map((audioPaths) => (
                         <AudioCard
                             label={audioPaths.label}
                             english={audioPaths.english}
                             chinese={audioPaths.chinese}
                             key={audioPaths.label}
                         ></AudioCard>
-                    ))}
+                    ))} */}
                     <AudioPlayerCard key="audioPlayer" />
                 </ScrollView>
             </SafeAreaView>

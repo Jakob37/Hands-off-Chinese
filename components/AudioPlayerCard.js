@@ -1,6 +1,7 @@
 import React from "react";
 import { TouchableOpacity, View, Text } from "react-native";
 import { AudioPlayer, playSound, testLoad } from "./AudioPlayer";
+import { audioLibraries } from "./Database";
 import { styles } from "./Stylesheet";
 
 async function startPlaying() {
@@ -15,15 +16,7 @@ let audioPlayer = null;
 
 function load() {
     console.log('Loading paths');
-    // const audioPaths = [
-    //     ['ilikeapples_english.mp3', 'ilikeapples_chinese.mp3'],
-    //     ['ilikepears_english.mp3', 'ilikepears_chinese.mp3'],
-    //     ['ilikeoranges_english.mp3', 'ilikeoranges_chinese.mp3']
-    // ];
-    const audioPaths = [];
-    for (let i = 1; i <= 12; i++) {
-        audioPaths.push([`exercise${i}_english.mp3`, `exercise${i}_chinese.mp3`]);
-    }
+    const audioPaths = audioLibraries.get('exam_revision_3').pathPairs;
     audioPlayer = new AudioPlayer(/** @type {[string,string][]} */ (audioPaths));
 }
 
