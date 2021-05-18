@@ -1,4 +1,5 @@
 import { default as Sound } from "react-native-sound";
+import { audioLibraries } from "./Database";
 import { getRandomFromArray } from "./util";
 
 Sound.setCategory("Playback");
@@ -34,10 +35,15 @@ class AudioPlayer {
 
     isPlaying = false;
 
+    constructor() {
+        const defaultPairs = audioLibraries.get('I like fruits').pathPairs;
+        this.load(defaultPairs);
+    }
+
     /**
      * @param {[string,string][]} audioPathPairs
      */
-    constructor(audioPathPairs) {
+     load(audioPathPairs) {
         for (const [english, chinese] of audioPathPairs) {
             const audioPair = new AudioPair(english, chinese);
             this.audio.push(audioPair);
@@ -170,4 +176,6 @@ async function playSound(soundPath) {
     });
 }
 
-export { playSound, testLoad, AudioPlayer };
+const audioPlayer = new AudioPlayer();
+
+export { playSound, testLoad, AudioPlayer, audioPlayer };

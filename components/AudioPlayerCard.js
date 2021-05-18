@@ -1,33 +1,26 @@
 import React from "react";
 import { TouchableOpacity, View, Text } from "react-native";
-import { AudioPlayer, playSound, testLoad } from "./AudioPlayer";
+import { audioPlayer, AudioPlayer } from "./AudioPlayer";
 import { audioLibraries } from "./Database";
 import { styles } from "./Stylesheet";
 
 async function startPlaying() {
-    if (audioPlayer != null) {
+    if (audioPlayer.audio.length > 0) {
         audioPlayer.play();
     } else {
         console.log('No audio player loaded!');
     }
 }
 
-let audioPlayer = null;
-
 function load() {
-    console.log('Loading paths');
     const audioPaths = audioLibraries.get('exam_revision_3').pathPairs;
-    audioPlayer = new AudioPlayer(/** @type {[string,string][]} */ (audioPaths));
+    // audioPlayer = new AudioPlayer();
+    audioPlayer.load(/** @type {[string,string][]} */ (audioPaths));
 }
 
 function stopPlaying() {
-    console.log('Stop playing');
     audioPlayer.stop();
 }
-
-// const increment = 1000;
-// let delay = 3000;
-
 
 const DisplayNumber = ({ number }) => {
     return (
@@ -37,14 +30,7 @@ const DisplayNumber = ({ number }) => {
     )
 } 
 
-load();
-
 class AudioPlayerCard extends React.Component {
-
-    // state = {
-    //     increment: 1000,
-    //     delay: 3000
-    // }
 
     constructor(props) {
         super(props);

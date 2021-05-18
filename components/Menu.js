@@ -3,18 +3,14 @@ import { View, Text, TouchableOpacity } from "react-native";
 import { AudioCard } from "./AudioCard";
 import { audioLibraries } from "./Database";
 
-// const audioLibraries;
-
 const audioLibraryNames = Array.from(audioLibraries.keys());
-
-const audioPaths = audioLibraries.get("exam_revision_3").audioPaths;
 
 class Menu extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            currAudioPaths: audioPaths
+            currAudioPaths: audioLibraries.get("I like fruits").audioPaths
         }
     }
 
