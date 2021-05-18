@@ -8,8 +8,8 @@ const styles = StyleSheet.create({
         paddingHorizontal: 24,
     },
     containerTight: {
-        marginTop: 4,
-        marginBottom: 4,
+        marginTop: 3,
+        marginBottom: 3,
         paddingHorizontal: 24,
     },
     linkContainer: {
