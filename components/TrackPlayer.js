@@ -5,11 +5,6 @@ import TrackPlayer from 'react-native-track-player';
 
 class TrackPlayerWrapper {
 
-    constructor() {
-
-
-    }
-
     async init() {
         await TrackPlayer.setupPlayer();
 

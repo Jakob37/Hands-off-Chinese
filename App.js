@@ -4,67 +4,77 @@ import {
   ScrollView,
   StatusBar,
   View,
+  Text,
 } from "react-native";
 import { AudioPaths } from "./components/AudioPaths";
 import TrackPlayer from 'react-native-track-player';
 
-import {
-  Colors,
-  Header,
-} from "react-native/Libraries/NewAppScreen";
+// import {
+//   Colors,
+//   Header,
+// } from "react-native/Libraries/NewAppScreen";
 
 import { AudioCard } from "./components/AudioCard";
 import { AudioPlayerCard } from "./components/AudioPlayerCard";
-import { TrackPlayerWrapper } from "./components/TrackPlayer";
-import Sound from "react-native-sound";
+import { audioLibraries } from "./components/Database";
+import { Header } from "./components/Header";
 
-// console.log('Sound base', Sound.MAIN_BUNDLE);
-
-// const audioPaths = AudioPaths.getAudioPaths();
-
-const audioPaths = [];
-for (let i = 1; i <= 12; i++) {
-  audioPaths.push(new AudioPaths(`exercise${i}`))
-}
 // audioPaths.push(new AudioPaths("ilikeapples"));
 // audioPaths.push(new AudioPaths("ilikeoranges"));
 // audioPaths.push(new AudioPaths("ilikepears"));
 
-// const trackPlayer = new TrackPlayerWrapper();
-// trackPlayer.init();
+const audioPaths = audioLibraries.get('exam_revision_3').audioPaths;
 
-// console.log(audioPaths);
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+  }
 
-const App = () => {
-  const backgroundStyle = {
-    backgroundColor: Colors.lighter,
-  };
+  render() {
+    return (
+      <SafeAreaView>
+        <StatusBar barStyle={"light-content"} />
+        <ScrollView
+          contentInsetAdjustmentBehavior="automatic"
+        >
+          <Header header="Hands-off Chinese"></Header>
+          {audioPaths.map((audioPaths) => (
+            <AudioCard
+              label={audioPaths.label}
+              english={audioPaths.english}
+              chinese={audioPaths.chinese}
+              key={audioPaths.label}
+            ></AudioCard>
+          ))}
+          <AudioPlayerCard key="audioPlayer" />
+        </ScrollView>
+      </SafeAreaView>
+    );
+  }
+}
 
-  return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar barStyle={"light-content"} />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}
-      >
-        <Header />
-        <View
-          style={{
-            backgroundColor: Colors.white,
-          }}
-        />
-        {audioPaths.map((audioPaths) => (
-          <AudioCard
-            label={audioPaths.label}
-            english={audioPaths.english}
-            chinese={audioPaths.chinese}
-            key={audioPaths.label}
-          ></AudioCard>
-        ))}
-        <AudioPlayerCard key="audioPlayer" />
-      </ScrollView>
-    </SafeAreaView>
-  );
-};
+// const App = () => {
+
+//   // return (
+//   //   <SafeAreaView>
+//   //     <StatusBar barStyle={"light-content"} />
+//   //     <ScrollView
+//   //       contentInsetAdjustmentBehavior="automatic"
+//   //       // style={backgroundStyle}
+//   //     >
+//   //       <Header header="Hands-off Chinese"></Header>
+//   //       {audioPaths.map((audioPaths) => (
+//   //         <AudioCard
+//   //           label={audioPaths.label}
+//   //           english={audioPaths.english}
+//   //           chinese={audioPaths.chinese}
+//   //           key={audioPaths.label}
+//   //         ></AudioCard>
+//   //       ))}
+//   //       <AudioPlayerCard key="audioPlayer" />
+//   //     </ScrollView>
+//   //   </SafeAreaView>
+//   // );
+// };
 
 export default App;
