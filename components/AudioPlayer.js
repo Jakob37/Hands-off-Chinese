@@ -36,7 +36,7 @@ class AudioPlayer {
     isPlaying = false;
 
     constructor() {
-        const defaultPairs = audioLibraries.get('I like fruits').pathPairs;
+        const defaultPairs = audioLibraries.get('Exam revision 4').pathPairs;
         this.load(defaultPairs);
     }
 
