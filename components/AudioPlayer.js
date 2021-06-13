@@ -5,10 +5,18 @@ import { getRandomFromArray } from "./util";
 Sound.setCategory("Playback");
 
 class AudioPair {
+    /** @type {string} */
     englishPath;
+    /** @type {string} */
     chinesePath;
+    /** @type {Sound} */
     englishAudio;
+    /** @type {Sound} */
     chineseAudio;
+    /**
+     * @param {string} englishPath 
+     * @param {string} chinesePath 
+     */
     constructor(englishPath, chinesePath) {
         this.englishPath = englishPath;
         this.chinesePath = chinesePath;
@@ -30,6 +38,7 @@ class AudioPlayer {
     /** @type {AudioPair[]} */
     audio = [];
     audioState = AudioState.stopped;
+    /** @type {AudioPair} */
     currentlyPlayingPair = null;
     delay = 3000;
 

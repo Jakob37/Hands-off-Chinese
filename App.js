@@ -8,6 +8,7 @@ import { AudioPlayerCard } from "./components/AudioPlayerCard";
 import { audioLibraries } from "./components/Database";
 import { Header } from "./components/Header";
 import { Menu } from "./components/Menu";
+import { TestCard } from "./components/TestCard";
 
 const audioPaths = audioLibraries.get("exam_revision_3").audioPaths;
 
@@ -32,6 +33,7 @@ class App extends React.Component {
                         ></AudioCard>
                     ))} */}
                     <AudioPlayerCard key="audioPlayer" />
+                    <TestCard />
                 </ScrollView>
             </SafeAreaView>
         );
