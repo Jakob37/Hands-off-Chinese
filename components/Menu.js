@@ -26,7 +26,7 @@ class Menu extends React.Component {
         return (
             <View style={{paddingBottom: 20}}>
                 {audioLibraryNames.map((name) => (
-                    <TouchableOpacity onPress={() => this.renderCards(name)}>
+                    <TouchableOpacity key={name} onPress={() => this.renderCards(name)}>
                         <Text style={{paddingLeft: 24, fontWeight: "bold", fontSize:20}}>{name}</Text>
                     </TouchableOpacity>
                 ))}
