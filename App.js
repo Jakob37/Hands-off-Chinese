@@ -9,6 +9,7 @@ import { audioLibraries } from "./components/Database";
 import { Header } from "./components/Header";
 import { Menu } from "./components/Menu";
 import { TestCard } from "./components/TestCard";
+import AwsTest from "./components/aws/s3Example";
 
 const audioPaths = audioLibraries.get("exam_revision_3").audioPaths;
 
@@ -34,6 +35,7 @@ class App extends React.Component {
                     ))} */}
                     <AudioPlayerCard key="audioPlayer" />
                     <TestCard />
+                    <AwsTest />
                 </ScrollView>
             </SafeAreaView>
         );

@@ -6,8 +6,14 @@ import { View, Text, Button } from "react-native";
 
 // Cognito_HandsOffChineseUnauth_Role
 
-const { CognitoIdentityClient } = require("@aws-sdk/client-cognito-identity");
-console.timeLog(CognitoIdentityClient);
+// // Initialize the Amazon Cognito credentials provider
+// AWS.config.region = 'eu-north-1'; // Region
+// AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+//     IdentityPoolId: 'eu-north-1:e0345c02-ad0c-400b-ad11-e9547fde04f9',
+// });
+
+// const { CognitoIdentityClient } = require("@aws-sdk/client-cognito-identity");
+// console.timeLog(CognitoIdentityClient);
 
 class TestCard extends Component {
     playTrack = () => {
