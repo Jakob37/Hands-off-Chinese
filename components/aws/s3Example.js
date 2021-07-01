@@ -53,6 +53,11 @@ const AwsTest = () => {
         }
     };
 
+    // const listS3Content = async () => {
+    //     let AWS = require('aws-sdk');
+    //     client.config.update({region: 'eu-north-1'})
+    // }
+
     return (
         <View style={styles.container}>
             <Text style={{ color: "green" }}>
@@ -78,6 +83,10 @@ const AwsTest = () => {
                     // backroundColor="#68a0cf"
                     title="Delete Bucket"
                     onPress={deleteBucket}
+                />
+                <Button 
+                    title="List S3 content"
+                    onPress={listS3Content}
                 />
             </View>
         </View>
