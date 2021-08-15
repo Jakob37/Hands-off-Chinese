@@ -6,10 +6,15 @@ import {
     S3Client,
     CreateBucketCommand,
     DeleteBucketCommand,
+    ListBucketsCommand,
+    ListObjectsCommand,
+    ListObjectsV2Command,
 } from "@aws-sdk/client-s3";
 import { CognitoIdentityClient } from "@aws-sdk/client-cognito-identity";
 import { fromCognitoIdentityPool } from "@aws-sdk/credential-provider-cognito-identity";
 import { IDENTITY_POOL_ID } from "../../aws.config";
+
+// const s3 = new AWS
 
 const AwsTest = () => {
     const [bucketName, setBucketName] = useState("");
@@ -30,6 +35,20 @@ const AwsTest = () => {
     const createBucket = async () => {
         setSuccessMsg("");
         setErrorMsg("");
+
+        // const params = {
+        //     Bucket: 'examplebucket',
+        //     CreateBucketConfiguration: {
+        //         LocationConstraint: 'eu-north-1'
+        //     }
+        //     S3.createBucket(params, function(err, data)) {
+        //         if (err) {
+        //             console.log(err, err.stack);
+        //         } else {
+        //             console.log(data);
+        //         }
+        //     }
+        // }
 
         try {
             console.log(`Attempting to create bucket name: ${bucketName}`);
@@ -53,10 +72,23 @@ const AwsTest = () => {
         }
     };
 
-    // const listS3Content = async () => {
-    //     let AWS = require('aws-sdk');
-    //     client.config.update({region: 'eu-north-1'})
-    // }
+    const listS3Content = async () => {
+
+        setSuccessMsg("");
+        setErrorMsg("test");
+
+        console.log('Listing');
+
+        try {
+            await client.send(new ListObjectsV2Command({ Bucket: 'name' }));
+            setSuccessMsg(`Success!`);
+        } catch (e) {
+            setErrorMsg(e);
+        }
+
+        // let AWS = require('aws-sdk');
+        // client.config.update({region: 'eu-north-1'})
+    }
 
     return (
         <View style={styles.container}>

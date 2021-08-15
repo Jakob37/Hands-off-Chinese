@@ -1,17 +1,11 @@
 import React from "react";
-import { SafeAreaView, ScrollView, StatusBar, View, Text } from "react-native";
-import { AudioPaths } from "./components/AudioPaths";
-import TrackPlayer from "react-native-track-player";
-
-import { AudioCard } from "./components/AudioCard";
+import { SafeAreaView, ScrollView, StatusBar } from "react-native";
 import { AudioPlayerCard } from "./components/AudioPlayerCard";
-import { audioLibraries } from "./components/Database";
 import { Header } from "./components/Header";
 import { Menu } from "./components/Menu";
-import { TestCard } from "./components/TestCard";
-import AwsTest from "./components/aws/s3Example";
+import { PlayDirectlyFromS3 } from "./components/aws/PlayDirectlyFromS3";
+import { ListS3Content } from "./components/aws/ListS3Content";
 
-const audioPaths = audioLibraries.get("exam_revision_3").audioPaths;
 
 class App extends React.Component {
     constructor(props) {
@@ -24,18 +18,10 @@ class App extends React.Component {
                 <StatusBar barStyle={"light-content"} />
                 <ScrollView contentInsetAdjustmentBehavior="automatic">
                     <Header header="Hands-off Chinese"></Header>
-                    <Menu></Menu>
-                    {/* {audioPaths.map((audioPaths) => (
-                        <AudioCard
-                            label={audioPaths.label}
-                            english={audioPaths.english}
-                            chinese={audioPaths.chinese}
-                            key={audioPaths.label}
-                        ></AudioCard>
-                    ))} */}
-                    <AudioPlayerCard key="audioPlayer" />
-                    <TestCard />
-                    <AwsTest />
+                    {/* <Menu></Menu> */}
+                    {/* <AudioPlayerCard key="audioPlayer" /> */}
+                    <PlayDirectlyFromS3 />
+                    <ListS3Content />
                 </ScrollView>
             </SafeAreaView>
         );
