@@ -6,7 +6,7 @@ import Amplify, { Storage } from 'aws-amplify';
 const listEntries = ['Entry 1', 'Entry 2', 'Entry 3'];
 
 /**
- * @returns string[]
+ * @returns {Promise<string[]>}
  */
 const retrieveEntriesFromS3 = async () => {
     const listResult = await Storage.list('');
