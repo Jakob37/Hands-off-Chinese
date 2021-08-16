@@ -6,9 +6,16 @@ import { Menu } from "./components/Menu";
 import { PlayDirectlyFromS3 } from "./components/aws/PlayDirectlyFromS3";
 import { ListS3Content } from "./components/aws/ListS3Content";
 
+import Amplify, { Storage } from 'aws-amplify';
+import awsconfig from './src/aws-exports';
+Amplify.configure(awsconfig);
+
 const getTimestamp = () => {
     return new Date().toISOString().slice(2).slice(0,17).replace(/-|T|:/g, "")
 }
+
+// Continue testing: https://docs.amplify.aws/lib/storage/getting-started/q/platform/js#using-a-custom-plugin
+// Further configuration needed??
 
 const generateAudio = (apiUrl, text, voice, prefix) => {
 
@@ -27,8 +34,6 @@ const generateAudio = (apiUrl, text, voice, prefix) => {
 
 const testApi = async (english, chinese) => {
 
-    // const english = 'I like Xuan';
-    // const chinese = '我喜欢李璇';
     const englishVoice = 'Emma';
     const chineseVoice = 'Zhiyu';
   
@@ -47,12 +52,12 @@ const testApi = async (english, chinese) => {
     );
   }
   
+const listBucket =  async () => {
+    const listResult = await Storage.list('');
+    console.log(listResult);
+}
 
 const App = () => {
-
-    // constructor(props) {
-    //     super(props);
-    // }
 
     const [chineseText, onChangeChineseText] = React.useState('我喜欢李璇');
     const [englishText, onChangeEnglishText] = React.useState('I like Xuan');
@@ -81,6 +86,11 @@ const App = () => {
                 <Button
                     onPress={() => { testApi(englishText, chineseText) }}
                     title="Test API"
+                />
+
+                <Button
+                    onPress={listBucket}
+                    title="List bucket"
                 />
 
             </ScrollView>

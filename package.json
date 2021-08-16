@@ -10,12 +10,14 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "@aws-sdk/client-cognito-identity": "^3.18.0",
-    "@aws-sdk/client-polly": "^3.18.0",
-    "@aws-sdk/client-s3": "^3.18.0",
-    "@aws-sdk/credential-provider-cognito-identity": "^3.18.0",
+    "@react-native-async-storage/async-storage": "^1.15.5",
+    "@react-native-community/netinfo": "^6.0.0",
+    "amazon-cognito-identity-js": "^5.0.6",
     "@types/react": "^17.0.5",
     "@types/react-native": "^0.64.5",
+    "aws-amplify": "^4.2.3",
+    "aws-amplify-react-native": "^5.0.3",
+    "aws-sdk": "^2.964.0",
     "react": "17.0.1",
     "react-native": "0.64.1",
     "react-native-fs": "^2.18.0",
