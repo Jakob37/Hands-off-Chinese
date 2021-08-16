@@ -1,0 +1,26 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-handsoffchinese-dev-183310-authRole",
+      "UnauthRoleArn": "arn:aws:iam::367677967148:role/amplify-handsoffchinese-dev-183310-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::367677967148:role/amplify-handsoffchinese-dev-183310-authRole",
+      "Region": "eu-west-1",
+      "DeploymentBucketName": "amplify-handsoffchinese-dev-183310-deployment",
+      "UnauthRoleName": "amplify-handsoffchinese-dev-183310-unauthRole",
+      "StackName": "amplify-handsoffchinese-dev-183310",
+      "StackId": "arn:aws:cloudformation:eu-west-1:367677967148:stack/amplify-handsoffchinese-dev-183310/a6db3d90-feaf-11eb-a368-0a740343ade7",
+      "AmplifyAppId": "d29cp5hf6dgh5b"
+    },
+    "categories": {
+      "auth": {
+        "handsoffchinese822fd25f": {}
+      },
+      "function": {
+        "pollytos3": {
+          "deploymentBucketName": "amplify-handsoffchinese-dev-183310-deployment",
+          "s3Key": "amplify-builds/pollytos3-332b70553176466f3541-build.zip"
+        }
+      }
+    }
+  }
+}
