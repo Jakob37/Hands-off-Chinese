@@ -23,7 +23,7 @@ exports.handler = (event, context, callback) => {
             const data = response.data;
             const audioStream = data.AudioStream;
             // const s3BucketName = 'reactnativeamplifiedbucket152224-dev';
-            const s3BucketName = 'handsoffchinesestorage';
+            const s3BucketName = 'handsoffchinesestorage183310-dev';
             const key = `public/${event.prefix}_${event.text}`;
 
             const params = {

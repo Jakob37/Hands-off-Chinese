@@ -11,7 +11,7 @@ import awsconfig from './src/aws-exports';
 Amplify.configure(awsconfig);
 
 const getTimestamp = () => {
-    return new Date().toISOString().slice(2).slice(0,17).replace(/-|T|:/g, "")
+    return new Date().toISOString().slice(2).slice(0, 17).replace(/-|T|:/g, "")
 }
 
 // Continue testing: https://docs.amplify.aws/lib/storage/getting-started/q/platform/js#using-a-custom-plugin
@@ -19,7 +19,7 @@ const getTimestamp = () => {
 
 const generateAudio = (apiUrl, text, voice, prefix) => {
 
-    const params = `{"text":"${text}", "voice": "${voice}", "prefix": "${prefix}"}`;
+    const params = `{"text": "${text}", "voice": "${voice}", "prefix": "${prefix}"}`;
   
     const pollyXhr = new XMLHttpRequest();
     const async = true;
@@ -62,7 +62,6 @@ const App = () => {
     const [chineseText, onChangeChineseText] = React.useState('我喜欢李璇');
     const [englishText, onChangeEnglishText] = React.useState('I like Xuan');
 
-    // render() {
     return (
         <SafeAreaView>
             <StatusBar barStyle={"light-content"} />
@@ -96,7 +95,6 @@ const App = () => {
             </ScrollView>
         </SafeAreaView>
     );
-    // }
 }
 
 export default App;
