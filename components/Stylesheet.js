@@ -12,6 +12,25 @@ const styles = StyleSheet.create({
         marginBottom: 3,
         paddingHorizontal: 24,
     },
+    header: {
+        fontSize: 34,
+        textAlign: "center",
+        paddingTop: 20,
+        paddingBottom: 20,
+        fontWeight: "bold"
+    },
+    card: {
+        fontSize: 24,
+        marginTop: 8,
+        marginBottom: 8,
+        paddingHorizontal: 16
+    },
+    footerCard: {
+        fontSize: 24,
+        marginTop: 8,
+        marginBottom: 8,
+        paddingHorizontal: 16
+    },
     linkContainer: {
         flexWrap: "wrap",
         flexDirection: "row",

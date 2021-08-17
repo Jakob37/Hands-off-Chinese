@@ -2,7 +2,6 @@ import React, { Component, useEffect } from "react";
 import { View, Text, Button } from "react-native";
 
 import Amplify, { Storage } from 'aws-amplify';
-
 const listEntries = ['Entry 1', 'Entry 2', 'Entry 3'];
 
 /**
@@ -12,7 +11,6 @@ const retrieveEntriesFromS3 = async () => {
     const listResult = await Storage.list('');
     console.log(listResult);
     return listResult.filter((result) => result.key != '').map((result) => result.key);
-    // return ['updated1', 'updated2', 'updated3'];
 }
 
 const ListS3Content = () => {

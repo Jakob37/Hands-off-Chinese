@@ -2,16 +2,12 @@ import React from 'react';
 import {
     Text, View
 } from 'react-native';
+import { styles } from './Stylesheet';
 
 const Header = ({header}) => {
     return (
         <View>
-            <Text style={{ 
-                fontSize: 30, 
-                textAlign: "center", 
-                paddingTop: 20, 
-                paddingBottom: 20 
-            }}>{header}</Text>
+            <Text style={styles.header}>{header}</Text>
         </View>
     );
 }
