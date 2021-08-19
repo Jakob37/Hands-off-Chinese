@@ -64,49 +64,67 @@ const App = () => {
     const [englishText, onChangeEnglishText] = React.useState('I like Xuan');
 
     return (
-        <SafeAreaView>
-            <StatusBar barStyle={"light-content"} />
-            <ScrollView contentInsetAdjustmentBehavior="automatic" style={{display: 'flex'}}>
-                <View style={{flex:5}}>
-                    <Header header="Hands-off Chinese"></Header>
-                </View>
+        <View style={{
+            display: "flex",
+            backgroundColor: "white",
+            borderColor: "black",
+            borderWidth: 5,
+            flexDirection: "column",
+            height: '100%'
+        }}>
+            <View style={{ backgroundColor: "green", flex: 1 }}>
+                <Text>Test</Text>
+            </View>
+            <View style={{ backgroundColor: "red", flex: 2 }}>
+                <Text>Test</Text>
+            </View>
+            <View style={{ backgroundColor: "blue", flex: 3 }}>
+                <Text>Test</Text>
+            </View>
+        </View>
+        // <SafeAreaView>
+        //     <StatusBar barStyle={"light-content"} />
+        //     <ScrollView contentInsetAdjustmentBehavior="automatic" style={{display: 'flex'}}>
+        //         <View style={{flex:5}}>
+        //             <Header header="Hands-off Chinese"></Header>
+        //         </View>
 
-                <View style={{flex: 5}}>
-                    <Categories />
-                </View>
+        //         <View style={{flex: 5}}>
+        //             <Categories />
+        //         </View>
 
-                <View style={{flex: 1, justifyContent: 'flex-end', marginBottom: 36}}>
-                    <Text>Test</Text>
-                </View>
+        //         <View style={{flex: 1, justifyContent: 'flex-end', marginBottom: 36}}>
+        //             <Text>Test</Text>
+        //         </View>
 
 
-                {/* <Menu></Menu> */}
-                {/* <AudioPlayerCard key="audioPlayer" /> */}
-                {/* <PlayDirectlyFromS3 />
-                <ListS3Content /> */}
+        //         {/* <Menu></Menu> */}
+        //         {/* <AudioPlayerCard key="audioPlayer" /> */}
+        //         {/* <PlayDirectlyFromS3 />
+        //         <ListS3Content /> */}
 
-                {/* <TextInput
-                    value={chineseText}
-                    onChangeText={onChangeChineseText}
-                    placeholder="Chinese text"
-                />
-                <TextInput
-                    value={englishText}
-                    onChangeText={onChangeEnglishText}
-                    placeholder="English text"
-                />
-                <Button
-                    onPress={() => { testApi(englishText, chineseText) }}
-                    title="Test API"
-                />
+        //         {/* <TextInput
+        //             value={chineseText}
+        //             onChangeText={onChangeChineseText}
+        //             placeholder="Chinese text"
+        //         />
+        //         <TextInput
+        //             value={englishText}
+        //             onChangeText={onChangeEnglishText}
+        //             placeholder="English text"
+        //         />
+        //         <Button
+        //             onPress={() => { testApi(englishText, chineseText) }}
+        //             title="Test API"
+        //         />
 
-                <Button
-                    onPress={listBucket}
-                    title="List bucket"
-                /> */}
+        //         <Button
+        //             onPress={listBucket}
+        //             title="List bucket"
+        //         /> */}
 
-            </ScrollView>
-        </SafeAreaView>
+        //     </ScrollView>
+        // </SafeAreaView>
     );
 }
 
