@@ -9,7 +9,7 @@ const Categories = () => {
         <View>
             <View>
                 {
-                    Array(20).fill().map((x, i) => { return <CategoryCard title={`Card ${i}`} /> })
+                    Array(20).fill().map((x, i) => { return <CategoryCard title={`Card ${i+1}`} /> })
                 }
             </View>
         </View>

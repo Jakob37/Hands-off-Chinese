@@ -26,10 +26,11 @@ const styles = StyleSheet.create({
         paddingHorizontal: 16
     },
     footerCard: {
-        fontSize: 24,
         marginTop: 8,
         marginBottom: 8,
-        paddingHorizontal: 16
+        paddingHorizontal: 16,
+        borderTopWidth: 1,
+        borderTopColor: 'lightgray',
     },
     linkContainer: {
         flexWrap: "wrap",

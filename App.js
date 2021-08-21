@@ -71,8 +71,13 @@ const App = () => {
             <ScrollView>
                 <Categories />
             </ScrollView>
-            <View>
-                <Text style={styles.footerCard}>Add Category</Text>
+            <View >
+                <View style={[styles.footerCard, {display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}]}>
+                    <Text style={{fontSize: 20}}>Play</Text>
+                    <Text style={{fontSize: 20}}>Stop</Text>
+                    <Text style={{fontSize: 20}}>Add</Text>
+                    <Text style={{fontSize: 20}}>Refresh</Text>
+                </View>
             </View>
         </View>)
 
