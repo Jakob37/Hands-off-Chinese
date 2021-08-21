@@ -9,6 +9,7 @@ import { ListS3Content } from "./components/aws/ListS3Content";
 import Amplify, { Storage } from "aws-amplify";
 import awsconfig from "./src/aws-exports";
 import { Categories } from "./components/menues/categories";
+import { styles } from "./components/Stylesheet";
 Amplify.configure(awsconfig);
 
 const getTimestamp = () => {
@@ -66,39 +67,14 @@ const App = () => {
     return (
         <View style={{ flex: 1 }}>
 
+            <Header header="Hands-off Chinese"></Header>
             <ScrollView>
-                <Text>main</Text>
-                <Text>main</Text>
-                <Text>main</Text>
-                <Text>main</Text>
+                <Categories />
             </ScrollView>
             <View>
-                <Text>
-                    Footer
-                </Text>
+                <Text style={styles.footerCard}>Add Category</Text>
             </View>
         </View>)
-
-    // <View style={{
-    //     display: "flex",
-    //     backgroundColor: "white",
-    //     borderColor: "black",
-    //     borderWidth: 5,
-    //     flexDirection: "column",
-    //     height: '100%'
-    // }}>
-    //     <View style={{ backgroundColor: "green", flex: 1 }}>
-    //         <Text>Test</Text>
-    //     </View>
-    //     <View style={{ backgroundColor: "red", flex: 2 }}>
-    //         <Text>Test</Text>
-    //     </View>
-    //     <View style={{ backgroundColor: "blue", flex: 3 }}>
-    //         <Text>Test</Text>
-    //     </View>
-    // </View>
-    {/* <StatusBar barStyle={"light-content"} /> */ }
-
 
     {/* <View>
                         <View>

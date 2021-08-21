@@ -8,15 +8,10 @@ const Categories = () => {
     return (
         <View>
             <View>
-                <CategoryCard title='Card1' />
-                <CategoryCard title='Card2' />
-                <CategoryCard title='Card3' />
-                <CategoryCard title='Card4' />
-                <CategoryCard title='Card5' />
+                {
+                    Array(20).fill().map((x, i) => { return <CategoryCard title={`Card ${i}`} /> })
+                }
             </View>
-            {/* <View>
-                <Text style={styles.footerCard}>Add Category</Text>
-            </View> */}
         </View>
     )
 

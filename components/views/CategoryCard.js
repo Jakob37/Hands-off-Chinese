@@ -7,7 +7,7 @@ const CategoryCard = (params) => {
     return (
         <TouchableOpacity>
             <Text style={styles.card}>
-                Title: {params.title}
+                {params.title}
             </Text>
         </TouchableOpacity>
     );
