@@ -67,20 +67,39 @@ const refreshClick = async () => {
 }
 
 /**
- * @returns {Promise<string[]>}
+ * @returns {Promise<[string,string][]>}
  */
- const retrieveEntriesFromS3 = async () => {
+const retrieveEntriesFromS3 = async () => {
     const listResult = await Storage.list('');
-    console.log(listResult);
-    return listResult.filter((result) => result.key != '').map((result) => result.key);
+    const s3Names = listResult.filter((result) => result.key != '').map((result) => result.key);
+
+    /** @type {Map<string, {english:string, chinese:string}>} */
+    const baseToObj = new Map();
+
+    const splits = s3Names.map((name) => {return name.split('_')});
+    for (const [base, languageString] of splits) {
+        const langObj = baseToObj.get(base);
+        if (langObj == null) {
+            baseToObj.set(base, {english: languageString, chinese: ''});
+        } else {
+            console.assert(Object.keys(langObj) == ['english', 'chinese']);
+            langObj.chinese = languageString;
+        }
+    }
+
+    const langArr = Array.from(baseToObj).map(([base, obj]) => /** @type {[string,string]} */ ([obj.english, obj.chinese]));
+
+    console.log(s3Names);
+
+    return langArr;
 }
 
 const App = () => {
 
-    const [list, setList] = React.useState(['[Placeholder]']);
+    const [list, setList] = React.useState([['[English1]', '[Chinese1]'], ['[English2]', '[Chinese2]']]);
 
-    const [chineseText, onChangeChineseText] = React.useState('我喜欢李璇');
-    const [englishText, onChangeEnglishText] = React.useState('I like Xuan');
+    // const [chineseText, onChangeChineseText] = React.useState('我喜欢李璇');
+    // const [englishText, onChangeEnglishText] = React.useState('I like Xuan');
 
     return (
         <View style={{ flex: 1 }}>
@@ -90,7 +109,10 @@ const App = () => {
                 <Categories list={list} />
             </ScrollView>
             <View >
-                <View style={[styles.footerCard, { display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }]}>
+                <View style={[
+                    styles.footerCard,
+                    { display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }
+                ]}>
                     <Text style={{ fontSize: 20 }}>Play</Text>
                     <Text style={{ fontSize: 20 }}>Stop</Text>
                     <Text style={{ fontSize: 20 }}>Add</Text>

@@ -5,11 +5,18 @@ import { TouchableOpacity } from "react-native";
 
 const CategoryCard = (params) => {
     return (
-        <TouchableOpacity>
-            <Text style={styles.card}>
-                {params.title}
-            </Text>
-        </TouchableOpacity>
+        <View style={styles.card}>
+            <TouchableOpacity>
+                <Text style={styles.cardText}>
+                    {params.chinese}
+                </Text>
+            </TouchableOpacity>
+            <TouchableOpacity>
+                <Text style={styles.cardText}>
+                    {params.english}
+                </Text>
+            </TouchableOpacity>
+        </View>
     );
 }
 

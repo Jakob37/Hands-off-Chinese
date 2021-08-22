@@ -9,7 +9,9 @@ const Categories = (param) => {
         <View>
             <View>
                 {
-                    param.list.map((x, i) => { return <CategoryCard title={x} key={i} /> })
+                    param.list.map((x, i) => { 
+                        return <CategoryCard key={i} english={x[0]} chinese={x[1]} />;
+                    })
                     // Array(20).fill().map((x, i) => { return <CategoryCard title={`Card ${i+1}`} key={i} /> })
                 }
             </View>

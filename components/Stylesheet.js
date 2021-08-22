@@ -19,11 +19,14 @@ const styles = StyleSheet.create({
         paddingBottom: 20,
         fontWeight: "bold"
     },
+    cardText: {
+        fontSize: 20,
+        marginTop: 2,
+        marginBottom: 2,
+    },
     card: {
-        fontSize: 24,
-        marginTop: 8,
-        marginBottom: 8,
-        paddingHorizontal: 16
+        marginTop: 16,
+        paddingHorizontal: 16,
     },
     footerCard: {
         marginTop: 8,
