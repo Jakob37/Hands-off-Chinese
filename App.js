@@ -99,6 +99,9 @@ const App = () => {
 
     const [list, setList] = React.useState([['[English1]', '[Chinese1]'], ['[English2]', '[Chinese2]']]);
 
+    const [chineseText, setChineseText] = React.useState('');
+    const [englishText, setEnglishText] = React.useState('');
+
     return (
         <View style={{ flex: 1 }}>
 
@@ -119,7 +122,15 @@ const App = () => {
                         alignItems: 'center'
                     }}>
                         <Text style={{ fontSize: 16, flex: 1 }}>Chinese</Text>
-                        <TextInput style={{ borderWidth: 1, borderColor: 'gray', flex: 3 }}></TextInput>
+                        <TextInput style={{
+                            borderWidth: 1,
+                            borderColor: 'gray',
+                            flex: 3
+                        }}
+                        value={chineseText}
+                        onChangeText={(text) => setChineseText(text)}
+                        placeholder="Chinese text"
+                        ></TextInput>
                     </View>
                     <View style={{
                         paddingHorizontal: 16,
@@ -129,13 +140,17 @@ const App = () => {
                         alignItems: 'center'
                     }}>
                         <Text style={{ fontSize: 16, flex: 1 }}>English</Text>
-                        <TextInput style={{ borderWidth: 1, borderColor: 'gray', flex: 3 }}></TextInput>
+                        <TextInput style={{
+                            borderWidth: 1,
+                            borderColor: 'gray',
+                            flex: 3
+                        }} 
+                        value={englishText}
+                        onChangeText={(text) => setEnglishText(text)}
+                        placeholder="English test"
+                        ></TextInput>
                     </View>
                 </View>
-
-                {/* <View style={{ paddingHorizontal: 16 }}>
-                        <Text style={{fontSize: 20}}>Add audio</Text>
-                    </View> */}
 
                 <View style={[
                     styles.footerCard,
@@ -143,7 +158,9 @@ const App = () => {
                 ]}>
                     <Text style={{ fontSize: 20 }}>Play</Text>
                     <Text style={{ fontSize: 20 }}>Stop</Text>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={() => {
+                        testApi(englishText, chineseText)
+                    }}>
                         <Text style={{ fontSize: 20 }}>Add</Text>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => {
@@ -154,6 +171,10 @@ const App = () => {
                 </View>
             </View>
         </View>)
+
+    // value={englishText}
+    // onChangeText={onChangeEnglishText}
+    // placeholder="English text"
 
     {/* <Menu></Menu> */ }
     {/* <AudioPlayerCard key="audioPlayer" /> */ }
