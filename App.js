@@ -11,6 +11,7 @@ import awsconfig from "./src/aws-exports";
 import { Categories } from "./components/menues/categories";
 import { styles } from "./components/Stylesheet";
 import { TouchableOpacity } from "react-native";
+import Sound from "react-native-sound";
 Amplify.configure(awsconfig);
 
 const getTimestamp = () => {
@@ -67,37 +68,73 @@ const refreshClick = async () => {
 }
 
 /**
- * @returns {Promise<[string,string][]>}
+ * @returns {Promise<[string,string,string,string][]>}
  */
 const retrieveEntriesFromS3 = async () => {
     const listResult = await Storage.list('');
     const s3Names = listResult.filter((result) => result.key != '').map((result) => result.key);
 
-    /** @type {Map<string, {english:string, chinese:string}>} */
+    /** @type {Map<string, {english:string, chinese:string, englishKey:string, chineseKey:string}>} */
     const baseToObj = new Map();
 
-    const splits = s3Names.map((name) => { return name.split('_') });
-    for (const [base, languageString] of splits) {
+    // const splits = s3Names.map((name) => { return name.split('_') });
+    for (const s3Name of s3Names) {
+        const [base, languageString] = s3Name.split('_');
         const langObj = baseToObj.get(base);
         if (langObj == null) {
-            baseToObj.set(base, { english: languageString, chinese: '' });
+            baseToObj.set(base, { 
+                english: languageString,
+                englishKey: s3Name,
+                chinese: '',
+                chineseKey: ''
+            });
         } else {
-            console.assert(Object.keys(langObj) == ['english', 'chinese']);
             langObj.chinese = languageString;
+            langObj.chineseKey = s3Name;
         }
     }
 
     const langArr = Array.from(baseToObj)
-        .map(([base, obj]) => /** @type {[string,string]} */([obj.english, obj.chinese]));
+        .map(([_, obj]) => /** @type {[string,string,string,string]} */([
+            obj.english,
+            obj.englishKey,
+            obj.chinese, 
+            obj.chineseKey
+        ]));
 
     console.log(s3Names);
 
     return langArr;
 }
 
+const playTestSound = () => {
+    const track = new Sound('testsound.309bc55b-b25e-4641-8d24-04639818e4f3.mp3', 'https://hands-off-chinese.s3.eu-north-1.amazonaws.com', (e) => {
+        if (e) {
+            console.log('error loading track:', e)
+        } else {
+            track.play()
+        }
+    })
+}
+
+const playRealSound = async (s3Entry) => {
+    const signedUrl = await Storage.get(s3Entry);
+    console.log(signedUrl);
+    // const track = new Sound(`${base}_${text}.mp3`, 'https://hands-off-chinese.s3.eu-north-1.amazonaws.com', (e) => {
+    //     if (e) {
+    //         console.log('error loading track:', e)
+    //     } else {
+    //         track.play()
+    //     }
+    // })
+}
+
 const App = () => {
 
-    const [list, setList] = React.useState([['[English1]', '[Chinese1]'], ['[English2]', '[Chinese2]']]);
+    const [list, setList] = React.useState([
+        ['[English1]', 'englishkey', '[Chinese1]', 'chinesekey'],
+        ['[English2]', 'englishkey', '[Chinese2]', 'chinesekey']
+    ]);
 
     const [chineseText, setChineseText] = React.useState('');
     const [englishText, setEnglishText] = React.useState('');
@@ -156,7 +193,12 @@ const App = () => {
                     styles.footerCard,
                     { display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }
                 ]}>
-                    <Text style={{ fontSize: 20 }}>Play</Text>
+                    <TouchableOpacity onPress={() => {
+                        playTestSound();
+                    }}>
+                        <Text style={{ fontSize: 20 }}>Play</Text>
+
+                    </TouchableOpacity>
                     <Text style={{ fontSize: 20 }}>Stop</Text>
                     <TouchableOpacity onPress={() => {
                         testApi(englishText, chineseText)
