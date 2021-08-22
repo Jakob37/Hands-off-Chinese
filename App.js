@@ -10,6 +10,7 @@ import Amplify, { Storage } from "aws-amplify";
 import awsconfig from "./src/aws-exports";
 import { Categories } from "./components/menues/categories";
 import { styles } from "./components/Stylesheet";
+import { TouchableOpacity } from "react-native";
 Amplify.configure(awsconfig);
 
 const getTimestamp = () => {
@@ -59,7 +60,24 @@ const listBucket = async () => {
     console.log(listResult);
 }
 
+const refreshClick = async () => {
+    const listResult = await Storage.list('');
+    console.log(listResult);
+    console.log('refresh!');
+}
+
+/**
+ * @returns {Promise<string[]>}
+ */
+ const retrieveEntriesFromS3 = async () => {
+    const listResult = await Storage.list('');
+    console.log(listResult);
+    return listResult.filter((result) => result.key != '').map((result) => result.key);
+}
+
 const App = () => {
+
+    const [list, setList] = React.useState(['[Placeholder]']);
 
     const [chineseText, onChangeChineseText] = React.useState('我喜欢李璇');
     const [englishText, onChangeEnglishText] = React.useState('I like Xuan');
@@ -69,34 +87,38 @@ const App = () => {
 
             <Header header="Hands-off Chinese"></Header>
             <ScrollView>
-                <Categories />
+                <Categories list={list} />
             </ScrollView>
             <View >
-                <View style={[styles.footerCard, {display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}]}>
-                    <Text style={{fontSize: 20}}>Play</Text>
-                    <Text style={{fontSize: 20}}>Stop</Text>
-                    <Text style={{fontSize: 20}}>Add</Text>
-                    <Text style={{fontSize: 20}}>Refresh</Text>
+                <View style={[styles.footerCard, { display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }]}>
+                    <Text style={{ fontSize: 20 }}>Play</Text>
+                    <Text style={{ fontSize: 20 }}>Stop</Text>
+                    <Text style={{ fontSize: 20 }}>Add</Text>
+                    <TouchableOpacity onPress={() => {
+                        retrieveEntriesFromS3().then(returnedList => setList(returnedList));
+                    }}>
+                        <Text style={{ fontSize: 20 }}>Refresh</Text>
+                    </TouchableOpacity>
                 </View>
             </View>
         </View>)
 
     {/* <View>
-                        <View>
-                            <View>
-                                <Header header="Hands-off Chinese"></Header>
-                            </View>
+        <View>
+            <View>
+                <Header header="Hands-off Chinese"></Header>
+            </View>
 
-                            <View>
-                                <Categories />
-                            </View>
-                        </View>
+            <View>
+                <Categories />
+            </View>
+        </View>
 
-                        <View>
-                            <Text>Test</Text>
-                        </View>
+        <View>
+            <Text>Test</Text>
+        </View>
 
-                    </View> */}
+    </View> */}
 
 
     {/* <Menu></Menu> */ }
