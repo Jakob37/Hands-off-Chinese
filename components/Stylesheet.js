@@ -29,6 +29,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 16,
     },
     footerCard: {
+        paddingTop: 4,
         marginTop: 8,
         marginBottom: 8,
         paddingHorizontal: 16,

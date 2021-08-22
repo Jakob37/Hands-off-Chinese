@@ -76,18 +76,19 @@ const retrieveEntriesFromS3 = async () => {
     /** @type {Map<string, {english:string, chinese:string}>} */
     const baseToObj = new Map();
 
-    const splits = s3Names.map((name) => {return name.split('_')});
+    const splits = s3Names.map((name) => { return name.split('_') });
     for (const [base, languageString] of splits) {
         const langObj = baseToObj.get(base);
         if (langObj == null) {
-            baseToObj.set(base, {english: languageString, chinese: ''});
+            baseToObj.set(base, { english: languageString, chinese: '' });
         } else {
             console.assert(Object.keys(langObj) == ['english', 'chinese']);
             langObj.chinese = languageString;
         }
     }
 
-    const langArr = Array.from(baseToObj).map(([base, obj]) => /** @type {[string,string]} */ ([obj.english, obj.chinese]));
+    const langArr = Array.from(baseToObj)
+        .map(([base, obj]) => /** @type {[string,string]} */([obj.english, obj.chinese]));
 
     console.log(s3Names);
 
@@ -98,9 +99,6 @@ const App = () => {
 
     const [list, setList] = React.useState([['[English1]', '[Chinese1]'], ['[English2]', '[Chinese2]']]);
 
-    // const [chineseText, onChangeChineseText] = React.useState('我喜欢李璇');
-    // const [englishText, onChangeEnglishText] = React.useState('I like Xuan');
-
     return (
         <View style={{ flex: 1 }}>
 
@@ -108,14 +106,46 @@ const App = () => {
             <ScrollView>
                 <Categories list={list} />
             </ScrollView>
-            <View >
+            <View style={{ borderTopWidth: 1, borderTopColor: 'lightgray' }}>
+
+                <View>
+                    <View style={{
+                        paddingHorizontal: 16,
+                        marginBottom: 8,
+                        marginTop: 8,
+                        display: 'flex',
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        alignItems: 'center'
+                    }}>
+                        <Text style={{ fontSize: 16, flex: 1 }}>Chinese</Text>
+                        <TextInput style={{ borderWidth: 1, borderColor: 'gray', flex: 3 }}></TextInput>
+                    </View>
+                    <View style={{
+                        paddingHorizontal: 16,
+                        display: 'flex',
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        alignItems: 'center'
+                    }}>
+                        <Text style={{ fontSize: 16, flex: 1 }}>English</Text>
+                        <TextInput style={{ borderWidth: 1, borderColor: 'gray', flex: 3 }}></TextInput>
+                    </View>
+                </View>
+
+                {/* <View style={{ paddingHorizontal: 16 }}>
+                        <Text style={{fontSize: 20}}>Add audio</Text>
+                    </View> */}
+
                 <View style={[
                     styles.footerCard,
                     { display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }
                 ]}>
                     <Text style={{ fontSize: 20 }}>Play</Text>
                     <Text style={{ fontSize: 20 }}>Stop</Text>
-                    <Text style={{ fontSize: 20 }}>Add</Text>
+                    <TouchableOpacity>
+                        <Text style={{ fontSize: 20 }}>Add</Text>
+                    </TouchableOpacity>
                     <TouchableOpacity onPress={() => {
                         retrieveEntriesFromS3().then(returnedList => setList(returnedList));
                     }}>
@@ -124,24 +154,6 @@ const App = () => {
                 </View>
             </View>
         </View>)
-
-    {/* <View>
-        <View>
-            <View>
-                <Header header="Hands-off Chinese"></Header>
-            </View>
-
-            <View>
-                <Categories />
-            </View>
-        </View>
-
-        <View>
-            <Text>Test</Text>
-        </View>
-
-    </View> */}
-
 
     {/* <Menu></Menu> */ }
     {/* <AudioPlayerCard key="audioPlayer" /> */ }
