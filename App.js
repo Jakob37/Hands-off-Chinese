@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Button, SafeAreaView, ScrollView, StatusBar, TextInput, View, Text } from "react-native";
 import { AudioPlayerCard } from "./components/AudioPlayerCard";
 import { Header } from "./components/Header";
@@ -13,6 +13,8 @@ import { styles } from "./components/Stylesheet";
 import { TouchableOpacity } from "react-native";
 import Sound from "react-native-sound";
 Amplify.configure(awsconfig);
+// Needed to run in production? (verify)
+Amplify.register(Storage);
 
 const getTimestamp = () => {
     return new Date().toISOString().slice(2).slice(0, 17).replace(/-|T|:/g, "")
@@ -21,7 +23,7 @@ const getTimestamp = () => {
 // Continue testing: https://docs.amplify.aws/lib/storage/getting-started/q/platform/js#using-a-custom-plugin
 // Further configuration needed??
 
-const generateAudio = (apiUrl, text, voice, prefix) => {
+const generateAudio = (apiUrl, text, voice, prefix, onReadyCall=null) => {
 
     const params = `{"text": "${text}", "voice": "${voice}", "prefix": "${prefix}"}`;
 
@@ -32,11 +34,14 @@ const generateAudio = (apiUrl, text, voice, prefix) => {
     pollyXhr.onreadystatechange = function (e) {
         // @ts-ignore
         console.log('response', e.target.response);
+        if (onReadyCall != null) {
+            onReadyCall();
+        }
     }
     pollyXhr.send(params);
 }
 
-const testApi = async (english, chinese) => {
+const generatePollyAudio = async (english, chinese, onReadyCall) => {
 
     const englishVoice = 'Emma';
     const chineseVoice = 'Zhiyu';
@@ -45,14 +50,16 @@ const testApi = async (english, chinese) => {
         'https://1meap5kmbd.execute-api.eu-west-1.amazonaws.com/dev/polly',
         chinese,
         chineseVoice,
-        getTimestamp()
+        getTimestamp(),
+        onReadyCall
     );
 
     generateAudio(
         'https://1meap5kmbd.execute-api.eu-west-1.amazonaws.com/dev/polly',
         english,
         englishVoice,
-        getTimestamp()
+        getTimestamp(),
+        onReadyCall
     );
 }
 
@@ -71,6 +78,9 @@ const refreshClick = async () => {
  * @returns {Promise<[string,string,string,string][]>}
  */
 const retrieveEntriesFromS3 = async () => {
+
+    console.log('Retrieving entries');
+
     const listResult = await Storage.list('');
     const s3Names = listResult.filter((result) => result.key != '').map((result) => result.key);
 
@@ -82,7 +92,7 @@ const retrieveEntriesFromS3 = async () => {
         const [base, languageString] = s3Name.split('_');
         const langObj = baseToObj.get(base);
         if (langObj == null) {
-            baseToObj.set(base, { 
+            baseToObj.set(base, {
                 english: languageString,
                 englishKey: s3Name,
                 chinese: '',
@@ -98,7 +108,7 @@ const retrieveEntriesFromS3 = async () => {
         .map(([_, obj]) => /** @type {[string,string,string,string]} */([
             obj.english,
             obj.englishKey,
-            obj.chinese, 
+            obj.chinese,
             obj.chineseKey
         ]));
 
@@ -117,19 +127,14 @@ const playTestSound = () => {
     })
 }
 
-const playRealSound = async (s3Entry) => {
-    const signedUrl = await Storage.get(s3Entry);
-    console.log(signedUrl);
-    // const track = new Sound(`${base}_${text}.mp3`, 'https://hands-off-chinese.s3.eu-north-1.amazonaws.com', (e) => {
-    //     if (e) {
-    //         console.log('error loading track:', e)
-    //     } else {
-    //         track.play()
-    //     }
-    // })
-}
 
 const App = () => {
+
+    const refreshS3List = () => {
+        retrieveEntriesFromS3().then(returnedList => setList(returnedList))
+    }
+
+    useEffect(refreshS3List, []);
 
     const [list, setList] = React.useState([
         ['[English1]', 'englishkey', '[Chinese1]', 'chinesekey'],
@@ -144,7 +149,7 @@ const App = () => {
 
             <Header header="Hands-off Chinese"></Header>
             <ScrollView>
-                <Categories list={list} />
+                <Categories list={list} endAction={refreshS3List} />
             </ScrollView>
             <View style={{ borderTopWidth: 1, borderTopColor: 'lightgray' }}>
 
@@ -164,9 +169,9 @@ const App = () => {
                             borderColor: 'gray',
                             flex: 3
                         }}
-                        value={chineseText}
-                        onChangeText={(text) => setChineseText(text)}
-                        placeholder="Chinese text"
+                            value={chineseText}
+                            onChangeText={(text) => setChineseText(text)}
+                            placeholder="Chinese text"
                         ></TextInput>
                     </View>
                     <View style={{
@@ -181,10 +186,10 @@ const App = () => {
                             borderWidth: 1,
                             borderColor: 'gray',
                             flex: 3
-                        }} 
-                        value={englishText}
-                        onChangeText={(text) => setEnglishText(text)}
-                        placeholder="English test"
+                        }}
+                            value={englishText}
+                            onChangeText={(text) => setEnglishText(text)}
+                            placeholder="English test"
                         ></TextInput>
                     </View>
                 </View>
@@ -197,11 +202,14 @@ const App = () => {
                         playTestSound();
                     }}>
                         <Text style={{ fontSize: 20 }}>Play</Text>
-
                     </TouchableOpacity>
                     <Text style={{ fontSize: 20 }}>Stop</Text>
                     <TouchableOpacity onPress={() => {
-                        testApi(englishText, chineseText)
+                        generatePollyAudio(
+                            englishText,
+                            chineseText,
+                            refreshS3List
+                        );
                     }}>
                         <Text style={{ fontSize: 20 }}>Add</Text>
                     </TouchableOpacity>
@@ -213,10 +221,6 @@ const App = () => {
                 </View>
             </View>
         </View>)
-
-    // value={englishText}
-    // onChangeText={onChangeEnglishText}
-    // placeholder="English text"
 
     {/* <Menu></Menu> */ }
     {/* <AudioPlayerCard key="audioPlayer" /> */ }

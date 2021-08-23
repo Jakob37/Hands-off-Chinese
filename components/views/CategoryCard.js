@@ -19,21 +19,36 @@ const playAudio = async (key) => {
             track.play()
         }
     })
+}
 
+const removeTrack = async (englishKey, chineseKey) => {
+    const result1 = await Storage.remove(englishKey);
+    const result2 = await Storage.remove(chineseKey);
+    console.log(result1, result2);
 }
 
 const CategoryCard = (params) => {
     return (
-        <View style={styles.card}>
-            <TouchableOpacity onPress={() => {playAudio(params.chineseKey)}}>
-                <Text style={styles.cardText}>
-                    {params.chinese}
-                </Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => {playAudio(params.englishKey)}}>
-                <Text style={styles.cardText}>
-                    {params.english}
-                </Text>
+        <View style={[styles.card, { display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }]}>
+            <View>
+                <TouchableOpacity onPress={() => { playAudio(params.chineseKey) }}>
+                    <Text style={styles.cardText}>
+                        {params.chinese}
+                    </Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => { playAudio(params.englishKey) }}>
+                    <Text style={styles.cardText}>
+                        {params.english}
+                    </Text>
+                </TouchableOpacity>
+            </View>
+
+            <TouchableOpacity onPress={() => { 
+                removeTrack(params.chineseKey, params.englishKey).then(params.endAction)
+            }}>
+                <View>
+                    <Text style={{ color: 'gray', fontWeight: 'bold', fontSize: 24 }}>X</Text>
+                </View>
             </TouchableOpacity>
         </View>
     );
