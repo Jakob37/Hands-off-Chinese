@@ -210,6 +210,8 @@ const App = () => {
                             chineseText,
                             refreshS3List
                         );
+                        setChineseText('');
+                        setEnglishText('');
                     }}>
                         <Text style={{ fontSize: 20 }}>Add</Text>
                     </TouchableOpacity>
