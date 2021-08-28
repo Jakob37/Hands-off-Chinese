@@ -1,12 +1,12 @@
 import Amplify, { Storage } from "aws-amplify";
 import React, { useEffect } from "react";
-import { ScrollView, Text, TextInput, View } from "react-native";
-import AudioCardList from "./src/views/audiocardlist";
+import { View } from "react-native";
 import { Header } from "./components/Header";
-import { Categories } from "./components/menues/categories";
 import { retrieveEntriesFromS3 } from "./src/apicalls";
 import awsconfig from "./src/aws-exports";
-import Footer from "./src/views/footer";
+import AddAudioMenu from "./src/views/addaudiomenu";
+import AudioCardList from "./src/views/audiocardlist";
+import AudioCardListFooter from "./src/views/audiocardlistfooter";
 
 Amplify.configure(awsconfig);
 // Needed to run in production? (verify)
@@ -42,30 +42,32 @@ const App = () => {
     const [chineseText, setChineseText] = React.useState('');
     const [englishText, setEnglishText] = React.useState('');
 
+    const [categoryList, setCategoryList] = React.useState('');
+
     return (
         <View style={{ flex: 1 }}>
 
             <Header header="Hands-off Chinese"></Header>
-            <ScrollView>
-                <Categories list={audioList} endAction={refreshS3List} />
-            </ScrollView>
-            <View style={{ borderTopWidth: 1, borderTopColor: 'lightgray' }}>
-
-                <AudioCardList 
-                    setChineseText={setChineseText}
-                    setEnglishText={setEnglishText}
-                />
-
-                <Footer
-                    setChineseText={setChineseText} 
-                    setEnglishText={setEnglishText} 
-                    chineseText={chineseText} 
-                    englishText={englishText}
-                    setList={setAudioList}
-                />
 
 
-            </View>
+
+            <AudioCardList 
+                audioList={audioList}
+                refreshS3List={refreshS3List}
+            />
+
+            <AddAudioMenu
+                setChineseText={setChineseText}
+                setEnglishText={setEnglishText}
+            />
+
+            <AudioCardListFooter
+                setChineseText={setChineseText}
+                setEnglishText={setEnglishText}
+                chineseText={chineseText}
+                englishText={englishText}
+                setList={setAudioList}
+            />
         </View>)
 
     {/* <Menu></Menu> */ }

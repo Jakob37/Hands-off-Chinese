@@ -6,7 +6,7 @@ const React = require("react");
 const { View, TouchableOpacity, Text } = require("react-native");
 
 
-const Footer = (param) => {
+const AddAudioMenu = (param) => {
     return (
         <View style={[
             styles.footerCard,
@@ -44,4 +44,4 @@ const Footer = (param) => {
     )
 }
 
-export default Footer;
+export default AddAudioMenu;
