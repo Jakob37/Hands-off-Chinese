@@ -50,22 +50,23 @@ const testGet = () => {
     const filename = 'testfilename';
     const creationdate = new Date().getMilliseconds();
 
-    const params = `{"filename": "${filename}"}`;
+    const params = `filename=testfilename`;
+    // const params = `{"filename": "${filename}"}`;
 
-    const apiUrl = `https://1meap5kmbd.execute-api.eu-west-1.amazonaws.com/dev/meta/${filename}`;
+    const apiUrl = `https://1meap5kmbd.execute-api.eu-west-1.amazonaws.com/dev/meta`;
 
     const apiTestXhr = new XMLHttpRequest();
     const isAsync = true;
-    apiTestXhr.open('GET', apiUrl, isAsync);
+    apiTestXhr.open('GET', apiUrl+"?"+params, isAsync);
     apiTestXhr.setRequestHeader('Content-type', 'application/json');
     apiTestXhr.onreadystatechange = (e) => {
         // console.log(e);
-        console.log(e.target);
+        // console.log(e.target);
         // @ts-ignore
         console.log(e.target.response);
         // console.log(Object.keys(e.target));
     }
-    apiTestXhr.send(params);
+    apiTestXhr.send(null);
 }
 
 const generateAudio = (apiUrl, text, voice, prefix, onReadyCall=null) => {

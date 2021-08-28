@@ -1,0 +1,5 @@
+{
+    "tableName": "hocdynamostorage",
+    "partitionKeyName": "filename",
+    "partitionKeyType": "S"
+}

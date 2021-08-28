@@ -27,6 +27,10 @@
     "hocstorage": {
       "service": "S3",
       "providerPlugin": "awscloudformation"
+    },
+    "hocdynamostorage": {
+      "service": "DynamoDB",
+      "providerPlugin": "awscloudformation"
     }
   },
   "function": {
