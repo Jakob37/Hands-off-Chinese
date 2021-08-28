@@ -1,7 +1,0 @@
-{
-    "tableName": "handsoffchinese",
-    "partitionKeyName": "filename",
-    "partitionKeyType": "S",
-    "sortKeyName": "creationdate",
-    "sortKeyType": "N"
-}

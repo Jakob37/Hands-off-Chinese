@@ -60,8 +60,8 @@ const testGet = () => {
     apiTestXhr.setRequestHeader('Content-type', 'application/json');
     apiTestXhr.onreadystatechange = (e) => {
         // console.log(e);
-        // @ts-ignore
         console.log(e.target);
+        // @ts-ignore
         console.log(e.target.response);
         // console.log(Object.keys(e.target));
     }
