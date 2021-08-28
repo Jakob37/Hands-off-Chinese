@@ -23,13 +23,7 @@ const getTimestamp = () => {
 // Continue testing: https://docs.amplify.aws/lib/storage/getting-started/q/platform/js#using-a-custom-plugin
 // Further configuration needed??
 
-const textFromJson = () => {
-
-}
-
-const testApi = () => {
-    console.log('hitting function');
-
+const testPost = () => {
     const id = 'testid';
     const filename = 'testfilename';
     const creationdate = new Date().getMilliseconds();
@@ -45,6 +39,29 @@ const testApi = () => {
     apiTestXhr.onreadystatechange = (e) => {
         // console.log(e);
         // @ts-ignore
+        console.log(e.target.response);
+        // console.log(Object.keys(e.target));
+    }
+    apiTestXhr.send(params);
+}
+
+const testGet = () => {
+    const id = 'testid';
+    const filename = 'testfilename';
+    const creationdate = new Date().getMilliseconds();
+
+    const params = `{"filename": "${filename}"}`;
+
+    const apiUrl = `https://1meap5kmbd.execute-api.eu-west-1.amazonaws.com/dev/meta/${filename}`;
+
+    const apiTestXhr = new XMLHttpRequest();
+    const isAsync = true;
+    apiTestXhr.open('GET', apiUrl, isAsync);
+    apiTestXhr.setRequestHeader('Content-type', 'application/json');
+    apiTestXhr.onreadystatechange = (e) => {
+        // console.log(e);
+        // @ts-ignore
+        console.log(e.target);
         console.log(e.target.response);
         // console.log(Object.keys(e.target));
     }
@@ -229,9 +246,9 @@ const App = () => {
                     <TouchableOpacity onPress={() => {
                         playTestSound();
                     }}>
-                        <Text style={{ fontSize: 20 }}>Play</Text>
+                        <Text style={{ fontSize: 16 }}>Play</Text>
                     </TouchableOpacity>
-                    <Text style={{ fontSize: 20 }}>Stop</Text>
+                    <Text style={{ fontSize: 16 }}>Stop</Text>
                     <TouchableOpacity onPress={() => {
                         generatePollyAudio(
                             englishText,
@@ -241,15 +258,18 @@ const App = () => {
                         setChineseText('');
                         setEnglishText('');
                     }}>
-                        <Text style={{ fontSize: 20 }}>Add</Text>
+                        <Text style={{ fontSize: 16 }}>Add</Text>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => {
                         retrieveEntriesFromS3().then(returnedList => setList(returnedList));
                     }}>
-                        <Text style={{ fontSize: 20 }}>Refresh</Text>
+                        <Text style={{ fontSize: 16 }}>Refresh</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={testApi}>
-                        <Text style={{ fontSize: 20 }}>TestAPI</Text>
+                    <TouchableOpacity onPress={testPost}>
+                        <Text style={{ fontSize: 16 }}>Post</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={testGet}>
+                        <Text style={{ fontSize: 16 }}>Get</Text>
                     </TouchableOpacity>
                 </View>
             </View>
