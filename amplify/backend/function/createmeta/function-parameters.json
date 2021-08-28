@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "storage": {
+      "hocstorage": [
+        "create"
+      ]
+    }
+  },
+  "lambdaLayers": []
+}

@@ -1,49 +1,69 @@
 {
-  "paths": [
-    {
-      "name": "/pollytos3",
-      "lambdaFunction": "pollytos3",
-      "privacy": {
-        "protected": true,
-        "auth": [
-          "/POST",
-          "/GET",
-          "/PUT",
-          "/PATCH",
-          "/DELETE"
-        ],
-        "unauth": [
-          "/POST",
-          "/GET",
-          "/PUT",
-          "/PATCH",
-          "/DELETE"
-        ]
-      },
-      "policyResourceName": "/pollytos3"
-    }
-  ],
-  "resourceName": "pollytos3",
-  "apiName": "pollytos3",
-  "functionArns": [
-    {
-      "lambdaFunction": "pollytos3"
-    }
-  ],
-  "privacy": {
-    "auth": 1,
-    "unauth": 1,
-    "authRoleName": "amplify-handsoffchinese-dev-183310-authRole",
-    "unAuthRoleName": "amplify-handsoffchinese-dev-183310-unauthRole"
-  },
-  "dependsOn": [
-    {
-      "category": "function",
-      "resourceName": "pollytos3",
-      "attributes": [
-        "Name",
-        "Arn"
-      ]
-    }
-  ]
+    "paths": [
+        {
+            "name": "/pollytos3",
+            "lambdaFunction": "pollytos3",
+            "privacy": {
+                "protected": true,
+                "auth": [
+                    "/POST",
+                    "/GET",
+                    "/PUT",
+                    "/PATCH",
+                    "/DELETE"
+                ],
+                "unauth": [
+                    "/POST",
+                    "/GET",
+                    "/PUT",
+                    "/PATCH",
+                    "/DELETE"
+                ]
+            },
+            "policyResourceName": "/pollytos3"
+        },
+        {
+            "name": "/createmeta",
+            "lambdaFunction": "createmeta",
+            "privacy": {
+                "open": true
+            },
+            "policyResourceName": "/createmeta"
+        }
+    ],
+    "resourceName": "pollytos3",
+    "apiName": "pollytos3",
+    "functionArns": [
+        {
+            "lambdaFunction": "pollytos3"
+        },
+        {
+            "lambdaFunction": "createmeta"
+        }
+    ],
+    "privacy": {
+        "auth": 1,
+        "unauth": 1,
+        "authRoleName": "amplify-handsoffchinese-dev-183310-authRole",
+        "unAuthRoleName": "amplify-handsoffchinese-dev-183310-unauthRole"
+    },
+    "dependsOn": [
+        {
+            "category": "function",
+            "resourceName": "pollytos3",
+            "attributes": [
+                "Name",
+                "Arn"
+            ]
+        },
+        {
+            "category": "function",
+            "resourceName": "createmeta",
+            "attributes": [
+                "Name",
+                "Arn"
+            ]
+        }
+    ],
+    "uuid": "c549c5ad"
 }

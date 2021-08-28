@@ -18,7 +18,11 @@
       "function": {
         "pollytos3": {
           "deploymentBucketName": "amplify-handsoffchinese-dev-183310-deployment",
-          "s3Key": "amplify-builds/pollytos3-332b70553176466f3541-build.zip"
+          "s3Key": "amplify-builds/pollytos3-725064336c4751673079-build.zip"
+        },
+        "createmeta": {
+          "deploymentBucketName": "amplify-handsoffchinese-dev-183310-deployment",
+          "s3Key": "amplify-builds/createmeta-4676547051534e6f7652-build.zip"
         }
       }
     }

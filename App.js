@@ -23,17 +23,45 @@ const getTimestamp = () => {
 // Continue testing: https://docs.amplify.aws/lib/storage/getting-started/q/platform/js#using-a-custom-plugin
 // Further configuration needed??
 
+const textFromJson = () => {
+
+}
+
+const testApi = () => {
+    console.log('hitting function');
+
+    const id = 'testid';
+    const filename = 'testfilename';
+    const creationdate = new Date().getMilliseconds();
+
+    const params = `{"id": "${id}", "filename": "${filename}", "creationdate": ${creationdate}}`;
+
+    const apiUrl = 'https://1meap5kmbd.execute-api.eu-west-1.amazonaws.com/dev/meta';
+
+    const apiTestXhr = new XMLHttpRequest();
+    const isAsync = true;
+    apiTestXhr.open('PUT', apiUrl, isAsync);
+    apiTestXhr.setRequestHeader('Content-type', 'application/json');
+    apiTestXhr.onreadystatechange = (e) => {
+        // console.log(e);
+        // @ts-ignore
+        console.log(e.target.response);
+        // console.log(Object.keys(e.target));
+    }
+    apiTestXhr.send(params);
+}
+
 const generateAudio = (apiUrl, text, voice, prefix, onReadyCall=null) => {
 
     const params = `{"text": "${text}", "voice": "${voice}", "prefix": "${prefix}"}`;
 
     const pollyXhr = new XMLHttpRequest();
-    const async = true;
-    pollyXhr.open('POST', apiUrl, async);
+    const isAsync = true;
+    pollyXhr.open('POST', apiUrl, isAsync);
     pollyXhr.setRequestHeader('Content-type', 'application/json');
     pollyXhr.onreadystatechange = function (e) {
         // @ts-ignore
-        console.log('response', e.target.response);
+        // console.log('response', e.target.response);
         if (onReadyCall != null) {
             onReadyCall();
         }
@@ -219,6 +247,9 @@ const App = () => {
                         retrieveEntriesFromS3().then(returnedList => setList(returnedList));
                     }}>
                         <Text style={{ fontSize: 20 }}>Refresh</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={testApi}>
+                        <Text style={{ fontSize: 20 }}>TestAPI</Text>
                     </TouchableOpacity>
                 </View>
             </View>
