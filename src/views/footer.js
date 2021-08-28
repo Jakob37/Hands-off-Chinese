@@ -30,7 +30,7 @@ const Footer = (param) => {
                 <Text style={{ fontSize: 16 }}>Add</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => {
-                retrieveEntriesFromS3().then(returnedList => setList(returnedList));
+                retrieveEntriesFromS3().then(returnedList => param.setAudioList(returnedList));
             }}>
                 <Text style={{ fontSize: 16 }}>Refresh</Text>
             </TouchableOpacity>
