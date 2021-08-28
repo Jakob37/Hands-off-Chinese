@@ -2,7 +2,7 @@ import Amplify, { Storage } from "aws-amplify";
 import React, { useEffect } from "react";
 import { View } from "react-native";
 import { Header } from "./components/Header";
-import { retrieveEntriesFromS3 } from "./src/apicalls";
+import { getAllFromDynamo, retrieveEntriesFromS3 } from "./src/apicalls";
 import awsconfig from "./src/aws-exports";
 import AddAudioMenu from "./src/views/addaudiomenu";
 import AudioCardList from "./src/views/audiocardlist";
@@ -31,8 +31,11 @@ const App = () => {
     const refreshS3List = () => {
         retrieveEntriesFromS3().then(returnedList => setAudioList(returnedList))
     }
-
     useEffect(refreshS3List, []);
+
+    const refreshCategories = () => {
+        getAllFromDynamo().then(returnedCategories => setCategoryList(returnedCategories));
+    }
 
     const [audioList, setAudioList] = React.useState([
         ['[English1]', 'englishkey', '[Chinese1]', 'chinesekey'],

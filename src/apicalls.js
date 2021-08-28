@@ -1,17 +1,39 @@
-import { getTimestamp } from "./util";
+import { getTimestamp, makeRequest } from "./util";
 import Amplify, { Storage } from "aws-amplify";
+
+/**
+ * @returns {Promise<any>}
+ */
+const getAllFromDynamo = async () => {
+    const apiUrl = 'https://1meap5kmbd.execute-api.eu-west-1.amazonaws.com/dev/allmeta';
+
+    const result = await makeRequest('GET', apiUrl);
+
+    // const getAllXhr = new XMLHttpRequest();
+    // const isAsync = true;
+    // getAllXhr.open('GET', apiUrl, isAsync);
+    // getAllXhr.setRequestHeader('Content-type', 'application/json');
+    // getAllXhr.onreadystatechange = (e) => {
+    //     // @ts-ignore
+    //     console.log('response', e.target.response);
+    // }
+    // const result = await getAllXhr.send();
+    const items = JSON.parse(result).body.Items;
+    const categories = items.map((item) => item.category);
+    console.log('result', categories);
+    // console.log(result);
+    // return result;
+    return categories;
+}
 
 /**
  * @param {string} id 
  * @param {string} filename 
  */
- const testPost = async (id, filename) => {
-    // const id = 'testid';
-    // const filename = 'testfilename';
+ const doPost = async (id, filename) => {
+
     const creationdate = new Date().getMilliseconds();
-
     const params = `{"id": "${id}", "filename": "${filename}", "creationdate": ${creationdate}}`;
-
     const apiUrl = 'https://1meap5kmbd.execute-api.eu-west-1.amazonaws.com/dev/meta';
 
     const apiTestXhr = new XMLHttpRequest();
@@ -30,16 +52,11 @@ import Amplify, { Storage } from "aws-amplify";
 }
 
 /**
- * @param {string} id 
  * @param {string} filename 
  */
-const testGet = async (id, filename) => {
-    // const id = 'testid';
-    // const filename = 'testfilename';
+const getMeta = async (filename) => {
 
-    const params = `filename=testfilename`;
-    // const params = `{"filename": "${filename}"}`;
-
+    const params = `filename=${filename}`;
     const apiUrl = `https://1meap5kmbd.execute-api.eu-west-1.amazonaws.com/dev/meta`;
 
     const apiTestXhr = new XMLHttpRequest();
@@ -110,6 +127,26 @@ const generatePollyAudio = async (english, chinese, onReadyCall) => {
     );
 }
 
+class S3Entry {
+    english;
+    englishKey;
+    chinese;
+    chineseKey;
+
+    englishMeta;
+    chineseMeta;
+
+    constructor(english, englishKey, chinese, chineseKey) {
+        this.english = english;
+        this.englishKey = englishKey;
+        this.chinese = chinese;
+        this.chineseKey = chineseKey;
+
+        this.englishMeta = getMeta(englishKey);
+        this.chineseMeta = getMeta(chineseKey);
+    }
+}
+
 /**
  * @returns {Promise<[string,string,string,string][]>}
  */
@@ -154,9 +191,10 @@ const retrieveEntriesFromS3 = async () => {
 }
 
 export {
-    testPost,
-    testGet,
+    doPost as testPost,
+    getMeta as testGet,
     generateAudio,
     generatePollyAudio,
     retrieveEntriesFromS3,
+    getAllFromDynamo,
 };

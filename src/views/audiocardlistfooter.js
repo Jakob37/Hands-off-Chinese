@@ -1,5 +1,5 @@
 import { styles } from "../../components/Stylesheet";
-import { generatePollyAudio, retrieveEntriesFromS3, testGet, testPost } from "../apicalls";
+import { generatePollyAudio, getAllFromDynamo, retrieveEntriesFromS3, testGet, testPost } from "../apicalls";
 import { playTestSound } from "../audio/util";
 
 const React = require("react");
@@ -30,7 +30,9 @@ const AddAudioMenu = (param) => {
                 <Text style={{ fontSize: 16 }}>Add</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => {
-                retrieveEntriesFromS3().then(returnedList => param.setAudioList(returnedList));
+                retrieveEntriesFromS3().then(returnedList => {
+                    param.setAudioList(returnedList)
+                });
             }}>
                 <Text style={{ fontSize: 16 }}>Refresh</Text>
             </TouchableOpacity>
@@ -39,6 +41,9 @@ const AddAudioMenu = (param) => {
             </TouchableOpacity>
             <TouchableOpacity onPress={testGet}>
                 <Text style={{ fontSize: 16 }}>Get</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={getAllFromDynamo}>
+                <Text style={{ fontSize: 16 }}>All</Text>
             </TouchableOpacity>
         </View>
     )
