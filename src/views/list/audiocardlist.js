@@ -9,13 +9,13 @@ const AudioCardList = (param) => {
         <View>
             <View>
                 {
-                    param.list.map((x, i) => {
+                    param.list.map((audioObj, i) => {
                         return (
                             <AudioCard key={i}
-                                english={x[0]}
-                                englishKey={x[1]}
-                                chinese={x[2]}
-                                chineseKey={x[3]}
+                                english={audioObj[0]}
+                                englishKey={audioObj[1]}
+                                chinese={audioObj[2]}
+                                chineseKey={audioObj[3]}
                                 endAction={param.endAction}
                             />
                         );

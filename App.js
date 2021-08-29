@@ -1,6 +1,7 @@
 import Amplify, { Storage } from "aws-amplify";
 import React, { useEffect } from "react";
-import { View } from "react-native";
+import { ScrollView, View } from "react-native";
+
 import { Header } from "./components/Header";
 import { getAllFromDynamo, retrieveEntriesFromS3 } from "./src/apicalls";
 import awsconfig from "./src/aws-exports";
@@ -8,6 +9,7 @@ import AddAudioMenu from "./src/views/addaudiomenu";
 import ScrollableAudioCardList from "./src/views/list/scrollableaudiocardlist";
 import CategoryCardList from "./src/views/list/scrollableaudiocardlist";
 import AudioCardListFooter from "./src/views/audiocardlistfooter";
+import { CategoryCard } from "./src/views/card/CategoryCard";
 
 Amplify.configure(awsconfig);
 // Needed to run in production? (verify)
@@ -55,15 +57,19 @@ const App = () => {
 
             {/* <CategoryCardList /> */}
 
-            <ScrollableAudioCardList 
+            {/* <ScrollableAudioCardList 
                 audioList={audioList}
                 refreshS3List={refreshS3List}
-            />
+            /> */}
+            
+            <ScrollView>
+                <CategoryCard category={'test'} />
+            </ScrollView>
 
-            <AddAudioMenu
+            {/* <AddAudioMenu
                 setChineseText={setChineseText}
                 setEnglishText={setEnglishText}
-            />
+            /> */}
 
             <AudioCardListFooter
                 setChineseText={setChineseText}
