@@ -1,6 +1,6 @@
 import Amplify, { Storage } from "aws-amplify";
 import React, { useEffect } from "react";
-import { ScrollView, View } from "react-native";
+import { ScrollView, View, Text, Button } from "react-native";
 
 import { Header } from "./components/Header";
 import { getAllFromDynamo, retrieveEntriesFromS3 } from "./src/apicalls";
@@ -52,10 +52,20 @@ const App = () => {
 
     const [categoryList, setCategoryList] = React.useState(['Category1', 'Category2', 'Category3']);
 
+    const [selectedView, setSelectedView] = React.useState(false);
+
     return (
         <View style={{ flex: 1 }}>
 
             <Header header="Hands-off Chinese"></Header>
+
+            {
+                selectedView ?
+                    <View><Text>Cats</Text></View> :
+                    <View><Text>Audio</Text></View>
+            }
+
+
 
             {/* <CategoryCardList /> */}
 
@@ -63,7 +73,7 @@ const App = () => {
                 audioList={audioList}
                 refreshS3List={refreshS3List}
             /> */}
-            
+
             <ScrollView>
                 <CategoryCardList
                     categories={categoryList}
@@ -76,6 +86,14 @@ const App = () => {
                 setChineseText={setChineseText}
                 setEnglishText={setEnglishText}
             /> */}
+
+            <Button onPress={() => {
+                setSelectedView(!selectedView)
+            }}
+                title="Swap view"
+            >
+            </Button>
+
 
             <AudioCardListFooter
                 setChineseText={setChineseText}
