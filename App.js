@@ -5,8 +5,8 @@ import { Header } from "./components/Header";
 import { getAllFromDynamo, retrieveEntriesFromS3 } from "./src/apicalls";
 import awsconfig from "./src/aws-exports";
 import AddAudioMenu from "./src/views/addaudiomenu";
-import AudioCardList from "./src/views/list/audiocardlist";
-import CategoryCardList from "./src/views/list/categorycardlist";
+import ScrollableAudioCardList from "./src/views/list/scrollableaudiocardlist";
+import CategoryCardList from "./src/views/list/scrollableaudiocardlist";
 import AudioCardListFooter from "./src/views/audiocardlistfooter";
 
 Amplify.configure(awsconfig);
@@ -55,7 +55,7 @@ const App = () => {
 
             {/* <CategoryCardList /> */}
 
-            <AudioCardList 
+            <ScrollableAudioCardList 
                 audioList={audioList}
                 refreshS3List={refreshS3List}
             />
