@@ -7,7 +7,7 @@ const { View, TouchableOpacity, Text } = require("react-native");
 
 const fontSize = 16;
 
-const AddAudioMenu = (param) => {
+const AudioFooter = (param) => {
     return (
         <View style={[
             styles.footerCard,
@@ -50,4 +50,39 @@ const AddAudioMenu = (param) => {
     )
 }
 
-export default AddAudioMenu;
+const CategoryFooter = (param) => {
+    return (
+        <View style={[
+            styles.footerCard,
+            { display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }
+        ]}>
+            <TouchableOpacity onPress={() => {
+                playTestSound();
+            }}>
+                <Text style={{ fontSize }}>Play</Text>
+            </TouchableOpacity>
+            <Text style={{ fontSize }}>Stop</Text>
+        </View>
+    )
+}
+
+const Footer = (param) => {
+    return (
+        <View>
+            {
+                param.isSelectedView ?
+                    <AudioFooter
+                        setChineseText={param.setChineseText}
+                        setEnglishText={param.setEnglishText}
+                        chineseText={param.chineseText}
+                        englishText={param.englishText}
+                        setList={param.setAudioList}
+                    /> :
+                    <CategoryFooter />
+            }
+
+        </View>
+    )
+}
+
+export default Footer;

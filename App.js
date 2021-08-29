@@ -8,9 +8,10 @@ import awsconfig from "./src/aws-exports";
 import AddAudioMenu from "./src/views/addaudiomenu";
 import ScrollableAudioCardList from "./src/views/list/scrollableaudiocardlist";
 // import CategoryCardList from "./src/views/list/categorycardlist.js";
-import AudioCardListFooter from "./src/views/audiocardlistfooter";
+import Footer from "./src/views/audiocardlistfooter";
 import { CategoryCard } from "./src/views/card/CategoryCard";
 import CategoryCardList from "./src/views/list/categorycardlist";
+import AddCategoryMenu from "./src/views/addcategorymenu";
 
 Amplify.configure(awsconfig);
 // Needed to run in production? (verify)
@@ -49,10 +50,11 @@ const App = () => {
 
     const [chineseText, setChineseText] = React.useState('');
     const [englishText, setEnglishText] = React.useState('');
+    const [categoryText, setCategoryText] = React.useState('');
 
     const [categoryList, setCategoryList] = React.useState(['Category1', 'Category2', 'Category3']);
 
-    const [selectedView, setSelectedView] = React.useState(false);
+    const [isSelectedView, setIsSelectedView] = React.useState(false);
 
     return (
         <View style={{ flex: 1 }}>
@@ -60,47 +62,46 @@ const App = () => {
             <Header header="Hands-off Chinese"></Header>
 
             {
-                selectedView ?
-                    <View><Text>Cats</Text></View> :
-                    <View><Text>Audio</Text></View>
+                !isSelectedView ?
+                    <ScrollView>
+                        <CategoryCardList
+                            categories={categoryList}
+                            refresh={refreshCategories}
+                        />
+                        {/* <CategoryCard category={'test'} /> */}
+                    </ScrollView> :
+                    <ScrollableAudioCardList
+                        audioList={audioList}
+                        refreshS3List={refreshS3List}
+                    />
             }
 
-
-
-            {/* <CategoryCardList /> */}
-
-            {/* <ScrollableAudioCardList 
-                audioList={audioList}
-                refreshS3List={refreshS3List}
-            /> */}
-
-            <ScrollView>
-                <CategoryCardList
-                    categories={categoryList}
-                    refresh={refreshCategories}
-                />
-                {/* <CategoryCard category={'test'} /> */}
-            </ScrollView>
-
-            {/* <AddAudioMenu
-                setChineseText={setChineseText}
-                setEnglishText={setEnglishText}
-            /> */}
+            {
+                !isSelectedView ?
+                    <AddCategoryMenu
+                        setCategoryText={setCategoryText}
+                    /> :
+                    <AddAudioMenu
+                        setChineseText={setChineseText}
+                        setEnglishText={setEnglishText}
+                    />
+            }
 
             <Button onPress={() => {
-                setSelectedView(!selectedView)
+                setIsSelectedView(!isSelectedView)
             }}
                 title="Swap view"
             >
             </Button>
 
 
-            <AudioCardListFooter
+            <Footer
                 setChineseText={setChineseText}
                 setEnglishText={setEnglishText}
                 chineseText={chineseText}
                 englishText={englishText}
                 setList={setAudioList}
+                isSelectedView={isSelectedView}
             />
         </View>)
 
