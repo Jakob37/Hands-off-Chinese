@@ -7,9 +7,10 @@ import { getAllFromDynamo, retrieveEntriesFromS3 } from "./src/apicalls";
 import awsconfig from "./src/aws-exports";
 import AddAudioMenu from "./src/views/addaudiomenu";
 import ScrollableAudioCardList from "./src/views/list/scrollableaudiocardlist";
-import CategoryCardList from "./src/views/list/scrollableaudiocardlist";
+// import CategoryCardList from "./src/views/list/categorycardlist.js";
 import AudioCardListFooter from "./src/views/audiocardlistfooter";
 import { CategoryCard } from "./src/views/card/CategoryCard";
+import CategoryCardList from "./src/views/list/categorycardlist";
 
 Amplify.configure(awsconfig);
 // Needed to run in production? (verify)
@@ -48,7 +49,7 @@ const App = () => {
     const [chineseText, setChineseText] = React.useState('');
     const [englishText, setEnglishText] = React.useState('');
 
-    const [categoryList, setCategoryList] = React.useState('');
+    const [categoryList, setCategoryList] = React.useState(['Category1', 'Category2', 'Category3']);
 
     return (
         <View style={{ flex: 1 }}>
@@ -63,7 +64,11 @@ const App = () => {
             /> */}
             
             <ScrollView>
-                <CategoryCard category={'test'} />
+                <CategoryCardList
+                    categories={categoryList}
+                    refresh={refreshCategories}
+                />
+                {/* <CategoryCard category={'test'} /> */}
             </ScrollView>
 
             {/* <AddAudioMenu
@@ -80,32 +85,9 @@ const App = () => {
             />
         </View>)
 
+    // FIXME: Can parts of these be used?
     {/* <Menu></Menu> */ }
     {/* <AudioPlayerCard key="audioPlayer" /> */ }
-    {/* <PlayDirectlyFromS3 />
-                <ListS3Content /> */}
-
-    {/* <TextInput
-                    value={chineseText}
-                    onChangeText={onChangeChineseText}
-                    placeholder="Chinese text"
-                />
-                <TextInput
-                    value={englishText}
-                    onChangeText={onChangeEnglishText}
-                    placeholder="English text"
-                />
-                <Button
-                    onPress={() => { testApi(englishText, chineseText) }}
-                    title="Test API"
-                />
-
-                <Button
-                    onPress={listBucket}
-                    title="List bucket"
-                /> */}
-
-    // );
 }
 
 export default App;

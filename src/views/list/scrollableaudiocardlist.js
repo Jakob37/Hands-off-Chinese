@@ -1,6 +1,6 @@
 const React = require("react")
 const { ScrollView } = require("react-native")
-import { AudioCardList } from "./audiocardlist";
+import { AudioCardList } from "./audiocardlist"
 
 const ScrollableAudioCardList = (param) => {
     return (

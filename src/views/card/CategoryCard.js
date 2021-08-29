@@ -10,25 +10,7 @@ const CategoryCard = (param) => {
     )
 }
 
-const CategoryCardList = (param) => {
-    return (
-        <View>
-            <View>
-                {
-                    param.list.map((category, i) => {
-                        return (
-                            <CategoryCard key={i}
-                                category={category}
-                            />
-                        )
-                    })
-                }
-            </View>
-        </View>
-    )
-}
 
 export {
     CategoryCard,
-    CategoryCardList
 };
