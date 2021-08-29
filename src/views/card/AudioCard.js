@@ -1,4 +1,4 @@
-import { styles } from "../Stylesheet";
+import { styles } from "../../../components/Stylesheet";
 import React from "react";
 import { View, Text } from "react-native";
 import { TouchableOpacity } from "react-native";
@@ -27,7 +27,7 @@ const removeTrack = async (englishKey, chineseKey) => {
     console.log(result1, result2);
 }
 
-const CategoryCard = (params) => {
+const AudioCard = (params) => {
     return (
         <View style={[styles.card, { display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }]}>
             <View>
@@ -54,4 +54,4 @@ const CategoryCard = (params) => {
     );
 }
 
-export { CategoryCard };
+export { AudioCard };

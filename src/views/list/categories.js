@@ -1,7 +1,7 @@
-import { styles } from "../Stylesheet";
+import { styles } from "../../../components/Stylesheet";
 import React from "react";
 import { View, Text } from "react-native";
-import { CategoryCard } from "../views/CategoryCard";
+import { AudioCard } from "../card/AudioCard";
 
 const Categories = (param) => {
 
@@ -11,7 +11,7 @@ const Categories = (param) => {
                 {
                     param.list.map((x, i) => {
                         return (
-                            <CategoryCard key={i}
+                            <AudioCard key={i}
                                 english={x[0]}
                                 englishKey={x[1]}
                                 chinese={x[2]}

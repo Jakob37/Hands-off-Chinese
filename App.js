@@ -5,7 +5,8 @@ import { Header } from "./components/Header";
 import { getAllFromDynamo, retrieveEntriesFromS3 } from "./src/apicalls";
 import awsconfig from "./src/aws-exports";
 import AddAudioMenu from "./src/views/addaudiomenu";
-import AudioCardList from "./src/views/audiocardlist";
+import AudioCardList from "./src/views/list/audiocardlist";
+import CategoryCardList from "./src/views/list/categorycardlist";
 import AudioCardListFooter from "./src/views/audiocardlistfooter";
 
 Amplify.configure(awsconfig);
@@ -52,7 +53,7 @@ const App = () => {
 
             <Header header="Hands-off Chinese"></Header>
 
-
+            {/* <CategoryCardList /> */}
 
             <AudioCardList 
                 audioList={audioList}
