@@ -40,6 +40,7 @@ const App = () => {
     const refreshCategories = () => {
         getAllFromDynamo().then(returnedCategories => setCategoryList(returnedCategories));
     }
+    useEffect(refreshCategories, []);
 
     const [audioList, setAudioList] = React.useState([
         ['[English1]', 'englishkey', '[Chinese1]', 'chinesekey'],

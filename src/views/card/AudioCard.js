@@ -27,24 +27,31 @@ const removeTrack = async (englishKey, chineseKey) => {
     console.log(result1, result2);
 }
 
-const AudioCard = (params) => {
+const AudioCard = (param) => {
     return (
-        <View style={[styles.card, { display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }]}>
+        <View style={[
+            styles.card,
+            { 
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between' 
+            }]}>
             <View>
-                <TouchableOpacity onPress={() => { playAudio(params.chineseKey) }}>
+                <TouchableOpacity onPress={() => { playAudio(param.chineseKey) }}>
                     <Text style={styles.cardText}>
-                        {params.chinese}
+                        {param.chinese}
                     </Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => { playAudio(params.englishKey) }}>
+                <TouchableOpacity onPress={() => { playAudio(param.englishKey) }}>
                     <Text style={styles.cardText}>
-                        {params.english}
+                        {param.english}
                     </Text>
                 </TouchableOpacity>
             </View>
 
-            <TouchableOpacity onPress={() => { 
-                removeTrack(params.chineseKey, params.englishKey).then(params.endAction)
+            <TouchableOpacity onPress={() => {
+                removeTrack(param.chineseKey, param.englishKey).then(param.endAction)
             }}>
                 <View>
                     <Text style={{ color: 'gray', fontWeight: 'bold', fontSize: 24 }}>X</Text>
