@@ -1,7 +1,7 @@
 import { styles } from "../../../components/Stylesheet";
 import React from "react";
 import { View, Text } from "react-native";
-import { AudioCard } from "../card/AudioCard";
+import { AudioCard } from "../card/audiocard";
 
 const AudioCardList = (param) => {
 

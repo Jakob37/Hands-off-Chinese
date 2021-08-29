@@ -8,8 +8,8 @@ import awsconfig from "./src/aws-exports";
 import AddAudioMenu from "./src/views/addaudiomenu";
 import ScrollableAudioCardList from "./src/views/list/scrollableaudiocardlist";
 // import CategoryCardList from "./src/views/list/categorycardlist.js";
-import Footer from "./src/views/audiocardlistfooter";
-import { CategoryCard } from "./src/views/card/CategoryCard";
+import Footer from "./src/views/footer";
+import { CategoryCard } from "./src/views/card/categorycard";
 import CategoryCardList from "./src/views/list/categorycardlist";
 import AddCategoryMenu from "./src/views/addcategorymenu";
 
@@ -66,9 +66,9 @@ const App = () => {
                     <ScrollView>
                         <CategoryCardList
                             categories={categoryList}
+                            selectAction={() => {setIsSelectedView(true)}}
                             refresh={refreshCategories}
                         />
-                        {/* <CategoryCard category={'test'} /> */}
                     </ScrollView> :
                     <ScrollableAudioCardList
                         audioList={audioList}
@@ -87,12 +87,12 @@ const App = () => {
                     />
             }
 
-            <Button onPress={() => {
+            {/* <Button onPress={() => {
                 setIsSelectedView(!isSelectedView)
             }}
                 title="Swap view"
             >
-            </Button>
+            </Button> */}
 
 
             <Footer
@@ -102,6 +102,7 @@ const App = () => {
                 englishText={englishText}
                 setList={setAudioList}
                 isSelectedView={isSelectedView}
+                backToMenu={() => {setIsSelectedView(false)}}
             />
         </View>)
 

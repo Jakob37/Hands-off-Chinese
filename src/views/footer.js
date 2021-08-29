@@ -43,8 +43,8 @@ const AudioFooter = (param) => {
             <TouchableOpacity onPress={testGet}>
                 <Text style={{ fontSize }}>Get</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={getAllFromDynamo}>
-                <Text style={{ fontSize }}>All</Text>
+            <TouchableOpacity onPress={param.backToMenu}>
+                <Text style={{ fontSize }}>Back</Text>
             </TouchableOpacity>
         </View>
     )
@@ -77,6 +77,7 @@ const Footer = (param) => {
                         chineseText={param.chineseText}
                         englishText={param.englishText}
                         setList={param.setAudioList}
+                        backToMenu={param.backToMenu}
                     /> :
                     <CategoryFooter />
             }

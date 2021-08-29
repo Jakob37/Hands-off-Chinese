@@ -1,6 +1,6 @@
 const React = require("react")
 const { View } = require("react-native")
-const { CategoryCard } = require("../card/CategoryCard")
+const { CategoryCard } = require("../card/categorycard")
 
 const CategoryCardList = (param) => {
     return (
@@ -11,6 +11,7 @@ const CategoryCardList = (param) => {
                         return (
                             <CategoryCard key={i}
                                 category={category}
+                                selectAction={param.selectAction}
                             />
                         )
                     })

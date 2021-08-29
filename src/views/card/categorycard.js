@@ -19,11 +19,12 @@ const CategoryCard = (param) => {
                     display: 'flex',
                     flexDirection: 'row',
                     alignItems: 'center',
-                    justifyContent: 'space-between',                }
+                    justifyContent: 'space-between'
+                }
             ]}>
 
             <View>
-                <TouchableOpacity onPress={() => { openCategory(param.category) }}>
+                <TouchableOpacity onPress={param.selectAction}>
                     <Text style={[styles.cardText, {fontSize: 30}]}>
                         {param.category}
                     </Text>
