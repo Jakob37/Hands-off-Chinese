@@ -87,14 +87,6 @@ const App = () => {
                     />
             }
 
-            {/* <Button onPress={() => {
-                setIsSelectedView(!isSelectedView)
-            }}
-                title="Swap view"
-            >
-            </Button> */}
-
-
             <Footer
                 setChineseText={setChineseText}
                 setEnglishText={setEnglishText}
