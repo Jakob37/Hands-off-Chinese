@@ -2,38 +2,33 @@ import { getTimestamp, makeRequest } from "./util";
 import Amplify, { Storage } from "aws-amplify";
 
 /**
+ * @returns {Promise<Object[]>}
+ */
+const getAllMeta = async () => {
+    const apiUrl = 'https://1meap5kmbd.execute-api.eu-west-1.amazonaws.com/dev/allmeta';
+    const result = await makeRequest('GET', apiUrl);
+    const items = JSON.parse(result).body.Items;
+    return items;
+}
+
+/**
  * @returns {Promise<any>}
  */
-const getAllFromDynamo = async () => {
-    const apiUrl = 'https://1meap5kmbd.execute-api.eu-west-1.amazonaws.com/dev/allmeta';
-
-    const result = await makeRequest('GET', apiUrl);
-
-    // const getAllXhr = new XMLHttpRequest();
-    // const isAsync = true;
-    // getAllXhr.open('GET', apiUrl, isAsync);
-    // getAllXhr.setRequestHeader('Content-type', 'application/json');
-    // getAllXhr.onreadystatechange = (e) => {
-    //     // @ts-ignore
-    //     console.log('response', e.target.response);
-    // }
-    // const result = await getAllXhr.send();
-    const items = JSON.parse(result).body.Items;
+const getCategories = async () => {
+    const items = await getAllMeta();
     const categories = items.map((item) => item.category);
-    console.log('result', categories);
-    // console.log(result);
-    // return result;
     return categories;
 }
 
 /**
  * @param {string} id 
  * @param {string} filename 
+ * @param {string} category
  */
- const doPost = async (id, filename) => {
+ const doPost = async (id, filename, category) => {
 
     const creationdate = new Date().getMilliseconds();
-    const params = `{"id": "${id}", "filename": "${filename}", "creationdate": ${creationdate}}`;
+    const params = `{"id": "${id}", "filename": "${filename}", "creationdate": ${creationdate}, "category": "${category}"}`;
     const apiUrl = 'https://1meap5kmbd.execute-api.eu-west-1.amazonaws.com/dev/meta';
 
     const apiTestXhr = new XMLHttpRequest();
@@ -41,10 +36,8 @@ const getAllFromDynamo = async () => {
     apiTestXhr.open('PUT', apiUrl, isAsync);
     apiTestXhr.setRequestHeader('Content-type', 'application/json');
     apiTestXhr.onreadystatechange = (e) => {
-        // console.log(e);
         // @ts-ignore
-        console.log(e.target.response);
-        // console.log(Object.keys(e.target));
+        console.log('response', e.target.response);
     }
     const result = await apiTestXhr.send(params);
     console.log(result);
@@ -98,6 +91,20 @@ const generateAudio = (apiUrl, text, voice, prefix, onReadyCall=null) => {
         }
     }
     pollyXhr.send(params);
+}
+
+/**
+ * @param {string} english 
+ * @param {string} chinese 
+ * @param {string} category 
+ * @param {() => void} onReadyCall 
+ */
+const makeNewAudioEntry = async (english, chinese, category, onReadyCall) => {
+    generatePollyAudio(
+        english, chinese, onReadyCall
+    );
+    doPost(english, english, category);
+    doPost(chinese, chinese, category);
 }
 
 /**
@@ -196,5 +203,7 @@ export {
     generateAudio,
     generatePollyAudio,
     retrieveEntriesFromS3,
-    getAllFromDynamo,
+    getCategories,
+    getAllMeta,
+    makeNewAudioEntry,
 };

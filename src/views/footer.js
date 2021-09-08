@@ -1,5 +1,5 @@
 import { styles } from "../../components/Stylesheet";
-import { generatePollyAudio, getAllFromDynamo, retrieveEntriesFromS3, testGet, testPost } from "../apicalls";
+import { generatePollyAudio, getCategories, retrieveEntriesFromS3, testGet, testPost } from "../apicalls";
 import { playTestSound } from "../audio/util";
 
 const React = require("react");
@@ -56,12 +56,9 @@ const CategoryFooter = (param) => {
             styles.footerCard,
             { display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }
         ]}>
-            <TouchableOpacity onPress={() => {
-                playTestSound();
-            }}>
-                <Text style={{ fontSize }}>Play</Text>
+            <TouchableOpacity onPress={param.addNew}>
+                <Text style={{ fontSize }}>Add new</Text>
             </TouchableOpacity>
-            <Text style={{ fontSize }}>Stop</Text>
         </View>
     )
 }
@@ -79,7 +76,7 @@ const Footer = (param) => {
                         setList={param.setAudioList}
                         backToMenu={param.backToMenu}
                     /> :
-                    <CategoryFooter />
+                    <CategoryFooter addNew={param.addNew} />
             }
 
         </View>

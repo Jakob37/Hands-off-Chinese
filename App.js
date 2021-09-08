@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import { ScrollView, View, Text, Button } from "react-native";
 
 import { Header } from "./components/Header";
-import { getAllFromDynamo, retrieveEntriesFromS3 } from "./src/apicalls";
+import { generatePollyAudio, getAllMeta, getCategories, makeNewAudioEntry, retrieveEntriesFromS3 } from "./src/apicalls";
 import awsconfig from "./src/aws-exports";
 import AddAudioMenu from "./src/views/addaudiomenu";
 import ScrollableAudioCardList from "./src/views/list/scrollableaudiocardlist";
@@ -31,6 +31,13 @@ const refreshClick = async () => {
     console.log('refresh!');
 }
 
+const listCategory = async () => {
+    console.log('listing category clicked');
+
+    const result = await getAllMeta();
+    console.log(result);
+}
+
 const App = () => {
 
     const refreshS3List = () => {
@@ -39,7 +46,7 @@ const App = () => {
     useEffect(refreshS3List, []);
 
     const refreshCategories = () => {
-        getAllFromDynamo().then(returnedCategories => setCategoryList(returnedCategories));
+        getCategories().then(returnedCategories => setCategoryList(returnedCategories));
     }
     useEffect(refreshCategories, []);
 
@@ -66,7 +73,7 @@ const App = () => {
                     <ScrollView>
                         <CategoryCardList
                             categories={categoryList}
-                            selectAction={() => {setIsSelectedView(true)}}
+                            selectAction={() => {listCategory()}}
                             refresh={refreshCategories}
                         />
                     </ScrollView> :
@@ -76,7 +83,13 @@ const App = () => {
                     />
             }
 
-            {
+            <AddAudioMenu 
+                setChineseText={setChineseText}
+                setEnglishText={setEnglishText}
+                setCategoryText={setCategoryText}
+            />
+
+            {/* {
                 !isSelectedView ?
                     <AddCategoryMenu
                         setCategoryText={setCategoryText}
@@ -85,7 +98,7 @@ const App = () => {
                         setChineseText={setChineseText}
                         setEnglishText={setEnglishText}
                     />
-            }
+            } */}
 
             {/* <Button onPress={() => {
                 setIsSelectedView(!isSelectedView)
@@ -103,6 +116,14 @@ const App = () => {
                 setList={setAudioList}
                 isSelectedView={isSelectedView}
                 backToMenu={() => {setIsSelectedView(false)}}
+                addNew={() => {
+                    makeNewAudioEntry(
+                        englishText,
+                        chineseText,
+                        categoryText,
+                        () => { console.log("Completed logic coming here!")},
+                    )
+                }}
             />
         </View>)
 

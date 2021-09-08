@@ -2,6 +2,15 @@ import React from 'react';
 import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
+    inputField: {
+        paddingHorizontal: 16,
+        marginBottom: 8,
+        marginTop: 8,
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center'
+    },
     container: {
         marginTop: 16,
         marginBottom: 16,

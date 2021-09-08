@@ -1,18 +1,24 @@
+import { styles } from "../../components/Stylesheet.js";
+
 const React = require("react")
 const { View, Text, TextInput } = require("react-native")
 
 const AddAudioMenu = (param) => {
     return (
         <View style={{ borderTopWidth: 1, borderTopColor: 'lightgray' }}>
-            <View style={{
-                paddingHorizontal: 16,
-                marginBottom: 8,
-                marginTop: 8,
-                display: 'flex',
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                alignItems: 'center'
-            }}>
+            <View style={styles.inputField}>
+                <Text style={{ fontSize: 16, flex: 1 }}>Category</Text>
+                <TextInput style={{
+                    borderWidth: 1,
+                    borderColor: 'gray',
+                    flex: 3
+                }}
+                    value={param.categoryText}
+                    onChangeText={(text) => param.setCategoryText(text)}
+                    placeholder="Category text"
+                ></TextInput>
+            </View>
+            <View style={styles.inputField}>
                 <Text style={{ fontSize: 16, flex: 1 }}>Chinese</Text>
                 <TextInput style={{
                     borderWidth: 1,
@@ -24,13 +30,7 @@ const AddAudioMenu = (param) => {
                     placeholder="Chinese text"
                 ></TextInput>
             </View>
-            <View style={{
-                paddingHorizontal: 16,
-                display: 'flex',
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                alignItems: 'center'
-            }}>
+            <View style={styles.inputField}>
                 <Text style={{ fontSize: 16, flex: 1 }}>English</Text>
                 <TextInput style={{
                     borderWidth: 1,
