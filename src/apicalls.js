@@ -12,12 +12,25 @@ const getAllMeta = async () => {
 }
 
 /**
- * @returns {Promise<any>}
+ * @returns {Promise<string[]>}
  */
 const getCategories = async () => {
     const items = await getAllMeta();
-    const categories = items.map((item) => item.category);
-    return categories;
+
+    const categoryToCount = new Map();
+    for (const item of items) {
+        const category = item.category;
+        if (categoryToCount.get(category) == null) {
+            categoryToCount.set(category, 1);
+        } else {
+            categoryToCount.set(category, categoryToCount.get(category) + 1);
+        }
+    }
+
+    const returnedStrings = Array.from(categoryToCount).map(([category, count]) => `${category} (${count})`);
+
+    // const categories = items.map((item) => item.category);
+    return returnedStrings;
 }
 
 /**

@@ -134,6 +134,7 @@ const App = () => {
                 closeAddEntryMenu={() => {
                     setAddEntryMenuOpen(false);
                 }}
+                refreshCategories={refreshCategories}
             />
         </View>)
 

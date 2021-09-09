@@ -59,6 +59,9 @@ const CategoryFooter = (param) => {
             <TouchableOpacity onPress={param.openAddEntryMenu}>
                 <Text style={{ fontSize }}>Add new entry</Text>
             </TouchableOpacity>
+            <TouchableOpacity onPress={param.refreshCategories}>
+                <Text style={{ fontSize }}>Refresh</Text>
+            </TouchableOpacity>
         </View>
     )
 }
@@ -94,7 +97,10 @@ const Footer = (param) => {
                         backToMenu={param.backToMenu}
                     /> :
                     !param.entryMenuOpen ?
-                        <CategoryFooter openAddEntryMenu={param.openAddEntryMenu} /> :
+                        <CategoryFooter 
+                            openAddEntryMenu={param.openAddEntryMenu} 
+                            refreshCategories={param.refreshCategories}
+                        /> :
                         <OpenAddEntryFooter 
                             addNew={param.addNew} 
                             closeAddEntryMenu={param.closeAddEntryMenu}
