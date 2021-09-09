@@ -31,13 +31,13 @@ const CategoryCard = (param) => {
                 </TouchableOpacity>
             </View>
 
-            <TouchableOpacity onPress={() => {
+            {/* <TouchableOpacity onPress={() => {
                 removeCategory(param.category).then(param.endAction)
             }}>
                 <View>
                     <Text style={{ color: 'gray', fontWeight: 'bold', fontSize: 24 }}>X</Text>
                 </View>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
         </View>
     );
 }

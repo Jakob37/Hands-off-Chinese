@@ -56,14 +56,31 @@ const CategoryFooter = (param) => {
             styles.footerCard,
             { display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }
         ]}>
+            <TouchableOpacity onPress={param.openAddEntryMenu}>
+                <Text style={{ fontSize }}>Add new entry</Text>
+            </TouchableOpacity>
+        </View>
+    )
+}
+
+const OpenAddEntryFooter = (param) => {
+    return (
+        <View style={[
+            styles.footerCard,
+            { display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }
+        ]}>
+            <TouchableOpacity onPress={param.closeAddEntryMenu}>
+                <Text style={{ fontSize }}>Close</Text>
+            </TouchableOpacity>
             <TouchableOpacity onPress={param.addNew}>
-                <Text style={{ fontSize }}>Add new</Text>
+                <Text style={{ fontSize }}>Submit entry to AWS</Text>
             </TouchableOpacity>
         </View>
     )
 }
 
 const Footer = (param) => {
+    console.log('isSelectedView', param.isSelectedView, 'addEntryMenuOpen', param.entryMenuOpen)
     return (
         <View>
             {
@@ -76,7 +93,12 @@ const Footer = (param) => {
                         setList={param.setAudioList}
                         backToMenu={param.backToMenu}
                     /> :
-                    <CategoryFooter addNew={param.addNew} />
+                    !param.entryMenuOpen ?
+                        <CategoryFooter openAddEntryMenu={param.openAddEntryMenu} /> :
+                        <OpenAddEntryFooter 
+                            addNew={param.addNew} 
+                            closeAddEntryMenu={param.closeAddEntryMenu}
+                        />
             }
 
         </View>

@@ -61,6 +61,8 @@ const App = () => {
 
     const [categoryList, setCategoryList] = React.useState(['Category1', 'Category2', 'Category3']);
 
+    const [addEntryMenuOpen, setAddEntryMenuOpen] = React.useState(false);
+
     const [isSelectedView, setIsSelectedView] = React.useState(false);
 
     return (
@@ -83,11 +85,14 @@ const App = () => {
                     />
             }
 
-            <AddAudioMenu 
-                setChineseText={setChineseText}
-                setEnglishText={setEnglishText}
-                setCategoryText={setCategoryText}
-            />
+            {
+                addEntryMenuOpen ?
+                    <AddAudioMenu 
+                        setChineseText={setChineseText}
+                        setEnglishText={setEnglishText}
+                        setCategoryText={setCategoryText}
+                    /> : null
+            }
 
             {/* {
                 !isSelectedView ?
@@ -115,14 +120,19 @@ const App = () => {
                 englishText={englishText}
                 setList={setAudioList}
                 isSelectedView={isSelectedView}
+                entryMenuOpen={addEntryMenuOpen}
                 backToMenu={() => {setIsSelectedView(false)}}
-                addNew={() => {
-                    makeNewAudioEntry(
-                        englishText,
-                        chineseText,
-                        categoryText,
-                        () => { console.log("Completed logic coming here!")},
-                    )
+                openAddEntryMenu={() => {
+                    setAddEntryMenuOpen(true);
+                    // makeNewAudioEntry(
+                    //     englishText,
+                    //     chineseText,
+                    //     categoryText,
+                    //     () => { console.log("Completed logic coming here!")},
+                    // )
+                }}
+                closeAddEntryMenu={() => {
+                    setAddEntryMenuOpen(false);
                 }}
             />
         </View>)
