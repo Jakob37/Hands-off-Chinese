@@ -124,17 +124,23 @@ const App = () => {
                 backToMenu={() => {setIsSelectedView(false)}}
                 openAddEntryMenu={() => {
                     setAddEntryMenuOpen(true);
-                    // makeNewAudioEntry(
-                    //     englishText,
-                    //     chineseText,
-                    //     categoryText,
-                    //     () => { console.log("Completed logic coming here!")},
-                    // )
                 }}
                 closeAddEntryMenu={() => {
                     setAddEntryMenuOpen(false);
                 }}
                 refreshCategories={refreshCategories}
+                addNew={() => {
+                    makeNewAudioEntry(
+                        englishText,
+                        chineseText,
+                        categoryText,
+                        () => { console.log("Completed logic coming here!")},
+                    )
+                    setAddEntryMenuOpen(false)
+                    setChineseText('')
+                    setEnglishText('')
+                    setCategoryText('')
+                }}
             />
         </View>)
 

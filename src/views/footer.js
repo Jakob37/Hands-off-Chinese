@@ -1,5 +1,5 @@
 import { styles } from "../../components/Stylesheet";
-import { generatePollyAudio, getCategories, retrieveEntriesFromS3, testGet, testPost } from "../apicalls";
+import { generatePollyAudio, getCategories, retrieveEntriesFromS3, testGet, submitMetadata } from "../apicalls";
 import { playTestSound } from "../audio/util";
 
 const React = require("react");
@@ -37,7 +37,7 @@ const AudioFooter = (param) => {
             }}>
                 <Text style={{ fontSize }}>Refresh</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={testPost}>
+            <TouchableOpacity onPress={submitMetadata}>
                 <Text style={{ fontSize }}>Post</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={testGet}>

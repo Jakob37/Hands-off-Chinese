@@ -33,15 +33,25 @@ const getCategories = async () => {
     return returnedStrings;
 }
 
+
+
 /**
  * @param {string} id 
  * @param {string} filename 
  * @param {string} category
+ * @param {'english'|'chinese'} language
  */
- const doPost = async (id, filename, category) => {
+ const submitMetadata = async (id, filename, category, language) => {
 
     const creationdate = new Date().getMilliseconds();
-    const params = `{"id": "${id}", "filename": "${filename}", "creationdate": ${creationdate}, "category": "${category}"}`;
+    const params = JSON.stringify({
+        id,
+        filename,
+        creationdate,
+        category,
+        language
+    })
+    // const params = `{"id": "${id}", "filename": "${filename}", "creationdate": ${creationdate}, "category": "${category}"}`;
     const apiUrl = 'https://1meap5kmbd.execute-api.eu-west-1.amazonaws.com/dev/meta';
 
     const apiTestXhr = new XMLHttpRequest();
@@ -116,8 +126,8 @@ const makeNewAudioEntry = async (english, chinese, category, onReadyCall) => {
     generatePollyAudio(
         english, chinese, onReadyCall
     );
-    doPost(english, english, category);
-    doPost(chinese, chinese, category);
+    submitMetadata(english, english, category, 'english');
+    submitMetadata(chinese, chinese, category, 'chinese');
 }
 
 /**
@@ -211,7 +221,7 @@ const retrieveEntriesFromS3 = async () => {
 }
 
 export {
-    doPost as testPost,
+    submitMetadata,
     getMeta as testGet,
     generateAudio,
     generatePollyAudio,
