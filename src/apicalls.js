@@ -6,7 +6,9 @@ import Amplify, { Storage } from "aws-amplify";
  * category: string,
  * creationdate: number,
  * filename: string,
- * id: string
+ * id: string,
+ * language: 'english'|'chinese',
+ * text: string
  * }} MetaObj
  */
 
@@ -21,7 +23,7 @@ const getAllMeta = async () => {
 }
 
 /**
- * @returns {Promise<Map<string,MetaObj>>}
+ * @returns {Promise<Map<string,MetaObj[]>>}
  */
 const getMetaByCategory = async () => {
     const allMeta = await getAllMeta();
@@ -59,16 +61,18 @@ const getCategories = async () => {
 
 
 /**
- * @param {string} id 
+ * @param {string} sharedId - Same for Chinese and English
+ * @param {string} text 
  * @param {string} filename 
  * @param {string} category
  * @param {'english'|'chinese'} language
  */
- const submitMetadata = async (id, filename, category, language) => {
+ const submitMetadata = async (sharedId, text, filename, category, language) => {
 
     const creationdate = new Date().getMilliseconds();
     const params = JSON.stringify({
-        id,
+        id: sharedId,
+        text,
         filename,
         creationdate,
         category,
@@ -86,7 +90,7 @@ const getCategories = async () => {
         console.log('response', e.target.response);
     }
     const result = await apiTestXhr.send(params);
-    console.log(result);
+    // console.log(result);
     return result;
 }
 
@@ -149,8 +153,9 @@ const makeNewAudioEntry = async (english, chinese, category, onReadyCall) => {
     generatePollyAudio(
         english, chinese, onReadyCall
     );
-    submitMetadata(english, english, category, 'english');
-    submitMetadata(chinese, chinese, category, 'chinese');
+    const id = `id-${new Date().getMilliseconds()}`
+    submitMetadata(id, chinese, english, category, 'english');
+    submitMetadata(id, chinese, chinese, category, 'chinese');
 }
 
 /**

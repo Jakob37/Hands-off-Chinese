@@ -15,6 +15,10 @@ import Footer from "./src/views/footer"
 import CategoryCardList from "./src/views/list/categorycardlist"
 import ScrollableAudioCardList from "./src/views/list/scrollableaudiocardlist"
 
+/**
+ * @typedef {import('./src/apicalls.js').MetaObj} MetaObj
+ */
+
 Amplify.configure(awsconfig)
 // Needed to run in production? (verify)
 Amplify.register(Storage)
@@ -35,11 +39,107 @@ const refreshClick = async () => {
 
 /**
  * @param {string} category
+ * @returns {Promise<import("./src/apicalls").MetaObj[]>}
  */
 const listCategory = async (category) => {
-    console.log("obtaining category", category)
     const result = await getMetaByCategory()
-    console.log(result.get(category))
+    return result.get(category)
+}
+
+class LanguagePair {
+    id
+    /** @type {{text:string, filename:string}[]} */
+    chinese = []
+    /** @type {{text:string, filename:string}[]} */
+    english = []
+
+    /**
+     * @param {string} id
+     */
+    constructor(id) {
+        this.id = id
+    }
+
+    /**
+     * @param {MetaObj} metaObj
+     */
+    addEntry(metaObj) {
+        if (metaObj.language == 'chinese') {
+            this._addChinese(metaObj.text, metaObj.filename)
+        } else {
+            this._addEnglish(metaObj.text, metaObj.filename)
+        }
+    }
+
+    /**
+     * @param {string} text
+     * @param {string} filename
+     */
+    _addChinese(text, filename) {
+        this.chinese.push({ text, filename })
+    }
+
+    /**
+     * @param {string} text
+     * @param {string} filename
+     */
+    _addEnglish(text, filename) {
+        this.english.push({ text, filename })
+    }
+
+    /**
+     * @returns {boolean}
+     */
+    isValid() {
+        return this.chinese.length == 1 && this.english.length == 1
+    }
+
+    /**
+     * @returns {[string,string,string,string]}
+     */
+    getFourStrings() {
+        return [
+            this.chinese[0].filename,
+            this.chinese[0].text,
+            this.english[0].filename,
+            this.english[0].text,
+        ]
+    }
+}
+
+/**
+ * @param {string} category
+ * @returns {Promise<[string,string,string,string][]>}
+ */
+const getAudioListForCategory = async (category) => {
+    const categoryEntries = await listCategory(category)
+
+    /** @type {Map<string,LanguagePair>} */
+    const idToLanguagePair = new Map()
+
+    for (const categoryEntry of categoryEntries) {
+        const languagePair = idToLanguagePair.get(categoryEntry.id)
+        if (languagePair != null) {
+            languagePair.addEntry(categoryEntry)
+        } else {
+            const newPair = new LanguagePair(categoryEntry.id)
+            newPair.addEntry(categoryEntry)
+            idToLanguagePair.set(
+                categoryEntry.id,
+                newPair
+            )
+        }
+    }
+    console.log('result', idToLanguagePair)
+
+    const validPairs = Array.from(idToLanguagePair.values()).filter((pair) =>
+        pair.isValid()
+    )
+    const returnPairs = validPairs.map((validPair) =>
+        validPair.getFourStrings()
+    )
+    console.log("returnPairs", returnPairs)
+    return returnPairs
 }
 
 const App = () => {
@@ -49,6 +149,13 @@ const App = () => {
         )
     }
     useEffect(refreshS3List, [])
+
+    const retrieveCategoryEntriesList = (category) => {
+        getAudioListForCategory(category).then((returnedList) => {
+            console.log("setting", returnedList)
+            setAudioList(returnedList)
+        })
+    }
 
     const refreshCategories = () => {
         getCategories().then((returnedCategories) => {
@@ -92,7 +199,9 @@ const App = () => {
                         categories={categoryList}
                         displayCategories={displayCategoryList}
                         selectAction={(category) => {
+                            retrieveCategoryEntriesList(category)
                             listCategory(category)
+                            setIsSelectedView(true)
                         }}
                         refresh={refreshCategories}
                     />
