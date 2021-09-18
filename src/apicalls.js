@@ -35,7 +35,7 @@ const getMetaByCategory = async () => {
 }
 
 /**
- * @returns {Promise<string[]>}
+ * @returns {Promise<{categories: string[], categoriesWithCounts: string[]}>}
  */
 const getCategories = async () => {
     const items = await getAllMeta();
@@ -50,10 +50,10 @@ const getCategories = async () => {
         }
     }
 
-    const returnedStrings = Array.from(categoryToCount).map(([category, count]) => `${category} (${count})`);
+    const categoriesWithCounts = Array.from(categoryToCount).map(([category, count]) => `${category} (${count})`);
 
     // const categories = items.map((item) => item.category);
-    return returnedStrings;
+    return { categories:Array.from(categoryToCount.keys()), categoriesWithCounts }
 }
 
 

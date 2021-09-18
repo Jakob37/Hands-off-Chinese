@@ -5,16 +5,18 @@ const { CategoryCard } = require("../card/categorycard")
 const CategoryCardList = (param) => {
     return (
         <View>
-            {
-                param.categories.map((category, i) => {
-                    return (
-                        <CategoryCard key={i}
-                            category={category}
-                            selectAction={param.selectAction}
-                        />
-                    )
-                })
-            }
+            {param.displayCategories.map((displayCategory, i) => {
+                return (
+                    <CategoryCard
+                        key={i}
+                        category={displayCategory}
+                        selectAction={() => { 
+                            const category = param.categories[i];
+                            param.selectAction(category) 
+                        }}
+                    />
+                )
+            })}
         </View>
     )
 }
