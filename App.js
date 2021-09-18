@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import { ScrollView, View, Text, Button } from "react-native";
 
 import { Header } from "./components/Header";
-import { generatePollyAudio, getAllMeta, getCategories, makeNewAudioEntry, retrieveEntriesFromS3 } from "./src/apicalls";
+import { generatePollyAudio, getAllMeta, getCategories, getMetaByCategory, makeNewAudioEntry, retrieveEntriesFromS3 } from "./src/apicalls";
 import awsconfig from "./src/aws-exports";
 import AddAudioMenu from "./src/views/addaudiomenu";
 import ScrollableAudioCardList from "./src/views/list/scrollableaudiocardlist";
@@ -31,11 +31,14 @@ const refreshClick = async () => {
     console.log('refresh!');
 }
 
-const listCategory = async () => {
+/**
+ * @param {string} category
+ */
+const listCategory = async (category) => {
     console.log('listing category clicked');
 
-    const result = await getAllMeta();
-    console.log(result);
+    const result = await getMetaByCategory();
+    console.log(result.get(category));
 }
 
 const App = () => {
@@ -75,7 +78,7 @@ const App = () => {
                     <ScrollView>
                         <CategoryCardList
                             categories={categoryList}
-                            selectAction={() => {listCategory()}}
+                            selectAction={(category) => {listCategory('categoryA')}}
                             refresh={refreshCategories}
                         />
                     </ScrollView> :

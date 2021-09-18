@@ -2,13 +2,36 @@ import { getTimestamp, makeRequest } from "./util";
 import Amplify, { Storage } from "aws-amplify";
 
 /**
- * @returns {Promise<Object[]>}
+ * @typedef {{
+ * category: string,
+ * creationdate: number,
+ * filename: string,
+ * id: string
+ * }} MetaObj
+ */
+
+/**
+ * @returns {Promise<MetaObj[]>}
  */
 const getAllMeta = async () => {
     const apiUrl = 'https://1meap5kmbd.execute-api.eu-west-1.amazonaws.com/dev/allmeta';
     const result = await makeRequest('GET', apiUrl);
     const items = JSON.parse(result).body.Items;
     return items;
+}
+
+/**
+ * @returns {Promise<Map<string,MetaObj>>}
+ */
+const getMetaByCategory = async () => {
+    const allMeta = await getAllMeta();
+    const categoryToMeta = new Map();
+    for (const meta of allMeta) {
+        const accMetaForCat = categoryToMeta.get(meta.category) || [];
+        accMetaForCat.push(meta);
+        categoryToMeta.set(meta.category, accMetaForCat);
+    }
+    return categoryToMeta;
 }
 
 /**
@@ -222,11 +245,12 @@ const retrieveEntriesFromS3 = async () => {
 
 export {
     submitMetadata,
-    getMeta as testGet,
+    getMeta,
     generateAudio,
     generatePollyAudio,
     retrieveEntriesFromS3,
     getCategories,
     getAllMeta,
     makeNewAudioEntry,
+    getMetaByCategory
 };
