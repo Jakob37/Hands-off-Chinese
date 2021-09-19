@@ -44,17 +44,18 @@ const getCategories = async () => {
 
     const categoryToCount = new Map();
     for (const item of items) {
-        const category = item.category;
-        if (categoryToCount.get(category) == null) {
-            categoryToCount.set(category, 1);
-        } else {
-            categoryToCount.set(category, categoryToCount.get(category) + 1);
+        if (item.language != 'chinese') {
+            const category = item.category;
+            if (categoryToCount.get(category) == null) {
+                categoryToCount.set(category, 1);
+            } else {
+                categoryToCount.set(category, categoryToCount.get(category) + 1);
+            }
         }
     }
 
     const categoriesWithCounts = Array.from(categoryToCount).map(([category, count]) => `${category} (${count})`);
 
-    // const categories = items.map((item) => item.category);
     return { categories:Array.from(categoryToCount.keys()), categoriesWithCounts }
 }
 
@@ -124,6 +125,7 @@ const getMeta = async (filename) => {
  * @param {string} voice 
  * @param {string} prefix 
  * @param {() => void} onReadyCall 
+ * @returns {string}
  */
 const generateAudio = (apiUrl, text, voice, prefix, onReadyCall=null) => {
 
@@ -141,6 +143,8 @@ const generateAudio = (apiUrl, text, voice, prefix, onReadyCall=null) => {
         }
     }
     pollyXhr.send(params);
+
+    return `${prefix}_${text}`;
 }
 
 /**
@@ -150,25 +154,26 @@ const generateAudio = (apiUrl, text, voice, prefix, onReadyCall=null) => {
  * @param {() => void} onReadyCall 
  */
 const makeNewAudioEntry = async (english, chinese, category, onReadyCall) => {
-    generatePollyAudio(
+    const {englishFilename, chineseFilename} = generatePollyAudio(
         english, chinese, onReadyCall
     );
     const id = `id-${new Date().getMilliseconds()}`
-    submitMetadata(id, chinese, english, category, 'english');
-    submitMetadata(id, chinese, chinese, category, 'chinese');
+    submitMetadata(id, english, englishFilename, category, 'english');
+    submitMetadata(id, chinese, chineseFilename, category, 'chinese');
 }
 
 /**
  * @param {string} english 
  * @param {string} chinese 
  * @param {() => void} onReadyCall 
+ * @returns {{englishFilename:string, chineseFilename:string}}
  */
-const generatePollyAudio = async (english, chinese, onReadyCall) => {
+const generatePollyAudio = (english, chinese, onReadyCall) => {
 
     const englishVoice = 'Emma';
     const chineseVoice = 'Zhiyu';
 
-    generateAudio(
+    const chineseFilename = generateAudio(
         'https://1meap5kmbd.execute-api.eu-west-1.amazonaws.com/dev/polly',
         chinese,
         chineseVoice,
@@ -176,13 +181,14 @@ const generatePollyAudio = async (english, chinese, onReadyCall) => {
         onReadyCall
     );
 
-    generateAudio(
+    const englishFilename = generateAudio(
         'https://1meap5kmbd.execute-api.eu-west-1.amazonaws.com/dev/polly',
         english,
         englishVoice,
         getTimestamp(),
         onReadyCall
     );
+    return {chineseFilename, englishFilename};
 }
 
 class S3Entry {

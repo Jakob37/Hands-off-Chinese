@@ -99,10 +99,10 @@ class LanguagePair {
      */
     getFourStrings() {
         return [
-            this.chinese[0].filename,
             this.chinese[0].text,
-            this.english[0].filename,
+            this.chinese[0].filename,
             this.english[0].text,
+            this.english[0].filename,
         ]
     }
 }
@@ -186,7 +186,6 @@ const App = () => {
     ])
 
     const [addEntryMenuOpen, setAddEntryMenuOpen] = React.useState(false)
-
     const [isSelectedView, setIsSelectedView] = React.useState(false)
 
     return (

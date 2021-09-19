@@ -10,6 +10,7 @@ const AudioCardList = (param) => {
             <View>
                 {
                     param.list.map((audioObj, i) => {
+                        console.log(audioObj)
                         return (
                             <AudioCard key={i}
                                 english={audioObj[0]}

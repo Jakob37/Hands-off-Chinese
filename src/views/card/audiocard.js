@@ -9,6 +9,8 @@ import Sound from "react-native-sound";
 
 const playAudio = async (key) => {
 
+    console.log('Attempting to play', key);
+
     const signedUrl = await Storage.get(key);
     console.log(signedUrl);
 
