@@ -21,8 +21,8 @@ class AudioPair {
     constructor(englishPath, chinesePath) {
         this.englishPath = englishPath
         this.chinesePath = chinesePath
-        this.englishAudio = testLoad(englishPath)
-        this.chineseAudio = testLoad(chinesePath)
+        // this.englishAudio = testLoad(englishPath)
+        // this.chineseAudio = testLoad(chinesePath)
     }
 }
 

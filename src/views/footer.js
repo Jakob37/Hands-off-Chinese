@@ -11,14 +11,22 @@ const fontSize = 16;
 
 const audioPlayer = new AudioPlayer();
 
+/**
+ * @param {Object} param 
+ * @property {[string,string][]} param.pathPairs 
+ * @property {() => void} param.backToMenu
+ * @returns 
+ */
 const AudioFooter = (param) => {
 
     // audioPlayer.load(param.audioPathPairs)
 
     useEffect(() => {
-        console.log('attempting loading')
-        audioPlayer.load([["210822144607_I am eating apple", "210822144607_我在吃苹果"]])
-    }, [])
+        console.log('Reloading audioplayer')
+        // console.log('attempting loading', param.pathPairs)
+        audioPlayer.load(param.pathPairs)
+        // audioPlayer.load([["210822144607_I am eating apple", "210822144607_我在吃苹果"]])
+    }, [param.pathPairs])
 
     return (
         <View style={[
@@ -27,7 +35,7 @@ const AudioFooter = (param) => {
         ]}>
             <TouchableOpacity onPress={() => {
                 // playTestSound();
-                console.log('Play')
+                // console.log('Play')
 
                 audioPlayer.playRandom()
             }}>
@@ -73,19 +81,29 @@ const OpenAddEntryFooter = (param) => {
     )
 }
 
+/**
+ * @param {Object} param 
+ * @property {[string,string][]} param.pathPairs
+ * @property {() => void} param.backToMenu
+ * @property {() => void} param.openAddEntryMenu
+ * @property {() => void} param.refreshCategories
+ * @property {() => void} param.closeAddEntryMenu
+ * @property {boolean} param.isSelectedView
+ * @property {boolean} param.entryMenuOpen
+ * @returns {React.ReactElement}
+ */
 const Footer = (param) => {
-    console.log('isSelectedView', param.isSelectedView, 'addEntryMenuOpen', param.entryMenuOpen)
+    // console.log('isSelectedView', param.isSelectedView, 'addEntryMenuOpen', param.entryMenuOpen)
+
+    // console.log('current param', param)
+
     return (
         <View>
             {
                 param.isSelectedView ?
                     <AudioFooter
-                        setChineseText={param.setChineseText}
-                        setEnglishText={param.setEnglishText}
-                        chineseText={param.chineseText}
-                        englishText={param.englishText}
-                        setList={param.setAudioList}
                         backToMenu={param.backToMenu}
+                        pathPairs={param.pathPairs}
                     /> :
                     !param.entryMenuOpen ?
                         <CategoryFooter 

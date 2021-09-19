@@ -33,10 +33,8 @@ exports.handler = (event, context, callback) => {
             };
             s3.putObject(params)
                 .on("success", function(response) {
-                    console.log('S3 Put Success!');
                 })
                 .on("complete", function() {
-                    console.log('S3 Put Complete!');
                     
                     const s3params = {
                         Bucket: s3BucketName,

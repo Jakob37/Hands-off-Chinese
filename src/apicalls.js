@@ -88,7 +88,7 @@ const getCategories = async () => {
     apiTestXhr.setRequestHeader('Content-type', 'application/json');
     apiTestXhr.onreadystatechange = (e) => {
         // @ts-ignore
-        console.log('response', e.target.response);
+        // console.log('response', e.target.response);
     }
     const result = await apiTestXhr.send(params);
     // console.log(result);
@@ -111,11 +111,11 @@ const getMeta = async (filename) => {
         // console.log(e);
         // console.log(e.target);
         // @ts-ignore
-        console.log(e.target.response);
+        // console.log(e.target.response);
         // console.log(Object.keys(e.target));
     }
     const result = await apiTestXhr.send(null);
-    console.log(result);
+    // console.log(result);
     return result;
 }
 
@@ -216,7 +216,6 @@ class S3Entry {
  */
 const retrieveEntriesFromS3 = async () => {
 
-    console.log('Retrieving entries');
 
     const listResult = await Storage.list('');
     const s3Names = listResult.filter((result) => result.key != '').map((result) => result.key);
@@ -249,7 +248,7 @@ const retrieveEntriesFromS3 = async () => {
             obj.chineseKey
         ]));
 
-    console.log(s3Names);
+    // console.log(s3Names);
 
     return langArr;
 }

@@ -28,13 +28,10 @@ Amplify.register(Storage)
 
 const listBucket = async () => {
     const listResult = await Storage.list("")
-    console.log(listResult)
 }
 
 const refreshClick = async () => {
     const listResult = await Storage.list("")
-    console.log(listResult)
-    console.log("refresh!")
 }
 
 /**
@@ -130,7 +127,6 @@ const getAudioListForCategory = async (category) => {
             )
         }
     }
-    console.log('result', idToLanguagePair)
 
     const validPairs = Array.from(idToLanguagePair.values()).filter((pair) =>
         pair.isValid()
@@ -138,21 +134,13 @@ const getAudioListForCategory = async (category) => {
     const returnPairs = validPairs.map((validPair) =>
         validPair.getFourStrings()
     )
-    console.log("returnPairs", returnPairs)
     return returnPairs
 }
 
 const App = () => {
-    const refreshS3List = () => {
-        retrieveEntriesFromS3().then((returnedList) =>
-            setAudioList(returnedList)
-        )
-    }
-    useEffect(refreshS3List, [])
 
     const retrieveCategoryEntriesList = (category) => {
         getAudioListForCategory(category).then((returnedList) => {
-            console.log("setting", returnedList)
             setAudioList(returnedList)
         })
     }
@@ -165,14 +153,13 @@ const App = () => {
     }
     useEffect(refreshCategories, [])
 
-    const [audioList, setAudioList] = React.useState([
-        ["[English1]", "englishkey", "[Chinese1]", "chinesekey"],
-        ["[English2]", "englishkey", "[Chinese2]", "chinesekey"],
-    ])
+    const [audioList, setAudioList] = React.useState([])
 
     const [chineseText, setChineseText] = React.useState("")
     const [englishText, setEnglishText] = React.useState("")
     const [categoryText, setCategoryText] = React.useState("")
+
+    const [currCategory, setCurrCategory] = React.useState(null)
 
     const [categoryList, setCategoryList] = React.useState([
         "Category1",
@@ -201,6 +188,7 @@ const App = () => {
                             retrieveCategoryEntriesList(category)
                             listCategory(category)
                             setIsSelectedView(true)
+                            setCurrCategory(category)
                         }}
                         refresh={refreshCategories}
                     />
@@ -208,7 +196,7 @@ const App = () => {
             ) : (
                 <ScrollableAudioCardList
                     audioList={audioList}
-                    refreshS3List={refreshS3List}
+                    // refreshS3List={refreshS3List}
                 />
             )}
 
@@ -221,15 +209,18 @@ const App = () => {
             ) : null}
 
             <Footer
-                setChineseText={setChineseText}
-                setEnglishText={setEnglishText}
-                chineseText={chineseText}
-                englishText={englishText}
-                setList={setAudioList}
+                pathPairs={currCategory != null ? 
+                    audioList.map((entry) => {
+                        const output = [entry[1], entry[3]]
+                        return output
+                    }) :
+                    []
+                }
                 isSelectedView={isSelectedView}
                 entryMenuOpen={addEntryMenuOpen}
                 backToMenu={() => {
                     setIsSelectedView(false)
+                    setCurrCategory(null)
                 }}
                 openAddEntryMenu={() => {
                     setAddEntryMenuOpen(true)
@@ -255,14 +246,6 @@ const App = () => {
             />
         </View>
     )
-
-    // FIXME: Can parts of these be used?
-    {
-        /* <Menu></Menu> */
-    }
-    {
-        /* <AudioPlayerCard key="audioPlayer" /> */
-    }
 }
 
 export default App
