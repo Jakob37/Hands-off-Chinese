@@ -110,6 +110,7 @@ class LanguagePair {
  */
 const getAudioListForCategory = async (category) => {
     const categoryEntries = await listCategory(category)
+    console.log(categoryEntries)
 
     /** @type {Map<string,LanguagePair>} */
     const idToLanguagePair = new Map()
@@ -141,6 +142,7 @@ const App = () => {
 
     const retrieveCategoryEntriesList = (category) => {
         getAudioListForCategory(category).then((returnedList) => {
+            console.log('setting audio list', returnedList)
             setAudioList(returnedList)
         })
     }

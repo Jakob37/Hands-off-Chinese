@@ -53,6 +53,7 @@ class AudioPlayer {
      * @param {[string,string][]} audioPathPairs
      */
     load(audioPathPairs) {
+        this.audio = []
         for (const [chinese, english] of audioPathPairs) {
             const audioPair = new AudioPair(english, chinese)
             this.audio.push(audioPair)
