@@ -11,6 +11,12 @@ const fontSize = 16;
 
 const audioPlayer = new AudioPlayer();
 
+const FooterButton = (param) => {
+    return <TouchableOpacity onPress={param.onPress}>
+        <Text style={{ fontSize }}>{param.children}</Text>
+    </TouchableOpacity>
+}
+
 /**
  * @param {Object} param 
  * @property {[string,string][]} param.pathPairs 
@@ -19,13 +25,9 @@ const audioPlayer = new AudioPlayer();
  */
 const AudioFooter = (param) => {
 
-    // audioPlayer.load(param.audioPathPairs)
-
     useEffect(() => {
         console.log('Reloading audioplayer')
-        // console.log('attempting loading', param.pathPairs)
         audioPlayer.load(param.pathPairs)
-        // audioPlayer.load([["210822144607_I am eating apple", "210822144607_我在吃苹果"]])
     }, [param.pathPairs])
 
     return (
@@ -33,18 +35,10 @@ const AudioFooter = (param) => {
             styles.footerCard,
             { display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }
         ]}>
-            <TouchableOpacity onPress={() => {
-                // playTestSound();
-                // console.log('Play')
-
-                audioPlayer.playRandom()
-            }}>
-                <Text style={{ fontSize }}>Play</Text>
-            </TouchableOpacity>
-            <Text style={{ fontSize }}>Stop</Text>
-            <TouchableOpacity onPress={param.backToMenu}>
-                <Text style={{ fontSize }}>Back</Text>
-            </TouchableOpacity>
+            <FooterButton onPress={() => { audioPlayer.play() }}>Play</FooterButton>
+            <FooterButton onPress={() => { audioPlayer.playRandom() }}>Random</FooterButton>
+            <FooterButton onPress={audioPlayer.stop}>Stop</FooterButton>
+            <FooterButton onPress={param.backToMenu}>Back</FooterButton>
         </View>
     )
 }
@@ -55,12 +49,8 @@ const CategoryFooter = (param) => {
             styles.footerCard,
             { display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }
         ]}>
-            <TouchableOpacity onPress={param.openAddEntryMenu}>
-                <Text style={{ fontSize }}>Add new entry</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={param.refreshCategories}>
-                <Text style={{ fontSize }}>Refresh</Text>
-            </TouchableOpacity>
+            <FooterButton onPress={param.openAddEntryMenu}>Add new entry</FooterButton>
+            <FooterButton onPress={param.refreshCategories}>Refresh</FooterButton>
         </View>
     )
 }
@@ -71,12 +61,8 @@ const OpenAddEntryFooter = (param) => {
             styles.footerCard,
             { display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }
         ]}>
-            <TouchableOpacity onPress={param.closeAddEntryMenu}>
-                <Text style={{ fontSize }}>Close</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={param.addNew}>
-                <Text style={{ fontSize }}>Submit entry to AWS</Text>
-            </TouchableOpacity>
+            <FooterButton onPress={param.closeAddEntryMenu}>Close</FooterButton>
+            <FooterButton onPress={param.addNew}>Submit entry to AWS</FooterButton>
         </View>
     )
 }
@@ -93,9 +79,6 @@ const OpenAddEntryFooter = (param) => {
  * @returns {React.ReactElement}
  */
 const Footer = (param) => {
-    // console.log('isSelectedView', param.isSelectedView, 'addEntryMenuOpen', param.entryMenuOpen)
-
-    // console.log('current param', param)
 
     return (
         <View>

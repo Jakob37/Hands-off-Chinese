@@ -9,10 +9,10 @@ import Sound from "react-native-sound";
 
 const playAudio = async (key) => {
 
-    console.log('Attempting to play', key);
+    // console.log('Attempting to play', key);
 
     const signedUrl = await Storage.get(key);
-    console.log(signedUrl);
+    // console.log(signedUrl);
 
     const track = new Sound(signedUrl, null, (e) => {
         if (e) {
@@ -26,7 +26,7 @@ const playAudio = async (key) => {
 const removeTrack = async (englishKey, chineseKey) => {
     const result1 = await Storage.remove(englishKey);
     const result2 = await Storage.remove(chineseKey);
-    console.log(result1, result2);
+    // console.log(result1, result2);
 }
 
 const AudioCard = (param) => {
