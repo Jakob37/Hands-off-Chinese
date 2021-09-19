@@ -1,5 +1,7 @@
+import { useEffect } from "react";
+import { AudioPlayer } from "../../components/AudioPlayer";
 import { styles } from "../../components/Stylesheet";
-import { generatePollyAudio, getCategories, retrieveEntriesFromS3, testGet, submitMetadata } from "../apicalls";
+import { generatePollyAudio, getCategories, retrieveEntriesFromS3, submitMetadata } from "../apicalls";
 import { playTestSound } from "../audio/util";
 
 const React = require("react");
@@ -7,42 +9,31 @@ const { View, TouchableOpacity, Text } = require("react-native");
 
 const fontSize = 16;
 
+const audioPlayer = new AudioPlayer();
+
 const AudioFooter = (param) => {
+
+    // audioPlayer.load(param.audioPathPairs)
+
+    useEffect(() => {
+        console.log('attempting loading')
+        audioPlayer.load([["210822144607_I am eating apple", "210822144607_我在吃苹果"]])
+    }, [])
+
     return (
         <View style={[
             styles.footerCard,
             { display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }
         ]}>
             <TouchableOpacity onPress={() => {
-                playTestSound();
+                // playTestSound();
+                console.log('Play')
+
+                audioPlayer.playRandom()
             }}>
                 <Text style={{ fontSize }}>Play</Text>
             </TouchableOpacity>
             <Text style={{ fontSize }}>Stop</Text>
-            <TouchableOpacity onPress={() => {
-                generatePollyAudio(
-                    param.englishText,
-                    param.chineseText,
-                    param.refreshS3List
-                );
-                param.setChineseText('');
-                param.setEnglishText('');
-            }}>
-                <Text style={{ fontSize }}>Add</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => {
-                retrieveEntriesFromS3().then(returnedList => {
-                    param.setAudioList(returnedList)
-                });
-            }}>
-                <Text style={{ fontSize }}>Refresh</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={submitMetadata}>
-                <Text style={{ fontSize }}>Post</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={testGet}>
-                <Text style={{ fontSize }}>Get</Text>
-            </TouchableOpacity>
             <TouchableOpacity onPress={param.backToMenu}>
                 <Text style={{ fontSize }}>Back</Text>
             </TouchableOpacity>

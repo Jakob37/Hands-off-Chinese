@@ -1,95 +1,97 @@
-import { default as Sound } from "react-native-sound";
-import { audioLibraries } from "./Database";
-import { getRandomFromArray } from "./util";
+import { default as Sound } from "react-native-sound"
+import { playAudio } from "../src/views/card/audiocard"
+// import { audioLibraries } from "./Database";
+import { getRandomFromArray } from "./util"
 
-Sound.setCategory("Playback");
+Sound.setCategory("Playback")
 
 class AudioPair {
     /** @type {string} */
-    englishPath;
+    englishPath
     /** @type {string} */
-    chinesePath;
+    chinesePath
     /** @type {Sound} */
-    englishAudio;
+    englishAudio
     /** @type {Sound} */
-    chineseAudio;
+    chineseAudio
     /**
-     * @param {string} englishPath 
-     * @param {string} chinesePath 
+     * @param {string} englishPath
+     * @param {string} chinesePath
      */
     constructor(englishPath, chinesePath) {
-        this.englishPath = englishPath;
-        this.chinesePath = chinesePath;
-        this.englishAudio = testLoad(englishPath);
-        this.chineseAudio = testLoad(chinesePath);
+        this.englishPath = englishPath
+        this.chinesePath = chinesePath
+        this.englishAudio = testLoad(englishPath)
+        this.chineseAudio = testLoad(chinesePath)
     }
 }
 
 const AudioState = Object.freeze({
-    'stopped': 1,
-    'playing_english': 2,
-    'english_pause': 3,
-    'playing_chinese': 4,
-    'chinese_pause': 5
+    stopped: 1,
+    playing_english: 2,
+    english_pause: 3,
+    playing_chinese: 4,
+    chinese_pause: 5,
 })
 
 class AudioPlayer {
-
     /** @type {AudioPair[]} */
-    audio = [];
-    audioState = AudioState.stopped;
+    audio = []
+    audioState = AudioState.stopped
     /** @type {AudioPair} */
-    currentlyPlayingPair = null;
-    delay = 3000;
+    currentlyPlayingPair = null
+    delay = 3000
 
-    isPlaying = false;
+    isPlaying = false
 
     constructor() {
-        const defaultPairs = audioLibraries.get('Exam revision 4').pathPairs;
-        this.load(defaultPairs);
+        // const defaultPairs = audioLibraries.get('Exam revision 4').pathPairs;
+        // this.load(defaultPairs);
     }
 
     /**
      * @param {[string,string][]} audioPathPairs
      */
-     load(audioPathPairs) {
+    load(audioPathPairs) {
         for (const [english, chinese] of audioPathPairs) {
-            const audioPair = new AudioPair(english, chinese);
-            this.audio.push(audioPair);
+            const audioPair = new AudioPair(english, chinese)
+            this.audio.push(audioPair)
         }
 
-        console.log(`Finished loading ${audioPathPairs.length} clips`);
+        console.log(`Finished loading ${audioPathPairs.length} clips`)
     }
 
     /**
-     * @param {number} delay 
+     * @param {number} delay
      */
     setDelay(delay) {
-        this.delay = delay;
+        this.delay = delay
     }
 
     playRandom() {
-
-        const pair = getRandomFromArray(this.audio);
+        const pair = getRandomFromArray(this.audio)
         // console.log('found pair', pair);
-        this.currentlyPlayingPair = pair;
+        this.currentlyPlayingPair = pair
+
+        playAudio(pair.chinesePath)
+
         // this.playPath(pair.englishAudio);
-        this.currentlyPlayingPair.englishAudio.play((success) => {
-            if (success) {
-                this.playEvent();
-                console.log("Successfully finished playing");
-            } else {
-                console.log("Playback failed due to audio decoding errors");
-            }
-        });
+        // this.currentlyPlayingPair.englishAudio.play((success) => {
+        //     if (success) {
+        //         this.playEvent();
+        //         console.log("Successfully finished playing");
+        //     } else {
+        //         console.log("Playback failed due to audio decoding errors");
+        //     }
+        // });
     }
 
     /**
-     * @param {number} duration 
+     * @param {number} duration
      */
     playPause(duration) {
         setTimeout(() => {
-            this.playEvent();
+            this.playEvent()
         }, duration)
     }
 
@@ -97,53 +99,53 @@ class AudioPlayer {
      * @returns {number}
      */
     getNumberClips() {
-        return this.audio.length;
+        return this.audio.length
     }
 
     playEvent() {
         if (!this.isPlaying) {
-            console.log('Not playing, returning!');
-            return;
+            console.log("Not playing, returning!")
+            return
         }
 
         if (this.audioState == AudioState.playing_english) {
-            this.playRandom();
-            this.audioState = AudioState.english_pause;
+            this.playRandom()
+            this.audioState = AudioState.english_pause
         } else if (this.audioState == AudioState.english_pause) {
-            this.playPause(this.delay);
-            this.audioState = AudioState.playing_chinese;
+            this.playPause(this.delay)
+            this.audioState = AudioState.playing_chinese
         } else if (this.audioState == AudioState.playing_chinese) {
-            const currAudio = this.currentlyPlayingPair;
+            const currAudio = this.currentlyPlayingPair
             // this.currentlyPlayingPair = null;
             currAudio.chineseAudio.play((_success) => {
-                this.playEvent();
+                this.playEvent()
             })
-            this.audioState = AudioState.chinese_pause;
+            this.audioState = AudioState.chinese_pause
         } else if (this.audioState == AudioState.chinese_pause) {
-            this.playPause(this.delay);
-            this.audioState = AudioState.playing_english;
+            this.playPause(this.delay)
+            this.audioState = AudioState.playing_english
         } else {
-            console.warn('Unknown situation for audio state:', this.audioState);
+            console.warn("Unknown situation for audio state:", this.audioState)
         }
     }
 
     play() {
-        console.log('Starting audio player');
-        this.audioState = AudioState.playing_english;
-        this.isPlaying = true;
-        this.playEvent();
+        console.log("Starting audio player")
+        this.audioState = AudioState.playing_english
+        this.isPlaying = true
+        this.playEvent()
     }
 
     stop() {
-        console.log('Stopping audio player!');
-        this.audioState = AudioState.stopped;
-        console.log(this.audioState);
-        this.isPlaying = false;
+        console.log("Stopping audio player!")
+        this.audioState = AudioState.stopped
+        console.log(this.audioState)
+        this.isPlaying = false
     }
 }
 
 /**
- * @param {string} soundPath 
+ * @param {string} soundPath
  * @returns {Sound}
  */
 function testLoad(soundPath) {
@@ -154,37 +156,41 @@ function testLoad(soundPath) {
                 error,
                 "from path",
                 soundPath
-            );
-            return;
+            )
+            return
         }
-    });
-    return sound;
+    })
+    return sound
 }
 
 async function playSound(soundPath) {
-    console.log(soundPath);
-    const appleSound = await new Sound(soundPath, Sound.MAIN_BUNDLE, (error) => {
-        if (error) {
-            console.log(
-                "failed to load the sound",
-                error,
-                "from path",
-                soundPath
-            );
-            return;
-        }
-
-        appleSound.play((success) => {
-            if (success) {
-                console.log("Successfully finished playing");
-                // playSound(soundPath);
-            } else {
-                console.log("Playback failed due to audio decoding errors");
+    console.log(soundPath)
+    const appleSound = await new Sound(
+        soundPath,
+        Sound.MAIN_BUNDLE,
+        (error) => {
+            if (error) {
+                console.log(
+                    "failed to load the sound",
+                    error,
+                    "from path",
+                    soundPath
+                )
+                return
             }
-        });
-    });
+
+            appleSound.play((success) => {
+                if (success) {
+                    console.log("Successfully finished playing")
+                    // playSound(soundPath);
+                } else {
+                    console.log("Playback failed due to audio decoding errors")
+                }
+            })
+        }
+    )
 }
 
-const audioPlayer = new AudioPlayer();
+const audioPlayer = new AudioPlayer()
 
-export { playSound, testLoad, AudioPlayer, audioPlayer };
+export { playSound, testLoad, AudioPlayer, audioPlayer }

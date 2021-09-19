@@ -63,4 +63,4 @@ const AudioCard = (param) => {
     );
 }
 
-export { AudioCard };
+export { AudioCard, playAudio };
