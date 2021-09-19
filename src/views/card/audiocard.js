@@ -7,7 +7,11 @@ import Amplify, { Storage } from "aws-amplify";
 import Sound from "react-native-sound";
 
 
-const playAudio = async (key) => {
+/**
+ * @param {string} key 
+ * @param {() => void|null} [callback=null]
+ */
+const playAudio = async (key, callback=null) => {
 
     // console.log('Attempting to play', key);
 
@@ -18,7 +22,11 @@ const playAudio = async (key) => {
         if (e) {
             console.log('error loading track:', e)
         } else {
-            track.play()
+            if (callback != null) {
+                track.play(callback)
+            } else {
+                track.play()
+            }
         }
     })
 }
@@ -52,13 +60,13 @@ const AudioCard = (param) => {
                 </TouchableOpacity>
             </View>
 
-            <TouchableOpacity onPress={() => {
+            {/* <TouchableOpacity onPress={() => {
                 removeTrack(param.chineseKey, param.englishKey).then(param.endAction)
             }}>
                 <View>
                     <Text style={{ color: 'gray', fontWeight: 'bold', fontSize: 24 }}>X</Text>
                 </View>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
         </View>
     );
 }

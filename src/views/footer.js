@@ -37,7 +37,7 @@ const AudioFooter = (param) => {
         ]}>
             <FooterButton onPress={() => { audioPlayer.play() }}>Play</FooterButton>
             <FooterButton onPress={() => { audioPlayer.playRandom() }}>Random</FooterButton>
-            <FooterButton onPress={audioPlayer.stop}>Stop</FooterButton>
+            <FooterButton onPress={() => { audioPlayer.stop() }}>Stop</FooterButton>
             <FooterButton onPress={param.backToMenu}>Back</FooterButton>
         </View>
     )

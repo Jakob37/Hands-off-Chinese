@@ -53,7 +53,7 @@ class AudioPlayer {
      * @param {[string,string][]} audioPathPairs
      */
     load(audioPathPairs) {
-        for (const [english, chinese] of audioPathPairs) {
+        for (const [chinese, english] of audioPathPairs) {
             const audioPair = new AudioPair(english, chinese)
             this.audio.push(audioPair)
         }
@@ -73,7 +73,7 @@ class AudioPlayer {
         // console.log('found pair', pair);
         this.currentlyPlayingPair = pair
 
-        playAudio(pair.chinesePath)
+        playAudio(pair.englishPath, () => { this.playEvent() })
 
         // this.playPath(pair.englishAudio);
         // this.currentlyPlayingPair.englishAudio.play((success) => {
@@ -103,25 +103,32 @@ class AudioPlayer {
     }
 
     playEvent() {
+        console.log('--- play event triggered ---')
         if (!this.isPlaying) {
             console.log("Not playing, returning!")
             return
         }
 
         if (this.audioState == AudioState.playing_english) {
+            console.log('play random')
             this.playRandom()
             this.audioState = AudioState.english_pause
         } else if (this.audioState == AudioState.english_pause) {
+            console.log('english_pause')
             this.playPause(this.delay)
             this.audioState = AudioState.playing_chinese
         } else if (this.audioState == AudioState.playing_chinese) {
+            console.log('playing_chinese')
             const currAudio = this.currentlyPlayingPair
             // this.currentlyPlayingPair = null;
-            currAudio.chineseAudio.play((_success) => {
-                this.playEvent()
-            })
+            playAudio(currAudio.chinesePath, () => { this.playEvent() })
+
+            // currAudio.chineseAudio.play((_success) => {
+            //     this.playEvent()
+            // })
             this.audioState = AudioState.chinese_pause
         } else if (this.audioState == AudioState.chinese_pause) {
+            console.log('chinese_pause')
             this.playPause(this.delay)
             this.audioState = AudioState.playing_english
         } else {
