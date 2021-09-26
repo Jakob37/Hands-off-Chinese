@@ -31,13 +31,21 @@ const playAudio = async (key, callback=null) => {
     })
 }
 
+/**
+ * @param {string} englishKey 
+ * @param {string} chineseKey 
+ */
 const removeTrack = async (englishKey, chineseKey) => {
     const result1 = await Storage.remove(englishKey);
     const result2 = await Storage.remove(chineseKey);
     // console.log(result1, result2);
 }
 
+
 const AudioCard = (param) => {
+
+    const [isPaused, setIsPaused] = React.useState(false);
+
     return (
         <View style={[
             styles.card,
@@ -49,24 +57,24 @@ const AudioCard = (param) => {
             }]}>
             <View>
                 <TouchableOpacity onPress={() => { playAudio(param.chineseKey) }}>
-                    <Text style={styles.cardText}>
+                    <Text style={[styles.cardText, {color: isPaused ? 'gray' : 'black'}]}>
                         {param.chinese}
                     </Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => { playAudio(param.englishKey) }}>
-                    <Text style={styles.cardText}>
+                    <Text style={[styles.cardText, {color: isPaused ? 'gray' : 'black'}]}>
                         {param.english}
                     </Text>
                 </TouchableOpacity>
             </View>
 
-            {/* <TouchableOpacity onPress={() => {
-                removeTrack(param.chineseKey, param.englishKey).then(param.endAction)
+            <TouchableOpacity onPress={() => {
+                setIsPaused(!isPaused)
             }}>
                 <View>
-                    <Text style={{ color: 'gray', fontWeight: 'bold', fontSize: 24 }}>X</Text>
+                    <Text style={{ color: 'gray', fontWeight: 'bold', fontSize: 24 }}>| |</Text>
                 </View>
-            </TouchableOpacity> */}
+            </TouchableOpacity>
         </View>
     );
 }
