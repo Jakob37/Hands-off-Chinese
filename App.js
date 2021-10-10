@@ -72,7 +72,7 @@ const App = () => {
                 entries.english.filename,
                 entries.chinese.text,
                 entries.chinese.filename,
-                !entries.active
+                entries.active
             ])
         }
         console.log(audioList)

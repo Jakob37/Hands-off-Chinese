@@ -57,12 +57,12 @@ const AudioCard = (param) => {
             }]}>
             <View>
                 <TouchableOpacity onPress={() => { playAudio(param.chineseKey) }}>
-                    <Text style={[styles.cardText, {color: isPaused ? 'gray' : 'black'}]}>
+                    <Text style={[styles.cardText, {color: param.isActive ? 'gray' : 'black'}]}>
                         {param.chinese}
                     </Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => { playAudio(param.englishKey) }}>
-                    <Text style={[styles.cardText, {color: isPaused ? 'gray' : 'black'}]}>
+                    <Text style={[styles.cardText, {color: param.isActive ? 'gray' : 'black'}]}>
                         {param.english}
                     </Text>
                 </TouchableOpacity>
