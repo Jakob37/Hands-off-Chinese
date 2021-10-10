@@ -1,11 +1,10 @@
-import { useEffect, useState, ReactElement, Fragment } from "react"
+import { useEffect, useState, ReactElement, Fragment, createRef, forwardRef } from "react"
 import { LanguagePair } from "../backend/languageentry"
 import { AudioPlayer } from "../audio/AudioPlayer"
 import { styles } from "../Stylesheet"
-import AddAudioMenu from "./addaudiomenu"
 
 const React = require("react")
-const { View, TouchableOpacity, Text } = require("react-native")
+const { View, TouchableOpacity, Text, TextInput } = require("react-native")
 
 const fontSize = 16
 
@@ -21,13 +20,37 @@ const FooterButton = (param) => {
 
 /**
  * @param {Object} param
+ * @property {string} label
+ * @property {string} placeholder
+ * @property {(text:string) => string} setUpdatedText
+ * @returns
+ */
+const AddAudioRow = (param) => {
+
+    return (
+        <View style={styles.inputField}>
+            <Text style={{ fontSize: 16, flex: 1 }}>{param.label}</Text>
+            <TextInput
+                style={{
+                    borderWidth: 1,
+                    borderColor: "gray",
+                    flex: 3,
+                }}
+                onChangeText={(newText) => param.setUpdatedText(newText)}
+                placeholder={param.placeholder}
+            ></TextInput>
+        </View>
+    )
+}
+
+/**
+ * @param {Object} param
  * @property {[string,string][]} param.pathPairs
  * @property {() => void} param.backToMenu
  * @returns
  */
 const AudioFooter = (param) => {
     useEffect(() => {
-        console.log("Reloading audioplayer")
         audioPlayer.load(param.pathPairs)
     }, [param.pathPairs])
 
@@ -69,17 +92,48 @@ const AudioFooter = (param) => {
 }
 
 /**
- * @param {*} param
+ * @param {Object} param
+ * @property {(english:string, chinese:string, category:string) => void} addEntry
+ * @property {() => void} refreshCategories
  * @returns {ReactElement}
  */
 const CategoryFooter = (param) => {
     const [addEntryOpen, setAddEntryOpen] = useState(false)
 
+    const [englishText, setEnglishText] = useState('')
+    const [chineseText, setChineseText] = useState('')
+    const [categoryText, setCategoryText] = useState('')
+
+    // const getEnglishText = (text) => text
+    // const getChineseText = (text) => text
+    // const getCategoryText = (text) => text
+
     return (
         <>
             {addEntryOpen ? (
                 <>
-                    <AddAudioMenu />
+                    <View
+                        style={{
+                            borderTopWidth: 1,
+                            borderTopColor: "lightgray",
+                        }}
+                    >
+                        <AddAudioRow
+                            label="Chinese"
+                            placeholder="Chinese text"
+                            setUpdatedText={(text) => setChineseText(text)}
+                        ></AddAudioRow>
+                        <AddAudioRow
+                            label="English"
+                            placeholder="English text"
+                            setUpdatedText={(text) => setEnglishText(text)}
+                        ></AddAudioRow>
+                        <AddAudioRow
+                            label="Category"
+                            placeholder="Category name"
+                            setUpdatedText={(text) => setCategoryText(text)}
+                        ></AddAudioRow>
+                    </View>
                     <View
                         style={[
                             styles.footerCard,
@@ -94,10 +148,15 @@ const CategoryFooter = (param) => {
                             Close
                         </FooterButton>
                         <FooterButton
-                        // onPress={(english, chinese, category) => {
-                        //     param.addEntry(english, chinese, category)
-                        //     param.closeMenu()
-                        // }}
+                            onPress={() => {
+                                // console.log('pressed', englishText, chineseText, categoryText)
+                                param.addEntry(
+                                    englishText,
+                                    chineseText,
+                                    categoryText
+                                )
+                                setAddEntryOpen(false)
+                            }}
                         >
                             Submit entry to AWS
                         </FooterButton>
@@ -193,10 +252,8 @@ const Footer = (param) => {
                 />
             ) : (
                 <CategoryFooter
-                    openAddEntryMenu={() => {
-                        console.log("openAddEntryMenu")
-                    }}
                     refreshCategories={param.refreshCategories}
+                    addEntry={param.addNew}
                 />
             )}
         </View>

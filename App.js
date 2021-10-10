@@ -2,12 +2,13 @@ import Amplify, { Storage } from "aws-amplify"
 import React, { useEffect } from "react"
 import { ScrollView, Text, View } from "react-native"
 import awsconfig from "./src/aws-exports"
+import { getCategories, makeNewAudioEntry } from "./src/backend/apicalls"
 import {
-    getCategories, makeNewAudioEntry
-} from "./src/backend/apicalls"
-import { getAudioListForCategory, listCategory } from "./src/backend/languageentryhelpers"
+    getAudioListForCategory,
+    listCategory,
+} from "./src/backend/languageentryhelpers"
 import { styles } from "./src/Stylesheet"
-import AddAudioMenu from "./src/views/addaudiomenu"
+// import AddAudioMenu from "./src/views/addaudiomenu"
 import Footer from "./src/views/footer"
 import CategoryCardList from "./src/views/list/categorycardlist"
 import ScrollableAudioCardList from "./src/views/list/scrollableaudiocardlist"
@@ -22,7 +23,6 @@ Amplify.register(Storage)
 
 // Continue testing: https://docs.amplify.aws/lib/storage/getting-started/q/platform/js#using-a-custom-plugin
 // Further configuration needed??
-
 
 const App = () => {
     const retrieveCategoryEntriesList = (category) => {
@@ -48,9 +48,7 @@ const App = () => {
 
     const [currCategory, setCurrCategory] = React.useState(null)
 
-    const [categoryList, setCategoryList] = React.useState([
-        "Category1",
-    ])
+    const [categoryList, setCategoryList] = React.useState(["Category1"])
     const [displayCategoryList, setDisplayCategoryList] = React.useState([
         "Loading from AWS...",
     ])
@@ -118,12 +116,15 @@ const App = () => {
                 // }}
                 refreshCategories={refreshCategories}
                 addNew={(englishText, chineseText, categoryText) => {
+                    console.log('obtained text', englishText, chineseText, categoryText)
                     makeNewAudioEntry(
                         englishText,
                         chineseText,
                         categoryText,
-                        (englishText, chineseText, categoryText) => {
-                            console.log("Completed logic coming here!")
+                        () => {
+                            console.log(
+                                "Completed logic coming here!",
+                            )
                         }
                     )
                     // setAddEntryMenuOpen(false)
