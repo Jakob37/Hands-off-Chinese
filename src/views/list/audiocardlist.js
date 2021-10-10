@@ -17,6 +17,7 @@ const AudioCardList = (param) => {
                                 englishKey={audioObj[1]}
                                 chinese={audioObj[2]}
                                 chineseKey={audioObj[3]}
+                                isActive={audioObj[4]}
                                 endAction={param.endAction}
                             />
                         );

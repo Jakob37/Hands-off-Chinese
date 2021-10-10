@@ -2,7 +2,11 @@ import Amplify, { Storage } from "aws-amplify"
 import React, { useEffect } from "react"
 import { Button, ScrollView, Text, View } from "react-native"
 import awsconfig from "./src/aws-exports"
-import { getAllMeta, getCategories, makeNewAudioEntry } from "./src/backend/apicalls"
+import {
+    getAllMeta,
+    getCategories,
+    makeNewAudioEntry,
+} from "./src/backend/apicalls"
 import {
     getAudioListForCategory,
     listCategory,
@@ -22,42 +26,71 @@ Amplify.register(Storage)
 
 // Continue testing: https://docs.amplify.aws/lib/storage/getting-started/q/platform/js#using-a-custom-plugin
 // Further configuration needed??
-/** @type {Map<string,MetaObj>} */
+/** @type {Map<string,{english:MetaObj, chinese:MetaObj, active:boolean}>} */
 const idToEntry = new Map()
 /** @type {Map<string,Set<string>>} */
 const categoryToIds = new Map()
 
-
 const App = () => {
-
     const loadDatabase = () => {
         getAllMeta().then((result) => {
             for (const resultEntry of result) {
-                idToEntry.set(resultEntry.id, resultEntry)
+                if (!idToEntry.get(resultEntry.id)) {
+                    idToEntry.set(resultEntry.id, {
+                        english: null,
+                        chinese: null,
+                        active: true
+                    })
+                }
+
+                idToEntry.get(resultEntry.id)[resultEntry.language] =
+                    resultEntry
                 if (!categoryToIds.has(resultEntry.category)) {
                     categoryToIds.set(resultEntry.category, new Set())
                 }
                 categoryToIds.get(resultEntry.category).add(resultEntry.id)
             }
+
+            setCategoryList(Array.from(categoryToIds.keys()))
+
+            const categoryWithCounts = Array.from(categoryToIds).map(
+                ([category, ids]) => `${category} (${ids.size})`
+            )
+
+            setDisplayCategoryList(categoryWithCounts)
         })
     }
     useEffect(loadDatabase, [])
 
     const retrieveCategoryEntriesList = (category) => {
-        getAudioListForCategory(category).then((returnedList) => {
-            setAudioList(returnedList)
-        })
+        const entries = categoryToIds.get(category)
+        const audioList = []
+        for (const entryId of Array.from(entries)) {
+            const entries = idToEntry.get(entryId)
+            audioList.push([
+                entries.english.text,
+                entries.english.filename,
+                entries.chinese.text,
+                entries.chinese.filename,
+                !entries.active
+            ])
+        }
+        console.log(audioList)
+        setAudioList(audioList)
+        // getAudioListForCategory(category).then((returnedList) => {
+        //     setAudioList(returnedList)
+        // })
     }
 
-    const refreshCategories = () => {
-        getCategories().then((returnedCategories) => {
-            // console.log('loading categories', returnedCategories.categories);
-            setCategoryList(returnedCategories.categories)
-            setDisplayCategoryList(returnedCategories.categoriesWithCounts)
-            // database.push(...returnedCategories.categories)
-        })
-    }
-    useEffect(refreshCategories, [])
+    // const refreshCategories = () => {
+    //     getCategories().then((returnedCategories) => {
+    //         // console.log('loading categories', returnedCategories.categories);
+    //         setCategoryList(returnedCategories.categories)
+    //         setDisplayCategoryList(returnedCategories.categoriesWithCounts)
+    //         // database.push(...returnedCategories.categories)
+    //     })
+    // }
+    // useEffect(refreshCategories, [])
 
     const [audioList, setAudioList] = React.useState([])
     const [currCategory, setCurrCategory] = React.useState(null)
@@ -79,7 +112,7 @@ const App = () => {
                 title="Testbutton"
                 onPress={() => {
                     console.log("press!")
-                    console.log('loaded data:', categoryToIds, idToEntry)
+                    console.log("loaded data:", categoryToIds, idToEntry)
                 }}
             />
 
@@ -94,7 +127,7 @@ const App = () => {
                             setIsSelectedView(true)
                             setCurrCategory(category)
                         }}
-                        refresh={refreshCategories}
+                        refresh={loadDatabase}
                     />
                 </ScrollView>
             ) : (
@@ -115,7 +148,7 @@ const App = () => {
                     setIsSelectedView(false)
                     setCurrCategory(null)
                 }}
-                refreshCategories={refreshCategories}
+                refreshCategories={loadDatabase}
                 addNew={(englishText, chineseText, categoryText) => {
                     makeNewAudioEntry(
                         englishText,
