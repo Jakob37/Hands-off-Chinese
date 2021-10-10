@@ -104,10 +104,6 @@ const CategoryFooter = (param) => {
     const [chineseText, setChineseText] = useState('')
     const [categoryText, setCategoryText] = useState('')
 
-    // const getEnglishText = (text) => text
-    // const getChineseText = (text) => text
-    // const getCategoryText = (text) => text
-
     return (
         <>
             {addEntryOpen ? (
@@ -149,7 +145,6 @@ const CategoryFooter = (param) => {
                         </FooterButton>
                         <FooterButton
                             onPress={() => {
-                                // console.log('pressed', englishText, chineseText, categoryText)
                                 param.addEntry(
                                     englishText,
                                     chineseText,
@@ -184,53 +179,6 @@ const CategoryFooter = (param) => {
         </>
     )
 }
-
-// /**
-//  * @param {Object} param
-//  * @param {() => void} param.closeMenu
-//  * @param {(english:string, chinese:string, category:string) => LanguagePair} param.addEntry
-//  * @returns {React.ReactElement}
-//  */
-// const OpenAddEntryFooter = (param) => {
-//     // const [chineseText, setChineseText] = React.useState("")
-//     // const [englishText, setEnglishText] = React.useState("")
-//     // const [categoryText, setCategoryText] = React.useState("")
-
-//     // const [isOpen, setIsOpen] = React.useState(true)
-
-//     console.log("displaying openaddentryfooter")
-
-//     return (
-//         <Fragment>
-//             <View>
-//                 <Text>Text</Text>
-//             </View>
-//             <View>
-//                 <Text>Text2</Text>
-//             </View>
-//             <View
-//                 style={[
-//                     styles.footerCard,
-//                     {
-//                         display: "flex",
-//                         flexDirection: "row",
-//                         justifyContent: "space-between",
-//                     },
-//                 ]}
-//             >
-//                 <FooterButton onPress={param.closeMenu()}>Close</FooterButton>
-//                 {/* <FooterButton
-//                     onPress={(english, chinese, category) => {
-//                         param.addEntry(english, chinese, category)
-//                         param.closeMenu()
-//                     }}
-//                 >
-//                     Submit entry to AWS
-//                 </FooterButton> */}
-//             </View>
-//         </Fragment>
-//     )
-// }
 
 /**
  * @param {Object} param

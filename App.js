@@ -8,7 +8,6 @@ import {
     listCategory,
 } from "./src/backend/languageentryhelpers"
 import { styles } from "./src/Stylesheet"
-// import AddAudioMenu from "./src/views/addaudiomenu"
 import Footer from "./src/views/footer"
 import CategoryCardList from "./src/views/list/categorycardlist"
 import ScrollableAudioCardList from "./src/views/list/scrollableaudiocardlist"
@@ -102,18 +101,10 @@ const App = () => {
                         : []
                 }
                 isSelectedView={isSelectedView}
-                // entryMenuOpen={addEntryMenuOpen}
                 backToMenu={() => {
                     setIsSelectedView(false)
                     setCurrCategory(null)
                 }}
-                // openAddEntryMenu={() => {
-                //     console.log('setting open')
-                //     // setAddEntryMenuOpen(true)
-                // }}
-                // closeAddEntryMenu={() => {
-                //     // setAddEntryMenuOpen(false)
-                // }}
                 refreshCategories={refreshCategories}
                 addNew={(englishText, chineseText, categoryText) => {
                     console.log('obtained text', englishText, chineseText, categoryText)
@@ -127,10 +118,6 @@ const App = () => {
                             )
                         }
                     )
-                    // setAddEntryMenuOpen(false)
-                    // setChineseText("")
-                    // setEnglishText("")
-                    // setCategoryText("")
                 }}
             />
         </View>
