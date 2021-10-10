@@ -2,7 +2,7 @@ import React from "react";
 import { TouchableOpacity, View, Text } from "react-native";
 import { audioPlayer, AudioPlayer } from "./AudioPlayer";
 import { audioLibraries } from "./Database";
-import { styles } from "./Stylesheet";
+import { styles } from "../src/Stylesheet";
 
 async function startPlaying() {
     if (audioPlayer.audio.length > 0) {

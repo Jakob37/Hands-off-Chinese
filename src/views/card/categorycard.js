@@ -1,4 +1,4 @@
-const { styles } = require("../../../components/Stylesheet")
+const { styles } = require("../../Stylesheet")
 const React = require("react")
 const { View, Text, TouchableOpacity } = require("react-native")
 

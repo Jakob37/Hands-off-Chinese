@@ -1,7 +1,8 @@
 import Amplify, { Storage } from "aws-amplify"
+import { styles } from "./src/Stylesheet"
 import React, { useEffect } from "react"
-import { ScrollView, View } from "react-native"
-import { Header } from "./components/Header"
+import { ScrollView, View, Text } from "react-native"
+// import { Header } from "./components/Header"
 import {
     getCategories,
     getMetaByCategory,
@@ -26,13 +27,6 @@ Amplify.register(Storage)
 // Continue testing: https://docs.amplify.aws/lib/storage/getting-started/q/platform/js#using-a-custom-plugin
 // Further configuration needed??
 
-const listBucket = async () => {
-    const listResult = await Storage.list("")
-}
-
-const refreshClick = async () => {
-    const listResult = await Storage.list("")
-}
 
 /**
  * @param {string} category
@@ -61,7 +55,7 @@ class LanguagePair {
      * @param {MetaObj} metaObj
      */
     addEntry(metaObj) {
-        if (metaObj.language == 'chinese') {
+        if (metaObj.language == "chinese") {
             this._addChinese(metaObj.text, metaObj.filename)
         } else {
             this._addEnglish(metaObj.text, metaObj.filename)
@@ -122,10 +116,7 @@ const getAudioListForCategory = async (category) => {
         } else {
             const newPair = new LanguagePair(categoryEntry.id)
             newPair.addEntry(categoryEntry)
-            idToLanguagePair.set(
-                categoryEntry.id,
-                newPair
-            )
+            idToLanguagePair.set(categoryEntry.id, newPair)
         }
     }
 
@@ -139,10 +130,9 @@ const getAudioListForCategory = async (category) => {
 }
 
 const App = () => {
-
     const retrieveCategoryEntriesList = (category) => {
         getAudioListForCategory(category).then((returnedList) => {
-            console.log('setting audio list', returnedList)
+            console.log("setting audio list", returnedList)
             setAudioList(returnedList)
         })
     }
@@ -165,13 +155,9 @@ const App = () => {
 
     const [categoryList, setCategoryList] = React.useState([
         "Category1",
-        "Category2",
-        "Category3",
     ])
     const [displayCategoryList, setDisplayCategoryList] = React.useState([
-        "Category1 (6)",
-        "Category2 (3)",
-        "Category3 (4)",
+        "Loading from AWS...",
     ])
 
     const [addEntryMenuOpen, setAddEntryMenuOpen] = React.useState(false)
@@ -179,7 +165,10 @@ const App = () => {
 
     return (
         <View style={{ flex: 1 }}>
-            <Header header="Hands-off Chinese"></Header>
+            {/* <Header header="Hands-off Chinese"></Header> */}
+            <View>
+                <Text style={styles.header}>Hands-off Chinese</Text>
+            </View>
 
             {!isSelectedView ? (
                 <ScrollView>
@@ -211,12 +200,13 @@ const App = () => {
             ) : null}
 
             <Footer
-                pathPairs={currCategory != null ? 
-                    audioList.map((entry) => {
-                        const output = [entry[1], entry[3]]
-                        return output
-                    }) :
-                    []
+                pathPairs={
+                    currCategory != null
+                        ? audioList.map((entry) => {
+                              const output = [entry[1], entry[3]]
+                              return output
+                          })
+                        : []
                 }
                 isSelectedView={isSelectedView}
                 entryMenuOpen={addEntryMenuOpen}

@@ -1,4 +1,4 @@
-import { styles } from "../../components/Stylesheet.js";
+import { styles } from "../Stylesheet.js";
 
 const React = require("react")
 const { View, Text, TextInput } = require("react-native")
