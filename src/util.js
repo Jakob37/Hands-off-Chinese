@@ -6,33 +6,42 @@ const getTimestamp = () => {
 }
 
 /**
- * @param {string} method 
- * @param {string} url 
+ * @template V
+ * @param {V[]} items
+ * @returns V
+ */
+function getRandomFromArray(items) {
+    var item = items[Math.floor(Math.random() * items.length)]
+    return item
+}
+
+/**
+ * @param {string} method
+ * @param {string} url
  * @returns {Promise<any>}
  */
 function makeRequest(method, url) {
     return new Promise(function (resolve, reject) {
-        let xhr = new XMLHttpRequest();
-        xhr.open(method, url);
+        let xhr = new XMLHttpRequest()
+        xhr.open(method, url)
         xhr.onload = function () {
             if (this.status >= 200 && this.status < 300) {
-                resolve(xhr.response);
+                resolve(xhr.response)
             } else {
                 reject({
                     status: this.status,
-                    statusText: xhr.statusText
-                });
+                    statusText: xhr.statusText,
+                })
             }
-        };
+        }
         xhr.onerror = function () {
             reject({
                 status: this.status,
-                statusText: xhr.statusText
-            });
-        };
-        xhr.send();
-    });
+                statusText: xhr.statusText,
+            })
+        }
+        xhr.send()
+    })
 }
 
-
-export { getTimestamp, makeRequest };
+export { getTimestamp, makeRequest, getRandomFromArray }

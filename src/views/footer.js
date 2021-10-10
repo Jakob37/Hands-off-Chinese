@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { AudioPlayer } from "../../components/AudioPlayer";
+import { AudioPlayer } from "../audio/AudioPlayer";
 import { styles } from "../Stylesheet";
 import { generatePollyAudio, getCategories, retrieveEntriesFromS3, submitMetadata } from "../apicalls";
 import { playTestSound } from "../audio/util";

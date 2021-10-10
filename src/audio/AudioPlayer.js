@@ -1,7 +1,7 @@
 import { default as Sound } from "react-native-sound"
-import { playAudio } from "../src/views/card/audiocard"
+import { playAudio } from "../views/card/audiocard"
 // import { audioLibraries } from "./Database";
-import { getRandomFromArray } from "./util"
+import { getRandomFromArray } from "../util"
 
 Sound.setCategory("Playback")
 

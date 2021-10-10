@@ -1,8 +1,7 @@
 import React from "react";
 import { TouchableOpacity, View, Text } from "react-native";
-import { audioPlayer, AudioPlayer } from "./AudioPlayer";
-import { audioLibraries } from "./Database";
-import { styles } from "../src/Stylesheet";
+import { audioPlayer, AudioPlayer } from "./audio/AudioPlayer";
+import { styles } from "./Stylesheet";
 
 async function startPlaying() {
     if (audioPlayer.audio.length > 0) {
@@ -13,9 +12,9 @@ async function startPlaying() {
 }
 
 function load() {
-    const audioPaths = audioLibraries.get('exam_revision_3').pathPairs;
+    // const audioPaths = audioLibraries.get('exam_revision_3').pathPairs;
     // audioPlayer = new AudioPlayer();
-    audioPlayer.load(/** @type {[string,string][]} */ (audioPaths));
+    // audioPlayer.load(/** @type {[string,string][]} */ (audioPaths));
 }
 
 function stopPlaying() {
