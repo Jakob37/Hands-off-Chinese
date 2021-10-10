@@ -1,23 +1,19 @@
 import Amplify, { Storage } from "aws-amplify"
-import { styles } from "./src/Stylesheet"
 import React, { useEffect } from "react"
-import { ScrollView, View, Text } from "react-native"
-// import { Header } from "./components/Header"
-import {
-    getCategories,
-    getMetaByCategory,
-    makeNewAudioEntry,
-    retrieveEntriesFromS3,
-} from "./src/apicalls"
+import { ScrollView, Text, View } from "react-native"
 import awsconfig from "./src/aws-exports"
+import {
+    getCategories, makeNewAudioEntry
+} from "./src/backend/apicalls"
+import { getAudioListForCategory, listCategory } from "./src/backend/languageentryhelpers"
+import { styles } from "./src/Stylesheet"
 import AddAudioMenu from "./src/views/addaudiomenu"
-// import CategoryCardList from "./src/views/list/categorycardlist.js";
 import Footer from "./src/views/footer"
 import CategoryCardList from "./src/views/list/categorycardlist"
 import ScrollableAudioCardList from "./src/views/list/scrollableaudiocardlist"
 
 /**
- * @typedef {import('./src/apicalls.js').MetaObj} MetaObj
+ * @typedef {import('./src/backend/apicalls.js').MetaObj} MetaObj
  */
 
 Amplify.configure(awsconfig)
@@ -27,107 +23,6 @@ Amplify.register(Storage)
 // Continue testing: https://docs.amplify.aws/lib/storage/getting-started/q/platform/js#using-a-custom-plugin
 // Further configuration needed??
 
-
-/**
- * @param {string} category
- * @returns {Promise<import("./src/apicalls").MetaObj[]>}
- */
-const listCategory = async (category) => {
-    const result = await getMetaByCategory()
-    return result.get(category)
-}
-
-class LanguagePair {
-    id
-    /** @type {{text:string, filename:string}[]} */
-    chinese = []
-    /** @type {{text:string, filename:string}[]} */
-    english = []
-
-    /**
-     * @param {string} id
-     */
-    constructor(id) {
-        this.id = id
-    }
-
-    /**
-     * @param {MetaObj} metaObj
-     */
-    addEntry(metaObj) {
-        if (metaObj.language == "chinese") {
-            this._addChinese(metaObj.text, metaObj.filename)
-        } else {
-            this._addEnglish(metaObj.text, metaObj.filename)
-        }
-    }
-
-    /**
-     * @param {string} text
-     * @param {string} filename
-     */
-    _addChinese(text, filename) {
-        this.chinese.push({ text, filename })
-    }
-
-    /**
-     * @param {string} text
-     * @param {string} filename
-     */
-    _addEnglish(text, filename) {
-        this.english.push({ text, filename })
-    }
-
-    /**
-     * @returns {boolean}
-     */
-    isValid() {
-        return this.chinese.length == 1 && this.english.length == 1
-    }
-
-    /**
-     * @returns {[string,string,string,string]}
-     */
-    getFourStrings() {
-        return [
-            this.chinese[0].text,
-            this.chinese[0].filename,
-            this.english[0].text,
-            this.english[0].filename,
-        ]
-    }
-}
-
-/**
- * @param {string} category
- * @returns {Promise<[string,string,string,string][]>}
- */
-const getAudioListForCategory = async (category) => {
-    const categoryEntries = await listCategory(category)
-    console.log(categoryEntries)
-
-    /** @type {Map<string,LanguagePair>} */
-    const idToLanguagePair = new Map()
-
-    for (const categoryEntry of categoryEntries) {
-        const languagePair = idToLanguagePair.get(categoryEntry.id)
-        if (languagePair != null) {
-            languagePair.addEntry(categoryEntry)
-        } else {
-            const newPair = new LanguagePair(categoryEntry.id)
-            newPair.addEntry(categoryEntry)
-            idToLanguagePair.set(categoryEntry.id, newPair)
-        }
-    }
-
-    const validPairs = Array.from(idToLanguagePair.values()).filter((pair) =>
-        pair.isValid()
-    )
-    const returnPairs = validPairs.map((validPair) =>
-        validPair.getFourStrings()
-    )
-    return returnPairs
-}
 
 const App = () => {
     const retrieveCategoryEntriesList = (category) => {
@@ -147,9 +42,9 @@ const App = () => {
 
     const [audioList, setAudioList] = React.useState([])
 
-    const [chineseText, setChineseText] = React.useState("")
-    const [englishText, setEnglishText] = React.useState("")
-    const [categoryText, setCategoryText] = React.useState("")
+    // const [chineseText, setChineseText] = React.useState("")
+    // const [englishText, setEnglishText] = React.useState("")
+    // const [categoryText, setCategoryText] = React.useState("")
 
     const [currCategory, setCurrCategory] = React.useState(null)
 
@@ -160,7 +55,7 @@ const App = () => {
         "Loading from AWS...",
     ])
 
-    const [addEntryMenuOpen, setAddEntryMenuOpen] = React.useState(false)
+    // const [addEntryMenuOpen, setAddEntryMenuOpen] = React.useState(false)
     const [isSelectedView, setIsSelectedView] = React.useState(false)
 
     return (
@@ -191,13 +86,13 @@ const App = () => {
                 />
             )}
 
-            {addEntryMenuOpen ? (
+            {/* {addEntryMenuOpen ? (
                 <AddAudioMenu
-                    setChineseText={setChineseText}
-                    setEnglishText={setEnglishText}
-                    setCategoryText={setCategoryText}
+                    // setChineseText={setChineseText}
+                    // setEnglishText={setEnglishText}
+                    // setCategoryText={setCategoryText}
                 />
-            ) : null}
+            ) : null} */}
 
             <Footer
                 pathPairs={
@@ -209,31 +104,32 @@ const App = () => {
                         : []
                 }
                 isSelectedView={isSelectedView}
-                entryMenuOpen={addEntryMenuOpen}
+                // entryMenuOpen={addEntryMenuOpen}
                 backToMenu={() => {
                     setIsSelectedView(false)
                     setCurrCategory(null)
                 }}
-                openAddEntryMenu={() => {
-                    setAddEntryMenuOpen(true)
-                }}
-                closeAddEntryMenu={() => {
-                    setAddEntryMenuOpen(false)
-                }}
+                // openAddEntryMenu={() => {
+                //     console.log('setting open')
+                //     // setAddEntryMenuOpen(true)
+                // }}
+                // closeAddEntryMenu={() => {
+                //     // setAddEntryMenuOpen(false)
+                // }}
                 refreshCategories={refreshCategories}
-                addNew={() => {
+                addNew={(englishText, chineseText, categoryText) => {
                     makeNewAudioEntry(
                         englishText,
                         chineseText,
                         categoryText,
-                        () => {
+                        (englishText, chineseText, categoryText) => {
                             console.log("Completed logic coming here!")
                         }
                     )
-                    setAddEntryMenuOpen(false)
-                    setChineseText("")
-                    setEnglishText("")
-                    setCategoryText("")
+                    // setAddEntryMenuOpen(false)
+                    // setChineseText("")
+                    // setEnglishText("")
+                    // setCategoryText("")
                 }}
             />
         </View>

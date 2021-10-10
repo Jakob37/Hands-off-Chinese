@@ -1,5 +1,6 @@
-import { getTimestamp, makeRequest } from "./util";
+import { getTimestamp } from "../util/util";
 import Amplify, { Storage } from "aws-amplify";
+import { makeRequest } from "./util";
 
 /**
  * @typedef {{
