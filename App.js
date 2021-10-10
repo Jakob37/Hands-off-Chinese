@@ -1,8 +1,8 @@
 import Amplify, { Storage } from "aws-amplify"
 import React, { useEffect } from "react"
-import { ScrollView, Text, View } from "react-native"
+import { Button, ScrollView, Text, View } from "react-native"
 import awsconfig from "./src/aws-exports"
-import { getCategories, makeNewAudioEntry } from "./src/backend/apicalls"
+import { getAllMeta, getCategories, makeNewAudioEntry } from "./src/backend/apicalls"
 import {
     getAudioListForCategory,
     listCategory,
@@ -22,29 +22,44 @@ Amplify.register(Storage)
 
 // Continue testing: https://docs.amplify.aws/lib/storage/getting-started/q/platform/js#using-a-custom-plugin
 // Further configuration needed??
+/** @type {Map<string,MetaObj>} */
+const idToEntry = new Map()
+/** @type {Map<string,Set<string>>} */
+const categoryToIds = new Map()
+
 
 const App = () => {
+
+    const loadDatabase = () => {
+        getAllMeta().then((result) => {
+            for (const resultEntry of result) {
+                idToEntry.set(resultEntry.id, resultEntry)
+                if (!categoryToIds.has(resultEntry.category)) {
+                    categoryToIds.set(resultEntry.category, new Set())
+                }
+                categoryToIds.get(resultEntry.category).add(resultEntry.id)
+            }
+        })
+    }
+    useEffect(loadDatabase, [])
+
     const retrieveCategoryEntriesList = (category) => {
         getAudioListForCategory(category).then((returnedList) => {
-            console.log("setting audio list", returnedList)
             setAudioList(returnedList)
         })
     }
 
     const refreshCategories = () => {
         getCategories().then((returnedCategories) => {
+            // console.log('loading categories', returnedCategories.categories);
             setCategoryList(returnedCategories.categories)
             setDisplayCategoryList(returnedCategories.categoriesWithCounts)
+            // database.push(...returnedCategories.categories)
         })
     }
     useEffect(refreshCategories, [])
 
     const [audioList, setAudioList] = React.useState([])
-
-    // const [chineseText, setChineseText] = React.useState("")
-    // const [englishText, setEnglishText] = React.useState("")
-    // const [categoryText, setCategoryText] = React.useState("")
-
     const [currCategory, setCurrCategory] = React.useState(null)
 
     const [categoryList, setCategoryList] = React.useState(["Category1"])
@@ -52,15 +67,21 @@ const App = () => {
         "Loading from AWS...",
     ])
 
-    // const [addEntryMenuOpen, setAddEntryMenuOpen] = React.useState(false)
     const [isSelectedView, setIsSelectedView] = React.useState(false)
 
     return (
         <View style={{ flex: 1 }}>
-            {/* <Header header="Hands-off Chinese"></Header> */}
             <View>
                 <Text style={styles.header}>Hands-off Chinese</Text>
             </View>
+
+            <Button
+                title="Testbutton"
+                onPress={() => {
+                    console.log("press!")
+                    console.log('loaded data:', categoryToIds, idToEntry)
+                }}
+            />
 
             {!isSelectedView ? (
                 <ScrollView>
@@ -77,19 +98,8 @@ const App = () => {
                     />
                 </ScrollView>
             ) : (
-                <ScrollableAudioCardList
-                    audioList={audioList}
-                    // refreshS3List={refreshS3List}
-                />
+                <ScrollableAudioCardList audioList={audioList} />
             )}
-
-            {/* {addEntryMenuOpen ? (
-                <AddAudioMenu
-                    // setChineseText={setChineseText}
-                    // setEnglishText={setEnglishText}
-                    // setCategoryText={setCategoryText}
-                />
-            ) : null} */}
 
             <Footer
                 pathPairs={
@@ -107,15 +117,12 @@ const App = () => {
                 }}
                 refreshCategories={refreshCategories}
                 addNew={(englishText, chineseText, categoryText) => {
-                    console.log('obtained text', englishText, chineseText, categoryText)
                     makeNewAudioEntry(
                         englishText,
                         chineseText,
                         categoryText,
                         () => {
-                            console.log(
-                                "Completed logic coming here!",
-                            )
+                            console.log("Completed logic coming here!")
                         }
                     )
                 }}
