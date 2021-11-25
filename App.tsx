@@ -5,6 +5,7 @@ import awsconfig from "./src/aws-exports"
 import {
     getAllMeta,
     getCategories,
+    getMetaAsAudioEntries,
     makeNewAudioEntry,
 } from "./src/backend/apicalls"
 import {
@@ -96,9 +97,10 @@ const App = () => {
 
             <Button
                 title="Testbutton"
-                onPress={() => {
+                onPress={async () => {
                     console.log("press!")
-                    console.log("loaded data:", categoryToIds, idToEntry)
+                    // console.log("loaded data:", categoryToIds, idToEntry)
+                    console.log(await getMetaAsAudioEntries())
                 }}
             />
 

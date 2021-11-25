@@ -1,32 +1,52 @@
 import { getTimestamp } from "../util/util"
 import Amplify, { Storage } from "aws-amplify"
 import { makeRequest } from "./util"
+import { AudioEntry, AudioEntryPair } from "./audioentry"
 
-/**
- * @typedef {{
- * category: string,
- * creationdate: number,
- * filename: string,
- * id: string,
- * language: 'english'|'chinese',
- * text: string
- * }} MetaObj
- */
+interface MetaObj {
+    category: string
+    creationdate: number
+    filename: string
+    id: string
+    language: "english" | "chinese"
+    text: string
+}
 
-/**
- * @returns {Promise<MetaObj[]>}
- */
-const getAllMeta = async () => {
+const getAllMeta = async (): Promise<MetaObj[]> => {
     const apiUrl =
         "https://1meap5kmbd.execute-api.eu-west-1.amazonaws.com/dev/allmeta"
     const result = await makeRequest("GET", apiUrl)
-    const items = JSON.parse(result).body.Items
+    const items = JSON.parse(result).body.Items as MetaObj[]
     return items
 }
 
 const getMetaAsAudioEntries = async () => {
-    const items = getAllMeta()
-    console.log(items)
+    const items = await getAllMeta()
+    const entries = items.map((item) => new AudioEntry(item))
+
+    // const allIds = new Set(entries.map((entry) => entry.id))
+
+    console.log(`${entries.length} entries found`)
+
+    const idToAudioEntryPair = new Map<string, AudioEntryPair>()
+    for (const entry of entries) {
+        const id = entry.id
+        let currentEntry = idToAudioEntryPair.get(id)
+        if (currentEntry == null) {
+            currentEntry = new AudioEntryPair()
+            idToAudioEntryPair.set(id, currentEntry)
+        }
+        if (entry.language == "chinese") {
+            currentEntry.addChineseEntry(entry)
+        } else {
+            currentEntry.addEnglishEntry(entry)
+        }
+
+    }
+
+    console.log(`${idToAudioEntryPair.size} entry pairs found`)
+    const entryPairsOnly = Array.from(idToAudioEntryPair.values())
+    return entryPairsOnly.map((entry) => entry.toString()).join("\n-----\n")
 }
 
 /**
@@ -79,7 +99,14 @@ const getCategories = async () => {
  * @param {'english'|'chinese'} language
  */
 const submitMetadata = async (sharedId, text, filename, category, language) => {
-    console.log("Preparing to make metadata", sharedId, text, filename, category, language)
+    console.log(
+        "Preparing to make metadata",
+        sharedId,
+        text,
+        filename,
+        category,
+        language
+    )
 
     const creationdate = new Date().getMilliseconds()
     const params = JSON.stringify({
@@ -90,7 +117,7 @@ const submitMetadata = async (sharedId, text, filename, category, language) => {
         category,
         language,
     })
-    console.log('params to submit', params)
+    console.log("params to submit", params)
     // const params = `{"id": "${id}", "filename": "${filename}", "creationdate": ${creationdate}, "category": "${category}"}`;
     const apiUrl =
         "https://1meap5kmbd.execute-api.eu-west-1.amazonaws.com/dev/meta"
@@ -101,7 +128,7 @@ const submitMetadata = async (sharedId, text, filename, category, language) => {
     apiTestXhr.setRequestHeader("Content-type", "application/json")
     apiTestXhr.onreadystatechange = (e) => {
         // @ts-ignore
-        console.log('response', e.target.response);
+        console.log("response", e.target.response)
     }
     const result = await apiTestXhr.send(params)
     return result
@@ -252,13 +279,12 @@ const retrieveEntriesFromS3 = async () => {
     }
 
     const langArr = Array.from(baseToObj).map(
-        ([_, obj]) =>
-            /** @type {[string,string,string,string]} */ ([
-                obj.english,
-                obj.englishKey,
-                obj.chinese,
-                obj.chineseKey,
-            ])
+        ([_, obj]) => /** @type {[string,string,string,string]} */ [
+            obj.english,
+            obj.englishKey,
+            obj.chinese,
+            obj.chineseKey,
+        ]
     )
 
     // console.log(s3Names);
@@ -276,4 +302,6 @@ export {
     getAllMeta,
     makeNewAudioEntry,
     getMetaByCategory,
+    getMetaAsAudioEntries,
+    MetaObj,
 }
