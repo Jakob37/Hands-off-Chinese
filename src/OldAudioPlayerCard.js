@@ -7,7 +7,7 @@ async function startPlaying() {
     if (audioPlayer.audio.length > 0) {
         audioPlayer.play();
     } else {
-        console.log('No audio player loaded!');
+        console.warn('No audio player loaded!');
     }
 }
 
@@ -42,14 +42,12 @@ class AudioPlayerCard extends React.Component {
 
     incrementDelay(diff) {
         const newDelay = this.state.delay + diff;
-        console.log('new delay', newDelay);
         this.setState({delay: newDelay});
         // this.state.delay += diff;
         if (newDelay < 0) {
             // this.state.delay = 0;
             this.setState({delay: 0});
         }
-        console.log('Changing delay to:', newDelay);
         audioPlayer.setDelay(this.state.delay);
     }
     

@@ -6,7 +6,7 @@ const ScrollableAudioCardList = (param) => {
     return (
         <ScrollView>
             <AudioCardList
-                list={param.audioList}
+                listEntries={param.audioList}
                 endAction={param.refreshS3List} 
             />
         </ScrollView>

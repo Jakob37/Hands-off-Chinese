@@ -39,7 +39,7 @@ const App = () => {
                     idToEntry.set(resultEntry.id, {
                         english: null,
                         chinese: null,
-                        active: true
+                        active: true,
                     })
                 }
 
@@ -72,25 +72,11 @@ const App = () => {
                 entries.english.filename,
                 entries.chinese.text,
                 entries.chinese.filename,
-                entries.active
+                entries.active,
             ])
         }
-        console.log(audioList)
         setAudioList(audioList)
-        // getAudioListForCategory(category).then((returnedList) => {
-        //     setAudioList(returnedList)
-        // })
     }
-
-    // const refreshCategories = () => {
-    //     getCategories().then((returnedCategories) => {
-    //         // console.log('loading categories', returnedCategories.categories);
-    //         setCategoryList(returnedCategories.categories)
-    //         setDisplayCategoryList(returnedCategories.categoriesWithCounts)
-    //         // database.push(...returnedCategories.categories)
-    //     })
-    // }
-    // useEffect(refreshCategories, [])
 
     const [audioList, setAudioList] = React.useState([])
     const [currCategory, setCurrCategory] = React.useState(null)

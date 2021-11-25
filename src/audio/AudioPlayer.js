@@ -71,20 +71,8 @@ class AudioPlayer {
 
     playRandom() {
         const pair = getRandomFromArray(this.audio)
-        // console.log('found pair', pair);
         this.currentlyPlayingPair = pair
-
         playAudio(pair.englishPath, () => { this.playEvent() })
-
-        // this.playPath(pair.englishAudio);
-        // this.currentlyPlayingPair.englishAudio.play((success) => {
-        //     if (success) {
-        //         this.playEvent();
-        //         console.log("Successfully finished playing");
-        //     } else {
-        //         console.log("Playback failed due to audio decoding errors");
-        //     }
-        // });
     }
 
     /**
@@ -104,22 +92,17 @@ class AudioPlayer {
     }
 
     playEvent() {
-        console.log('--- play event triggered ---')
         if (!this.isPlaying) {
-            console.log("Not playing, returning!")
             return
         }
 
         if (this.audioState == AudioState.playing_english) {
-            console.log('play random')
             this.playRandom()
             this.audioState = AudioState.english_pause
         } else if (this.audioState == AudioState.english_pause) {
-            console.log('english_pause')
             this.playPause(this.delay)
             this.audioState = AudioState.playing_chinese
         } else if (this.audioState == AudioState.playing_chinese) {
-            console.log('playing_chinese')
             const currAudio = this.currentlyPlayingPair
             // this.currentlyPlayingPair = null;
             playAudio(currAudio.chinesePath, () => { this.playEvent() })

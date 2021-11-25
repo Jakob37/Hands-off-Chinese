@@ -24,6 +24,11 @@ const getAllMeta = async () => {
     return items
 }
 
+const getMetaAsAudioEntries = async () => {
+    const items = getAllMeta()
+    console.log(items)
+}
+
 /**
  * @returns {Promise<Map<string,MetaObj[]>>}
  */
@@ -99,7 +104,6 @@ const submitMetadata = async (sharedId, text, filename, category, language) => {
         console.log('response', e.target.response);
     }
     const result = await apiTestXhr.send(params)
-    // console.log(result);
     return result
 }
 

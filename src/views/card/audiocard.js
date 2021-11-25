@@ -91,7 +91,9 @@ const AudioCard = (param) => {
 
             <TouchableOpacity
                 onPress={() => {
-                    console.log("Pause logic, current state:", isPaused)
+                    console.log("isPaused", isPaused)
+                    console.log("param.isActive", param.isActive)
+                    param.pauseAction()
                     setIsPaused(!isPaused)
                 }}
             >
