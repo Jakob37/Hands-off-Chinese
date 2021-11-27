@@ -12,7 +12,7 @@ const removeCategory = async (category) => {
 
 const CategoryCard = (param) => {
     return (
-        <View style={
+        <View style = {
             [
                 styles.card,
                 {
@@ -30,14 +30,6 @@ const CategoryCard = (param) => {
                     </Text>
                 </TouchableOpacity>
             </View>
-
-            {/* <TouchableOpacity onPress={() => {
-                removeCategory(param.category).then(param.endAction)
-            }}>
-                <View>
-                    <Text style={{ color: 'gray', fontWeight: 'bold', fontSize: 24 }}>X</Text>
-                </View>
-            </TouchableOpacity> */}
         </View>
     );
 }

@@ -69,6 +69,16 @@ class AudioEntryPair {
         return this.chineseEntry != null && this.englishEntry != null
     }
 
+    getListFormat(): [string,string,string,string,boolean] {
+        return [
+            this.englishText,
+            this.englishFilename,
+            this.chineseText,
+            this.chineseFilename,
+            true,
+        ]
+    }
+
     toString(): string {
         return [
             `ID: ${this.id}`,
@@ -79,7 +89,7 @@ class AudioEntryPair {
             `Chinese file name: ${this.chineseFilename}`,
             `English text: ${this.englishText}`,
             `Chinese text: ${this.chineseText}`,
-        ].join('\n')
+        ].join("\n")
     }
 }
 
