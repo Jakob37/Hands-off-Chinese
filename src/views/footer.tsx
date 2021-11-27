@@ -1,7 +1,6 @@
 import { useEffect, useState, ReactElement, Fragment, createRef, forwardRef } from "react"
-import { LanguagePair } from "../backend/languageentry"
 import { AudioPlayer } from "../audio/AudioPlayer"
-import { styles } from "../Stylesheet"
+import { styles } from "../style/Stylesheet"
 
 const React = require("react")
 const { View, TouchableOpacity, Text, TextInput } = require("react-native")

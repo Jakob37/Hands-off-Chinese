@@ -58,8 +58,6 @@ class AudioPlayer {
             const audioPair = new AudioPair(english, chinese)
             this.audio.push(audioPair)
         }
-
-        console.log(`Finished loading ${audioPathPairs.length} clips`)
     }
 
     /**
@@ -112,7 +110,6 @@ class AudioPlayer {
             // })
             this.audioState = AudioState.chinese_pause
         } else if (this.audioState == AudioState.chinese_pause) {
-            console.log('chinese_pause')
             this.playPause(this.delay)
             this.audioState = AudioState.playing_english
         } else {
@@ -121,16 +118,13 @@ class AudioPlayer {
     }
 
     play() {
-        console.log("Starting audio player")
         this.audioState = AudioState.playing_english
         this.isPlaying = true
         this.playEvent()
     }
 
     stop() {
-        console.log("Stopping audio player!")
         this.audioState = AudioState.stopped
-        console.log(this.audioState)
         this.isPlaying = false
     }
 }
@@ -142,7 +136,7 @@ class AudioPlayer {
 function testLoad(soundPath) {
     const sound = new Sound(soundPath, Sound.MAIN_BUNDLE, (error) => {
         if (error) {
-            console.log(
+            console.warn(
                 "failed to load the sound",
                 error,
                 "from path",
@@ -155,13 +149,12 @@ function testLoad(soundPath) {
 }
 
 async function playSound(soundPath) {
-    console.log(soundPath)
     const appleSound = await new Sound(
         soundPath,
         Sound.MAIN_BUNDLE,
         (error) => {
             if (error) {
-                console.log(
+                console.warn(
                     "failed to load the sound",
                     error,
                     "from path",
@@ -172,10 +165,9 @@ async function playSound(soundPath) {
 
             appleSound.play((success) => {
                 if (success) {
-                    console.log("Successfully finished playing")
                     // playSound(soundPath);
                 } else {
-                    console.log("Playback failed due to audio decoding errors")
+                    console.warn("Playback failed due to audio decoding errors")
                 }
             })
         }

@@ -15,7 +15,7 @@ interface MetaObj {
 const getAllMeta = async (): Promise<MetaObj[]> => {
     const apiUrl =
         "https://1meap5kmbd.execute-api.eu-west-1.amazonaws.com/dev/allmeta"
-    const result = await makeRequest("GET", apiUrl)
+    const result = await makeRequest("GET", apiUrl) as string
     const items = JSON.parse(result).body.Items as MetaObj[]
     return items
 }
@@ -23,10 +23,6 @@ const getAllMeta = async (): Promise<MetaObj[]> => {
 const getMetaAsAudioEntries = async (): Promise<Map<string,AudioEntryPair>> => {
     const items = await getAllMeta()
     const entries = items.map((item) => new AudioEntry(item))
-
-    // const allIds = new Set(entries.map((entry) => entry.id))
-
-    console.log(`${entries.length} entries found`)
 
     const idToAudioEntryPair = new Map<string, AudioEntryPair>()
     for (const entry of entries) {
@@ -43,12 +39,7 @@ const getMetaAsAudioEntries = async (): Promise<Map<string,AudioEntryPair>> => {
         }
 
     }
-
     return idToAudioEntryPair
-
-    // console.log(`${idToAudioEntryPair.size} entry pairs found`)
-    // const entryPairsOnly = Array.from(idToAudioEntryPair.values())
-    // return entryPairsOnly.map((entry) => entry.toString()).join("\n-----\n")
 }
 
 /**
@@ -101,15 +92,6 @@ const getCategories = async () => {
  * @param {'english'|'chinese'} language
  */
 const submitMetadata = async (sharedId, text, filename, category, language) => {
-    console.log(
-        "Preparing to make metadata",
-        sharedId,
-        text,
-        filename,
-        category,
-        language
-    )
-
     const creationdate = new Date().getMilliseconds()
     const params = JSON.stringify({
         id: sharedId,
@@ -119,8 +101,6 @@ const submitMetadata = async (sharedId, text, filename, category, language) => {
         category,
         language,
     })
-    console.log("params to submit", params)
-    // const params = `{"id": "${id}", "filename": "${filename}", "creationdate": ${creationdate}, "category": "${category}"}`;
     const apiUrl =
         "https://1meap5kmbd.execute-api.eu-west-1.amazonaws.com/dev/meta"
 
@@ -130,7 +110,7 @@ const submitMetadata = async (sharedId, text, filename, category, language) => {
     apiTestXhr.setRequestHeader("Content-type", "application/json")
     apiTestXhr.onreadystatechange = (e) => {
         // @ts-ignore
-        console.log("response", e.target.response)
+        console.warn("response", e.target.response)
     }
     const result = await apiTestXhr.send(params)
     return result
@@ -148,14 +128,11 @@ const getMeta = async (filename) => {
     apiTestXhr.open("GET", apiUrl + "?" + params, isAsync)
     apiTestXhr.setRequestHeader("Content-type", "application/json")
     apiTestXhr.onreadystatechange = (e) => {
-        // console.log(e);
-        // console.log(e.target);
         // @ts-ignore
-        // console.log(e.target.response);
-        // console.log(Object.keys(e.target));
+        // console.warn(e.target.response);
+        // console.warn(Object.keys(e.target));
     }
     const result = await apiTestXhr.send(null)
-    // console.log(result);
     return result
 }
 
@@ -176,7 +153,7 @@ const generateAudio = (apiUrl, text, voice, prefix, onReadyCall = null) => {
     pollyXhr.setRequestHeader("Content-type", "application/json")
     pollyXhr.onreadystatechange = function (e) {
         // @ts-ignore
-        // console.log('response', e.target.response);
+        // console.warn('response', e.target.response);
         if (onReadyCall != null) {
             onReadyCall()
         }
@@ -288,8 +265,6 @@ const retrieveEntriesFromS3 = async () => {
             obj.chineseKey,
         ]
     )
-
-    // console.log(s3Names);
 
     return langArr
 }

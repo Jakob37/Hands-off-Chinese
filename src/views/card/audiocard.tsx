@@ -1,4 +1,4 @@
-import { styles } from "../../Stylesheet"
+import { styles } from "../../style/Stylesheet"
 import React from "react"
 import { View, Text } from "react-native"
 import { TouchableOpacity } from "react-native"
@@ -11,14 +11,11 @@ import Sound from "react-native-sound"
  * @param {() => void|null} [callback=null]
  */
 const playAudio = async (key, callback = null) => {
-    // console.log('Attempting to play', key);
 
     const signedUrl = await Storage.get(key)
-    // console.log(signedUrl);
-
     const track = new Sound(signedUrl, null, (e) => {
         if (e) {
-            console.log("error loading track:", e)
+            console.warn("error loading track:", e)
         } else {
             if (callback != null) {
                 track.play(callback)
@@ -36,7 +33,6 @@ const playAudio = async (key, callback = null) => {
 const removeTrack = async (englishKey, chineseKey) => {
     const result1 = await Storage.remove(englishKey)
     const result2 = await Storage.remove(chineseKey)
-    // console.log(result1, result2);
 }
 
 const AudioCard = (param) => {
@@ -91,8 +87,6 @@ const AudioCard = (param) => {
 
             <TouchableOpacity
                 onPress={() => {
-                    console.log("isPaused", isPaused)
-                    console.log("param.isActive", param.isActive)
                     param.pauseAction()
                     setIsPaused(!isPaused)
                 }}

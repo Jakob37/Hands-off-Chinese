@@ -11,7 +11,6 @@ const CategoryCardList = (param) => {
                         key={i}
                         category={displayCategory}
                         selectAction={() => { 
-                            console.log('all categories', param.categories)
                             const category = param.categories[i];
                             param.selectAction(category) 
                         }}

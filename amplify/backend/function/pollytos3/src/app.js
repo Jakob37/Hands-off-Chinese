@@ -59,7 +59,7 @@ exports.handler = (event, context, callback) => {
                     });
                 })
                 .on("error", function(response) {
-                    console.log(response);
+                    console.warn(response);
                 })
                 .send();
         })

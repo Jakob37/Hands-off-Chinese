@@ -1,6 +1,5 @@
-import { styles } from "../../Stylesheet"
 import React from "react"
-import { View, Text } from "react-native"
+import { View } from "react-native"
 import { AudioCard } from "../card/audiocard"
 
 const AudioCardList = (param) => {
@@ -9,7 +8,6 @@ const AudioCardList = (param) => {
             <View>
                 {
                     param.listEntries.map((audioObj, i) => {
-                        console.log(audioObj)
                         return (
                             <AudioCard
                                 key={i}
@@ -20,12 +18,11 @@ const AudioCardList = (param) => {
                                 isActive={audioObj[4]}
                                 endAction={param.endAction}
                                 pauseAction={() => {
-                                    console.log("Pause action! Key:", i)
+                                    console.warn("Pause action! Key:", i)
                                 }}
                             />
                         )
                     })
-                    // Array(20).fill().map((x, i) => { return <CategoryCard title={`Card ${i+1}`} key={i} /> })
                 }
             </View>
         </View>
