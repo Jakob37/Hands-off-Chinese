@@ -20,7 +20,7 @@ const getAllMeta = async (): Promise<MetaObj[]> => {
     return items
 }
 
-const getMetaAsAudioEntries = async () => {
+const getMetaAsAudioEntries = async (): Promise<Map<string,AudioEntryPair>> => {
     const items = await getAllMeta()
     const entries = items.map((item) => new AudioEntry(item))
 
@@ -44,9 +44,11 @@ const getMetaAsAudioEntries = async () => {
 
     }
 
-    console.log(`${idToAudioEntryPair.size} entry pairs found`)
-    const entryPairsOnly = Array.from(idToAudioEntryPair.values())
-    return entryPairsOnly.map((entry) => entry.toString()).join("\n-----\n")
+    return idToAudioEntryPair
+
+    // console.log(`${idToAudioEntryPair.size} entry pairs found`)
+    // const entryPairsOnly = Array.from(idToAudioEntryPair.values())
+    // return entryPairsOnly.map((entry) => entry.toString()).join("\n-----\n")
 }
 
 /**

@@ -41,6 +41,8 @@ class AudioEntryPair {
     englishText: string
     chineseText: string
 
+    paused: boolean = false
+
     assignEntry(entry: AudioEntry) {
         this.id = entry.id
         this.category = entry.category
