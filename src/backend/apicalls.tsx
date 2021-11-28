@@ -228,53 +228,53 @@ class S3Entry {
     }
 }
 
-/**
- * @returns {Promise<[string,string,string,string][]>}
- */
-const retrieveEntriesFromS3 = async () => {
-    const listResult = await Storage.list("")
-    const s3Names = listResult
-        .filter((result) => result.key != "")
-        .map((result) => result.key)
+// /**
+//  * @returns {Promise<[string,string,string,string][]>}
+//  */
+// const retrieveEntriesFromS3 = async () => {
+//     const listResult = await Storage.list("")
+//     const s3Names = listResult
+//         .filter((result) => result.key != "")
+//         .map((result) => result.key)
 
-    /** @type {Map<string, {english:string, chinese:string, englishKey:string, chineseKey:string}>} */
-    const baseToObj = new Map()
+//     /** @type {Map<string, {english:string, chinese:string, englishKey:string, chineseKey:string}>} */
+//     const baseToObj = new Map()
 
-    // const splits = s3Names.map((name) => { return name.split('_') });
-    for (const s3Name of s3Names) {
-        const [base, languageString] = s3Name.split("_")
-        const langObj = baseToObj.get(base)
-        if (langObj == null) {
-            baseToObj.set(base, {
-                english: languageString,
-                englishKey: s3Name,
-                chinese: "",
-                chineseKey: "",
-            })
-        } else {
-            langObj.chinese = languageString
-            langObj.chineseKey = s3Name
-        }
-    }
+//     // const splits = s3Names.map((name) => { return name.split('_') });
+//     for (const s3Name of s3Names) {
+//         const [base, languageString] = s3Name.split("_")
+//         const langObj = baseToObj.get(base)
+//         if (langObj == null) {
+//             baseToObj.set(base, {
+//                 english: languageString,
+//                 englishKey: s3Name,
+//                 chinese: "",
+//                 chineseKey: "",
+//             })
+//         } else {
+//             langObj.chinese = languageString
+//             langObj.chineseKey = s3Name
+//         }
+//     }
 
-    const langArr = Array.from(baseToObj).map(
-        ([_, obj]) => /** @type {[string,string,string,string]} */ [
-            obj.english,
-            obj.englishKey,
-            obj.chinese,
-            obj.chineseKey,
-        ]
-    )
+//     const langArr = Array.from(baseToObj).map(
+//         ([_, obj]) => /** @type {[string,string,string,string]} */ [
+//             obj.english,
+//             obj.englishKey,
+//             obj.chinese,
+//             obj.chineseKey,
+//         ]
+//     )
 
-    return langArr
-}
+//     return langArr
+// }
 
 export {
     submitMetadata,
     getMeta,
     generateAudio,
     generatePollyAudio,
-    retrieveEntriesFromS3,
+    // retrieveEntriesFromS3,
     getCategories,
     getAllMeta,
     makeNewAudioEntry,

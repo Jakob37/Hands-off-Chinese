@@ -2,7 +2,13 @@ const React = require("react")
 const { View } = require("react-native")
 const { CategoryCard } = require("../card/categorycard")
 
-const CategoryCardList = (param) => {
+interface Param {
+    displayCategories: string[],
+    categories: string[],
+    selectAction: (category:string) => void
+}
+
+const CategoryCardList = (param: Param) => {
     return (
         <View>
             {param.displayCategories.map((displayCategory, i) => {

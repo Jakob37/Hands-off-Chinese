@@ -1,8 +1,14 @@
 const React = require("react")
 const { ScrollView } = require("react-native")
+import { AudioEntryPair } from "src/backend/audioentry"
 import { AudioCardList } from "./audiocardlist"
 
-const ScrollableAudioCardList = (param) => {
+interface Param {
+    audioList: AudioEntryPair[],
+    refreshS3List: () => void
+}
+
+const ScrollableAudioCardList = (param: Param) => {
     return (
         <ScrollView>
             <AudioCardList

@@ -13,6 +13,9 @@ import Sound from "react-native-sound"
 const playAudio = async (key, callback = null) => {
 
     const signedUrl = await Storage.get(key)
+
+    // const signedUrl = 'https://handsoffchinesestorage183310-dev.s3.eu-west-1.amazonaws.com/public/210822144607_I+am+eating+apple.mp3'
+    // console.log('will try playing', signedUrl)
     const track = new Sound(signedUrl, null, (e) => {
         if (e) {
             console.warn("error loading track:", e)
@@ -57,6 +60,7 @@ const AudioCard = (param) => {
             <View>
                 <TouchableOpacity
                     onPress={() => {
+                        console.log('play audio for', param.chineseKey)
                         playAudio(param.chineseKey)
                     }}
                 >

@@ -1,8 +1,14 @@
 import React from "react"
 import { View } from "react-native"
+import { AudioEntryPair } from "src/backend/audioentry"
 import { AudioCard } from "../card/audiocard"
 
-const AudioCardList = (param) => {
+interface Param {
+    listEntries: AudioEntryPair[],
+    endAction: () => void
+}
+
+const AudioCardList = (param: Param) => {
     return (
         <View>
             <View>
@@ -11,11 +17,11 @@ const AudioCardList = (param) => {
                         return (
                             <AudioCard
                                 key={i}
-                                english={audioObj[0]}
-                                englishKey={audioObj[1]}
-                                chinese={audioObj[2]}
-                                chineseKey={audioObj[3]}
-                                isActive={audioObj[4]}
+                                english={audioObj.englishText}
+                                englishKey={audioObj.englishFilename}
+                                chinese={audioObj.chineseText}
+                                chineseKey={audioObj.chineseFilename}
+                                isActive={!audioObj.paused}
                                 endAction={param.endAction}
                                 pauseAction={() => {
                                     console.warn("Pause action! Key:", i)
