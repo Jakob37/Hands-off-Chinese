@@ -197,7 +197,6 @@ const generatePollyAudio = (english, chinese, onReadyCall) => {
 export {
     getMeta,
     getCategories,
-    _getAllMeta as getAllMeta,
     makeNewAudioEntry,
     getMetaAsAudioEntries,
     MetaObj,

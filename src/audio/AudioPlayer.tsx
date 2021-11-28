@@ -2,6 +2,7 @@ import { default as Sound } from "react-native-sound"
 import { playAudio } from "../views/card/audiocard"
 // import { audioLibraries } from "./Database";
 import { getRandomFromArray } from "../util/util"
+import { AudioEntryPair } from "src/backend/audioentry"
 
 Sound.setCategory("Playback")
 
@@ -35,57 +36,45 @@ const AudioState = Object.freeze({
 })
 
 class AudioPlayer {
-    /** @type {AudioPair[]} */
-    audio = []
-    audioState = AudioState.stopped
-    /** @type {AudioPair} */
-    currentlyPlayingPair = null
-    delay = 3000
+    audio: AudioEntryPair[] = []
+    audioState: number = AudioState.stopped
+    currentlyPlayingPair: AudioEntryPair | null = null
+    delay: number = 3000
 
     isPlaying = false
 
-    constructor() {
-        // const defaultPairs = audioLibraries.get('Exam revision 4').pathPairs;
-        // this.load(defaultPairs);
+    load(audioEntries: AudioEntryPair[]) {
+        console.log("loading in audio player")
+        this.audio = audioEntries
+        // for (const entry of audioEntries) {
+        //     const english = entry.englishEntry
+        //     const chinese = entry.chineseEntry
+        //     const audioPair = new AudioPair(english, chinese)
+        //     this.audio.push(audioPair)
+        // }
     }
 
-    /**
-     * @param {[string,string][]} audioPathPairs
-     */
-    load(audioPathPairs) {
-        this.audio = []
-        for (const [chinese, english] of audioPathPairs) {
-            const audioPair = new AudioPair(english, chinese)
-            this.audio.push(audioPair)
-        }
-    }
-
-    /**
-     * @param {number} delay
-     */
-    setDelay(delay) {
+    setDelay(delay: number) {
         this.delay = delay
     }
 
     playRandom() {
-        const pair = getRandomFromArray(this.audio)
-        this.currentlyPlayingPair = pair
-        playAudio(pair.englishPath, () => { this.playEvent() })
+        console.log("playing random")
+        const audioEntry = getRandomFromArray(this.audio)
+        this.currentlyPlayingPair = audioEntry
+        console.log(audioEntry)
+        playAudio(audioEntry.chineseFilename, () => {
+            this.playEvent()
+        })
     }
 
-    /**
-     * @param {number} duration
-     */
-    playPause(duration) {
+    playPause(duration: number) {
         setTimeout(() => {
             this.playEvent()
         }, duration)
     }
 
-    /**
-     * @returns {number}
-     */
-    getNumberClips() {
+    getNumberClips(): number {
         return this.audio.length
     }
 
@@ -103,7 +92,9 @@ class AudioPlayer {
         } else if (this.audioState == AudioState.playing_chinese) {
             const currAudio = this.currentlyPlayingPair
             // this.currentlyPlayingPair = null;
-            playAudio(currAudio.chinesePath, () => { this.playEvent() })
+            playAudio(currAudio.chinesePath, () => {
+                this.playEvent()
+            })
 
             // currAudio.chineseAudio.play((_success) => {
             //     this.playEvent()
@@ -129,11 +120,7 @@ class AudioPlayer {
     }
 }
 
-/**
- * @param {string} soundPath
- * @returns {Sound}
- */
-function testLoad(soundPath) {
+function testLoad(soundPath: string): Sound {
     const sound = new Sound(soundPath, Sound.MAIN_BUNDLE, (error) => {
         if (error) {
             console.warn(
@@ -148,7 +135,7 @@ function testLoad(soundPath) {
     return sound
 }
 
-async function playSound(soundPath) {
+async function playSound(soundPath: string) {
     const appleSound = await new Sound(
         soundPath,
         Sound.MAIN_BUNDLE,

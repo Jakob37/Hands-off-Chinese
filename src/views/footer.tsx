@@ -1,4 +1,5 @@
 import { useEffect, useState, ReactElement, Fragment, createRef, forwardRef } from "react"
+import { AudioEntryPair } from "src/backend/audioentry"
 import { AudioPlayer } from "../audio/AudioPlayer"
 import { styles } from "../style/Stylesheet"
 
@@ -42,16 +43,14 @@ const AddAudioRow = (param) => {
     )
 }
 
-/**
- * @param {Object} param
- * @property {[string,string][]} param.pathPairs
- * @property {() => void} param.backToMenu
- * @returns
- */
-const AudioFooter = (param) => {
+interface AudioFooterParam {
+    audioEntries: AudioEntryPair[],
+    backToMenu: () => void
+}
+const AudioFooter = (param: AudioFooterParam) => {
     useEffect(() => {
-        audioPlayer.load(param.pathPairs)
-    }, [param.pathPairs])
+        audioPlayer.load(param.audioEntries)
+    }, [param.audioEntries])
 
     return (
         <View
@@ -179,23 +178,22 @@ const CategoryFooter = (param) => {
     )
 }
 
-/**
- * @param {Object} param
- * @property {[string,string][]} param.pathPairs
- * @property {() => void} param.backToMenu
- * @property {() => void} param.refreshCategories
- * @property {(english, chinese, category) => LanguagePair} param.addNew
- * @property {boolean} param.isSelectedView
- * @property {boolean} param.entryMenuOpen
- * @returns {React.ReactElement}
- */
-const Footer = (param) => {
+interface FooterParam {
+    audioEntries: AudioEntryPair[],
+    backToMenu: () => void,
+    refreshCategories: () => void,
+    addNew: (english, chinese, category) => void,
+    isSelectedView: boolean,
+}
+
+
+const Footer = (param: FooterParam) => {
     return (
         <View>
             {param.isSelectedView ? (
                 <AudioFooter
                     backToMenu={param.backToMenu}
-                    pathPairs={param.pathPairs}
+                    audioEntries={param.audioEntries}
                 />
             ) : (
                 <CategoryFooter

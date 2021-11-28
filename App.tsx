@@ -90,14 +90,7 @@ const App: React.FunctionComponent<DefaultState> = ({
             )}
 
             <Footer
-                pathPairs={
-                    currCategory != null
-                        ? audioList.map((entry) => {
-                              const output = [entry[1], entry[3]]
-                              return output
-                          })
-                        : []
-                }
+                audioEntries={audioList}
                 isSelectedView={isSelectedView}
                 backToMenu={() => {
                     setIsSelectedView(false)

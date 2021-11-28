@@ -6,13 +6,13 @@ import { TouchableOpacity } from "react-native"
 import Amplify, { Storage } from "aws-amplify"
 import Sound from "react-native-sound"
 
-/**
- * @param {string} key
- * @param {() => void|null} [callback=null]
- */
-const playAudio = async (key, callback = null) => {
+const playAudio = async (key:string, callback: (() => void)|null = null) => {
+
+    console.log('obtaining input', key)
 
     const signedUrl = await Storage.get(key)
+
+    console.log(signedUrl)
 
     const track = new Sound(signedUrl, null, (e) => {
         if (e) {
