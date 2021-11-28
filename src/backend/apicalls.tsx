@@ -12,7 +12,7 @@ interface MetaObj {
     text: string
 }
 
-const getAllMeta = async (): Promise<MetaObj[]> => {
+const _getAllMeta = async (): Promise<MetaObj[]> => {
     const apiUrl =
         "https://1meap5kmbd.execute-api.eu-west-1.amazonaws.com/dev/allmeta"
     const result = await makeRequest("GET", apiUrl) as string
@@ -21,7 +21,7 @@ const getAllMeta = async (): Promise<MetaObj[]> => {
 }
 
 const getMetaAsAudioEntries = async (): Promise<Map<string,AudioEntryPair>> => {
-    const items = await getAllMeta()
+    const items = await _getAllMeta()
     const entries = items.map((item) => new AudioEntry(item))
 
     const idToAudioEntryPair = new Map<string, AudioEntryPair>()
@@ -43,24 +43,10 @@ const getMetaAsAudioEntries = async (): Promise<Map<string,AudioEntryPair>> => {
 }
 
 /**
- * @returns {Promise<Map<string,MetaObj[]>>}
- */
-const getMetaByCategory = async () => {
-    const allMeta = await getAllMeta()
-    const categoryToMeta = new Map()
-    for (const meta of allMeta) {
-        const accMetaForCat = categoryToMeta.get(meta.category) || []
-        accMetaForCat.push(meta)
-        categoryToMeta.set(meta.category, accMetaForCat)
-    }
-    return categoryToMeta
-}
-
-/**
  * @returns {Promise<{categories: string[], categoriesWithCounts: string[]}>}
  */
 const getCategories = async () => {
-    const items = await getAllMeta()
+    const items = await _getAllMeta()
 
     const categoryToCount = new Map()
     for (const item of items) {
@@ -208,77 +194,11 @@ const generatePollyAudio = (english, chinese, onReadyCall) => {
     return { chineseFilename, englishFilename }
 }
 
-class S3Entry {
-    english
-    englishKey
-    chinese
-    chineseKey
-
-    englishMeta
-    chineseMeta
-
-    constructor(english, englishKey, chinese, chineseKey) {
-        this.english = english
-        this.englishKey = englishKey
-        this.chinese = chinese
-        this.chineseKey = chineseKey
-
-        this.englishMeta = getMeta(englishKey)
-        this.chineseMeta = getMeta(chineseKey)
-    }
-}
-
-// /**
-//  * @returns {Promise<[string,string,string,string][]>}
-//  */
-// const retrieveEntriesFromS3 = async () => {
-//     const listResult = await Storage.list("")
-//     const s3Names = listResult
-//         .filter((result) => result.key != "")
-//         .map((result) => result.key)
-
-//     /** @type {Map<string, {english:string, chinese:string, englishKey:string, chineseKey:string}>} */
-//     const baseToObj = new Map()
-
-//     // const splits = s3Names.map((name) => { return name.split('_') });
-//     for (const s3Name of s3Names) {
-//         const [base, languageString] = s3Name.split("_")
-//         const langObj = baseToObj.get(base)
-//         if (langObj == null) {
-//             baseToObj.set(base, {
-//                 english: languageString,
-//                 englishKey: s3Name,
-//                 chinese: "",
-//                 chineseKey: "",
-//             })
-//         } else {
-//             langObj.chinese = languageString
-//             langObj.chineseKey = s3Name
-//         }
-//     }
-
-//     const langArr = Array.from(baseToObj).map(
-//         ([_, obj]) => /** @type {[string,string,string,string]} */ [
-//             obj.english,
-//             obj.englishKey,
-//             obj.chinese,
-//             obj.chineseKey,
-//         ]
-//     )
-
-//     return langArr
-// }
-
 export {
-    submitMetadata,
     getMeta,
-    generateAudio,
-    generatePollyAudio,
-    // retrieveEntriesFromS3,
     getCategories,
-    getAllMeta,
+    _getAllMeta as getAllMeta,
     makeNewAudioEntry,
-    getMetaByCategory,
     getMetaAsAudioEntries,
     MetaObj,
 }

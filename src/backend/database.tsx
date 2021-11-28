@@ -1,4 +1,4 @@
-import { getAllMeta, getMetaAsAudioEntries } from "./apicalls"
+import { getMetaAsAudioEntries } from "./apicalls"
 import { AudioEntryPair } from "./audioentry"
 
 class Database {
