@@ -1,31 +1,17 @@
-import { useEffect, useState, ReactElement, Fragment, createRef, forwardRef } from "react"
-import { AudioEntryPair } from "src/backend/audioentry"
-import { AudioPlayer } from "../audio/AudioPlayer"
-import { styles } from "../style/Stylesheet"
+import React, {
+    ReactElement, useState
+} from "react"
+import { View, Text, TextInput } from "react-native"
+import { styles } from "../../style/Stylesheet"
+import { FooterButton } from "./util"
 
-const React = require("react")
-const { View, TouchableOpacity, Text, TextInput } = require("react-native")
-
-const fontSize = 16
-
-const audioPlayer = new AudioPlayer()
-
-const FooterButton = (param) => {
-    return (
-        <TouchableOpacity onPress={param.onPress}>
-            <Text style={{ fontSize }}>{param.children}</Text>
-        </TouchableOpacity>
-    )
+interface AddAudioRowParam {
+    label: string,
+    placeholder: string,
+    setUpdatedText: (text:string) => void
 }
 
-/**
- * @param {Object} param
- * @property {string} label
- * @property {string} placeholder
- * @property {(text:string) => string} setUpdatedText
- * @returns
- */
-const AddAudioRow = (param) => {
+const AddAudioRow = (param: AddAudioRowParam) => {
 
     return (
         <View style={styles.inputField}>
@@ -43,64 +29,17 @@ const AddAudioRow = (param) => {
     )
 }
 
-interface AudioFooterParam {
-    audioEntries: AudioEntryPair[],
-    backToMenu: () => void
-}
-const AudioFooter = (param: AudioFooterParam) => {
-    useEffect(() => {
-        audioPlayer.load(param.audioEntries)
-    }, [param.audioEntries])
-
-    return (
-        <View
-            style={[
-                styles.footerCard,
-                {
-                    display: "flex",
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                },
-            ]}
-        >
-            <FooterButton
-                onPress={() => {
-                    audioPlayer.play()
-                }}
-            >
-                Play
-            </FooterButton>
-            <FooterButton
-                onPress={() => {
-                    audioPlayer.playRandom()
-                }}
-            >
-                Random
-            </FooterButton>
-            <FooterButton
-                onPress={() => {
-                    audioPlayer.stop()
-                }}
-            >
-                Stop
-            </FooterButton>
-            <FooterButton onPress={param.backToMenu}>Back</FooterButton>
-        </View>
-    )
+interface CategoryFooterParam {
+    addEntry: (english:string, chinese:string, category:string) => void,
+    refreshCategories: () => void,
 }
 
-/**
- * @param {Object} param
- * @property {(english:string, chinese:string, category:string) => void} addEntry
- * @property {() => void} refreshCategories
- * @returns {ReactElement}
- */
-const CategoryFooter = (param) => {
+const CategoryFooter = (param: CategoryFooterParam) => {
     const [addEntryOpen, setAddEntryOpen] = useState(false)
 
-    const [englishText, setEnglishText] = useState('')
-    const [chineseText, setChineseText] = useState('')
-    const [categoryText, setCategoryText] = useState('')
+    const [englishText, setEnglishText] = useState("")
+    const [chineseText, setChineseText] = useState("")
+    const [categoryText, setCategoryText] = useState("")
 
     return (
         <>
@@ -178,31 +117,4 @@ const CategoryFooter = (param) => {
     )
 }
 
-interface FooterParam {
-    audioEntries: AudioEntryPair[],
-    backToMenu: () => void,
-    refreshCategories: () => void,
-    addNew: (english, chinese, category) => void,
-    isSelectedView: boolean,
-}
-
-
-const Footer = (param: FooterParam) => {
-    return (
-        <View>
-            {param.isSelectedView ? (
-                <AudioFooter
-                    backToMenu={param.backToMenu}
-                    audioEntries={param.audioEntries}
-                />
-            ) : (
-                <CategoryFooter
-                    refreshCategories={param.refreshCategories}
-                    addEntry={param.addNew}
-                />
-            )}
-        </View>
-    )
-}
-
-export default Footer
+export default CategoryFooter;

@@ -6,7 +6,7 @@ import { AudioEntryPair } from "src/backend/audioentry"
 import { makeNewAudioEntry } from "./src/backend/apicalls"
 import { Database } from "./src/backend/database"
 import { styles } from "./src/style/Stylesheet"
-import Footer from "./src/views/footer"
+import Footer from "./src/views/footers/footer"
 import CategoryCardList from "./src/views/list/categorycardlist"
 import ScrollableAudioCardList from "./src/views/list/scrollableaudiocardlist"
 

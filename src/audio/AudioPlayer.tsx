@@ -63,7 +63,7 @@ class AudioPlayer {
         const audioEntry = getRandomFromArray(this.audio)
         this.currentlyPlayingPair = audioEntry
         console.log(audioEntry)
-        playAudio(audioEntry.chineseFilename, () => {
+        playAudio(audioEntry.englishFilename, () => {
             this.playEvent()
         })
     }
@@ -92,7 +92,7 @@ class AudioPlayer {
         } else if (this.audioState == AudioState.playing_chinese) {
             const currAudio = this.currentlyPlayingPair
             // this.currentlyPlayingPair = null;
-            playAudio(currAudio.chinesePath, () => {
+            playAudio(currAudio.chineseFilename, () => {
                 this.playEvent()
             })
 
