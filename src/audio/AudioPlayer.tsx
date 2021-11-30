@@ -6,27 +6,6 @@ import { AudioEntryPair } from "src/backend/audioentry"
 
 Sound.setCategory("Playback")
 
-class AudioPair {
-    /** @type {string} */
-    englishPath
-    /** @type {string} */
-    chinesePath
-    /** @type {Sound} */
-    englishAudio
-    /** @type {Sound} */
-    chineseAudio
-    /**
-     * @param {string} englishPath
-     * @param {string} chinesePath
-     */
-    constructor(englishPath, chinesePath) {
-        this.englishPath = englishPath
-        this.chinesePath = chinesePath
-        // this.englishAudio = testLoad(englishPath)
-        // this.chineseAudio = testLoad(chinesePath)
-    }
-}
-
 const AudioState = Object.freeze({
     stopped: 1,
     playing_english: 2,
@@ -41,17 +20,19 @@ class AudioPlayer {
     currentlyPlayingPair: AudioEntryPair | null = null
     delay: number = 3000
 
-    isPlaying = false
+    startTime: number = 0
+    getTimeSinceStart(): number {
+        return (new Date().getTime() - this.startTime) / 1000
+    }
+
+    isPlaying: boolean = false
+
+    getState(): string {
+        return Object.keys(AudioState)[this.audioState]
+    }
 
     load(audioEntries: AudioEntryPair[]) {
-        console.log("loading in audio player")
         this.audio = audioEntries
-        // for (const entry of audioEntries) {
-        //     const english = entry.englishEntry
-        //     const chinese = entry.chineseEntry
-        //     const audioPair = new AudioPair(english, chinese)
-        //     this.audio.push(audioPair)
-        // }
     }
 
     setDelay(delay: number) {
@@ -59,10 +40,8 @@ class AudioPlayer {
     }
 
     playRandom() {
-        console.log("playing random")
         const audioEntry = getRandomFromArray(this.audio)
         this.currentlyPlayingPair = audioEntry
-        console.log(audioEntry)
         playAudio(audioEntry.englishFilename, () => {
             this.playEvent()
         })
@@ -76,6 +55,12 @@ class AudioPlayer {
 
     getNumberClips(): number {
         return this.audio.length
+    }
+
+    // lastDuration: number
+    durationHook: (duration:number) => void
+    addDurationHook(durationHook: (duration: number) => void) {
+        this.durationHook = durationHook
     }
 
     playEvent() {
@@ -92,8 +77,10 @@ class AudioPlayer {
         } else if (this.audioState == AudioState.playing_chinese) {
             const currAudio = this.currentlyPlayingPair
             // this.currentlyPlayingPair = null;
-            playAudio(currAudio.chineseFilename, () => {
+            playAudio(currAudio.chineseFilename, (sound: Sound) => {
+                console.log('sound duration', sound.getDuration())
                 this.playEvent()
+                this.durationHook(sound.getDuration())
             })
 
             // currAudio.chineseAudio.play((_success) => {
@@ -108,34 +95,39 @@ class AudioPlayer {
         }
     }
 
+    counter: number = 0
+    hook: (value: number) => void
+
+    addTimerHook(hook: (value: number) => void) {
+        this.hook = hook
+    }
+
+    interval: NodeJS.Timer
+
     play() {
+        this.startTime = new Date().getTime()
         this.audioState = AudioState.playing_english
         this.isPlaying = true
         this.playEvent()
+
+        this.interval = setInterval(() => {
+            console.log("test", this.counter)
+            this.counter += 1
+            this.hook(this.counter)
+        }, 1000)
     }
 
     stop() {
         this.audioState = AudioState.stopped
         this.isPlaying = false
+        clearInterval(this.interval)
     }
 }
 
-function testLoad(soundPath: string): Sound {
-    const sound = new Sound(soundPath, Sound.MAIN_BUNDLE, (error) => {
-        if (error) {
-            console.warn(
-                "failed to load the sound",
-                error,
-                "from path",
-                soundPath
-            )
-            return
-        }
-    })
-    return sound
-}
-
-async function playSound(soundPath: string) {
+async function playSound(
+    soundPath: string,
+    setDuration: (duration: number) => void
+) {
     const appleSound = await new Sound(
         soundPath,
         Sound.MAIN_BUNDLE,
@@ -150,6 +142,8 @@ async function playSound(soundPath: string) {
                 return
             }
 
+            setDuration(appleSound.getDuration())
+
             appleSound.play((success) => {
                 if (success) {
                     // playSound(soundPath);
@@ -161,6 +155,4 @@ async function playSound(soundPath: string) {
     )
 }
 
-const audioPlayer = new AudioPlayer()
-
-export { playSound, testLoad, AudioPlayer, audioPlayer }
+export { playSound, AudioPlayer }

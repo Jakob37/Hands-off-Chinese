@@ -6,7 +6,7 @@ import { TouchableOpacity } from "react-native"
 import Amplify, { Storage } from "aws-amplify"
 import Sound from "react-native-sound"
 
-const playAudio = async (key:string, callback: (() => void)|null = null) => {
+const playAudio = async (key:string, callback: ((track: Sound) => void)|null = null) => {
 
     console.log('obtaining input', key)
 
@@ -19,7 +19,9 @@ const playAudio = async (key:string, callback: (() => void)|null = null) => {
             console.warn("error loading track:", e)
         } else {
             if (callback != null) {
-                track.play(callback)
+                track.play(() => {
+                    callback(track)
+                })
             } else {
                 track.play()
             }

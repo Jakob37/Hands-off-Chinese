@@ -1,4 +1,4 @@
-import React, { useEffect, Fragment } from "react"
+import React, { useEffect, Fragment, useState } from "react"
 import { TextInput, View, Text } from "react-native"
 import { AudioPlayer } from "../../audio/AudioPlayer"
 import { AudioEntryPair } from "../../backend/audioentry"
@@ -16,11 +16,24 @@ interface AudioPlayerRowParam {
 const fontSize = 16;
 
 const AudioPlayerRow = (param: AudioPlayerRowParam) => {
+
+    const [counter, setCounter] = useState(0)
+    const [lastDuration, setLastDuration] = useState(0)
+
+    audioPlayer.addTimerHook((number) => {
+        setCounter(number)
+    })
+
+    audioPlayer.addDurationHook((duration) => {
+        setLastDuration(duration)
+    })
+
     return (
         <View style={[styles.inputField, {display:"flex", flexDirection:"row", justifyContent:"space-between"}]}>
-            <Text style={{ fontSize }}>Delay: 10s</Text>
-            <Text style={{ fontSize }}>Play: 2x</Text>
-            <Text style={{ fontSize }}>Curr: 1/4s</Text>
+            <Text style={{ fontSize }}>{`${audioPlayer.delay/1000}s`}</Text>
+            <Text style={{ fontSize }}>{`Time: ${counter}s`}</Text>
+            <Text style={{ fontSize }}>{`Duration: ${lastDuration}s`}</Text>
+            <Text style={{ fontSize }}>{`${audioPlayer.getState()}`}</Text>
         </View>
     )
 }
