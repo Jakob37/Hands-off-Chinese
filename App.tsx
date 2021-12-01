@@ -4,7 +4,7 @@ import awsconfig from "./src/aws-exports"
 import { Button, ScrollView, Text, View } from "react-native"
 import { AudioEntryPair } from "src/backend/audioentry"
 import { makeNewAudioEntry } from "./src/backend/apicalls"
-import { Database } from "./src/backend/database"
+import { HocDb } from "./src/backend/database"
 import { styles } from "./src/style/Stylesheet"
 import Footer from "./src/views/footers/footer"
 import CategoryCardList from "./src/views/list/categorycardlist"
@@ -15,7 +15,7 @@ Amplify.configure(awsconfig)
 // Needed to run in production? (verify)
 Amplify.register(Storage)
 
-const db = new Database()
+const db = new HocDb()
 
 interface DefaultState {
     audioListDefault: AudioEntryPair[]
@@ -86,6 +86,7 @@ const App: React.FunctionComponent<DefaultState> = ({
                 <ScrollableAudioCardList
                     audioList={audioList}
                     refreshS3List={() => console.log("Refresh S3 placeholder")}
+                    db={db}
                 />
             )}
 

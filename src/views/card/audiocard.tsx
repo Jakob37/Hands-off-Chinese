@@ -5,14 +5,11 @@ import { TouchableOpacity } from "react-native"
 
 import Amplify, { Storage } from "aws-amplify"
 import Sound from "react-native-sound"
+import { HocDb } from "src/backend/database"
 
 const playAudio = async (key:string, callback: ((track: Sound) => void)|null = null) => {
 
-    console.log('obtaining input', key)
-
     const signedUrl = await Storage.get(key)
-
-    console.log(signedUrl)
 
     const track = new Sound(signedUrl, null, (e) => {
         if (e) {
@@ -38,7 +35,17 @@ const removeTrack = async (englishKey, chineseKey) => {
     const result2 = await Storage.remove(chineseKey)
 }
 
-const AudioCard = (param) => {
+interface AudioCardParam {
+    id: string,
+    chineseKey: string,
+    chinese: string,
+    englishKey: string,
+    english: string,
+    pauseAction: () => void,
+    db: HocDb
+}
+
+const AudioCard = (param: AudioCardParam) => {
     const [isPaused, setIsPaused] = React.useState(false)
 
     const cardTextColor = () => {
@@ -92,7 +99,9 @@ const AudioCard = (param) => {
             <TouchableOpacity
                 onPress={() => {
                     param.pauseAction()
-                    setIsPaused(!isPaused)
+                    param.db.toggleIsActive(param.id)
+                    setIsPaused(!param.db.getIsActive(param.id))
+                    // setIsPaused(!isPaused)
                 }}
             >
                 <View>

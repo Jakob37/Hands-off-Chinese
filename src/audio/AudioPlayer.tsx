@@ -7,11 +7,11 @@ import { AudioEntryPair } from "src/backend/audioentry"
 Sound.setCategory("Playback")
 
 const AudioState = Object.freeze({
-    stopped: 1,
-    playing_english: 2,
-    english_pause: 3,
-    playing_chinese: 4,
-    chinese_pause: 5,
+    stopped: 0,
+    playing_english: 1,
+    english_pause: 2,
+    playing_chinese: 3,
+    chinese_pause: 4,
 })
 
 class AudioPlayer {
@@ -26,6 +26,13 @@ class AudioPlayer {
     }
 
     isPlaying: boolean = false
+
+    counter: number = 0
+    timerHook: (value: number) => void
+    addTimerHook(timerHook: (value: number) => void) {
+        this.timerHook = timerHook
+    }
+    interval: NodeJS.Timer
 
     getState(): string {
         return Object.keys(AudioState)[this.audioState]
@@ -58,15 +65,18 @@ class AudioPlayer {
     }
 
     // lastDuration: number
-    durationHook: (duration:number) => void
+    durationHook: (duration: number) => void
     addDurationHook(durationHook: (duration: number) => void) {
         this.durationHook = durationHook
     }
 
     playEvent() {
+        console.log("Play event enter")
         if (!this.isPlaying) {
             return
         }
+
+        console.log("Play event for state", this.audioState)
 
         if (this.audioState == AudioState.playing_english) {
             this.playRandom()
@@ -78,9 +88,8 @@ class AudioPlayer {
             const currAudio = this.currentlyPlayingPair
             // this.currentlyPlayingPair = null;
             playAudio(currAudio.chineseFilename, (sound: Sound) => {
-                console.log('sound duration', sound.getDuration())
                 this.playEvent()
-                this.durationHook(sound.getDuration())
+                this.durationHook(Math.round(sound.getDuration()))
             })
 
             // currAudio.chineseAudio.play((_success) => {
@@ -95,15 +104,6 @@ class AudioPlayer {
         }
     }
 
-    counter: number = 0
-    hook: (value: number) => void
-
-    addTimerHook(hook: (value: number) => void) {
-        this.hook = hook
-    }
-
-    interval: NodeJS.Timer
-
     play() {
         this.startTime = new Date().getTime()
         this.audioState = AudioState.playing_english
@@ -111,9 +111,8 @@ class AudioPlayer {
         this.playEvent()
 
         this.interval = setInterval(() => {
-            console.log("test", this.counter)
             this.counter += 1
-            this.hook(this.counter)
+            this.timerHook(this.counter)
         }, 1000)
     }
 

@@ -1,21 +1,37 @@
 import { getMetaAsAudioEntries } from "./apicalls"
 import { AudioEntryPair } from "./audioentry"
 
-class Database {
+class HocDb {
     _idToEntry: Map<string, AudioEntryPair>
-    _allEntries: AudioEntryPair[]
+    _idToActive: Map<string, boolean>
 
     async initDatabase(
-        doneCallback: (db: Database) => void = (db: Database) => {}
+        doneCallback: (db: HocDb) => void = (db: HocDb) => {}
     ) {
         this._idToEntry = await getMetaAsAudioEntries()
-        this._allEntries = Array.from(this._idToEntry.values())
+        this._idToActive = new Map()
+        for (const id of Array.from(this._idToEntry.keys())) {
+            this._idToActive.set(id, true)
+        }
         doneCallback(this)
+    }
+
+    getIsActive(id: string): boolean {
+        return this._idToActive.get(id)
+    }
+
+    toggleIsActive(id: string) {
+        console.log('toggling', id, 'to', !this.getIsActive(id))
+        this._idToActive.set(id, !this.getIsActive(id))
+    }
+
+    _getAllEntries(): AudioEntryPair[] {
+        return Array.from(this._idToEntry.values())
     }
 
     getCategories(): string[] {
         const allCategories = new Set(
-            this._allEntries.map((entry) => entry.category)
+            this._getAllEntries().map((entry) => entry.category)
         )
         const categoriesArray = Array.from(allCategories)
         categoriesArray.sort()
@@ -29,7 +45,7 @@ class Database {
             categoryToEntryPairs.set(category, [])
         }
 
-        for (const entry of this._allEntries) {
+        for (const entry of this._getAllEntries()) {
             categoryToEntryPairs.get(entry.category).push(entry)
         }
         return categoryToEntryPairs
@@ -40,4 +56,4 @@ class Database {
     }
 }
 
-export { Database }
+export { HocDb }

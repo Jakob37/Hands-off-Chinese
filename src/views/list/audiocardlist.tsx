@@ -1,11 +1,13 @@
 import React from "react"
 import { View } from "react-native"
 import { AudioEntryPair } from "src/backend/audioentry"
+import { HocDb } from "src/backend/database"
 import { AudioCard } from "../card/audiocard"
 
 interface Param {
     listEntries: AudioEntryPair[],
-    endAction: () => void
+    endAction: () => void,
+    db: HocDb
 }
 
 const AudioCardList = (param: Param) => {
@@ -17,14 +19,14 @@ const AudioCardList = (param: Param) => {
                         return (
                             <AudioCard
                                 key={i}
+                                db={param.db}
+                                id={audioObj.id}
                                 english={audioObj.englishText}
                                 englishKey={audioObj.englishFilename}
                                 chinese={audioObj.chineseText}
                                 chineseKey={audioObj.chineseFilename}
-                                isActive={!audioObj.paused}
-                                endAction={param.endAction}
                                 pauseAction={() => {
-                                    console.warn("Pause action! Key:", i)
+                                    // param.db.toggleIsActive(audioObj.id)
                                 }}
                             />
                         )
