@@ -3,6 +3,7 @@ import { playAudio } from "../views/card/audiocard"
 // import { audioLibraries } from "./Database";
 import { getRandomFromArray } from "../util/util"
 import { AudioEntryPair } from "src/backend/audioentry"
+import { HocDb } from "src/backend/database"
 
 Sound.setCategory("Playback")
 
@@ -15,7 +16,19 @@ const AudioState = Object.freeze({
 })
 
 class AudioPlayer {
-    audio: AudioEntryPair[] = []
+    allAudioPairs: AudioEntryPair[] = []
+    db: HocDb
+
+    getActiveAudioPairs(): AudioEntryPair[] {
+        const activeAudioPairs = []
+        for (const audioPair of this.allAudioPairs) {
+            if (this.db.getIsActive(audioPair.id)) {
+                activeAudioPairs.push(audioPair)
+            }
+        }
+        return activeAudioPairs
+    }
+
     audioState: number = AudioState.stopped
     currentlyPlayingPair: AudioEntryPair | null = null
     delay: number = 3000
@@ -38,8 +51,9 @@ class AudioPlayer {
         return Object.keys(AudioState)[this.audioState]
     }
 
-    load(audioEntries: AudioEntryPair[]) {
-        this.audio = audioEntries
+    load(audioEntries: AudioEntryPair[], db: HocDb) {
+        this.allAudioPairs = audioEntries
+        this.db = db
     }
 
     setDelay(delay: number) {
@@ -47,7 +61,7 @@ class AudioPlayer {
     }
 
     playRandom() {
-        const audioEntry = getRandomFromArray(this.audio)
+        const audioEntry = getRandomFromArray(this.getActiveAudioPairs())
         this.currentlyPlayingPair = audioEntry
         playAudio(audioEntry.englishFilename, () => {
             this.playEvent()
@@ -61,7 +75,11 @@ class AudioPlayer {
     }
 
     getNumberClips(): number {
-        return this.audio.length
+        return this.allAudioPairs.length
+    }
+
+    getNumberActiveClips(): number {
+        return this.getActiveAudioPairs().length
     }
 
     // lastDuration: number
@@ -73,6 +91,11 @@ class AudioPlayer {
     playEvent() {
         console.log("Play event enter")
         if (!this.isPlaying) {
+            return
+        }
+
+        if (this.getNumberActiveClips() == 0) {
+            this.stop()
             return
         }
 

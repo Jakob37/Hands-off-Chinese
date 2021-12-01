@@ -108,6 +108,7 @@ const App: React.FunctionComponent<DefaultState> = ({
                         }
                     )
                 }}
+                db={db}
             />
         </View>
     )
