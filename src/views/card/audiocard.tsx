@@ -64,10 +64,9 @@ const AudioCard = (param: AudioCardParam) => {
                 },
             ]}
         >
-            <View>
+            <View style={{flex: 1}}>
                 <TouchableOpacity
                     onPress={() => {
-                        console.log('play audio for', param.chineseKey)
                         playAudio(param.chineseKey)
                     }}
                 >
@@ -109,7 +108,8 @@ const AudioCard = (param: AudioCardParam) => {
                         style={{
                             color: cardTextColor(),
                             fontWeight: "bold",
-                            fontSize: 12,
+                            fontSize: 24,
+                            margin: 20
                         }}
                     >
                         | |

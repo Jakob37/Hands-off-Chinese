@@ -44,12 +44,8 @@ const App: React.FunctionComponent<DefaultState> = ({
         setAudioList(audioEntries)
     }
 
-    const [audioList, setAudioList] = React.useState(
-        audioListDefault
-    )
-    const [currCategory, setCurrCategory] = React.useState(
-        defaultCategory
-    )
+    const [audioList, setAudioList] = React.useState(audioListDefault)
+    const [currCategory, setCurrCategory] = React.useState(defaultCategory)
     const [displayCategoryList, setDisplayCategoryList] = React.useState(
         defaultDisplayCategoryList
     )
@@ -59,16 +55,20 @@ const App: React.FunctionComponent<DefaultState> = ({
 
     return (
         <View style={{ flex: 1 }}>
-            <View>
-                <Text style={styles.header}>Hands-off Chinese</Text>
-            </View>
+            {!isSelectedView ? (
+                <View>
+                    <Text style={styles.header}>Hands-off Chinese</Text>
+                </View>
+            ) : (
+                <></>
+            )}
 
-            <Button
+            {/* <Button
                 title="Testbutton"
                 onPress={async () => {
                     loadDatabase()
                 }}
-            />
+            /> */}
 
             {!isSelectedView ? (
                 <ScrollView>

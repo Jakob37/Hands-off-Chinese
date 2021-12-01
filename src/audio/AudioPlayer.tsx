@@ -109,15 +109,10 @@ class AudioPlayer {
             this.audioState = AudioState.playing_chinese
         } else if (this.audioState == AudioState.playing_chinese) {
             const currAudio = this.currentlyPlayingPair
-            // this.currentlyPlayingPair = null;
             playAudio(currAudio.chineseFilename, (sound: Sound) => {
                 this.playEvent()
                 this.durationHook(Math.round(sound.getDuration()))
             })
-
-            // currAudio.chineseAudio.play((_success) => {
-            //     this.playEvent()
-            // })
             this.audioState = AudioState.chinese_pause
         } else if (this.audioState == AudioState.chinese_pause) {
             this.playPause(this.delay)
@@ -133,10 +128,11 @@ class AudioPlayer {
         this.isPlaying = true
         this.playEvent()
 
+        const timerStep = 100
         this.interval = setInterval(() => {
-            this.counter += 1
-            this.timerHook(this.counter)
-        }, 1000)
+            this.counter += 0.1
+            this.timerHook(Math.round(this.counter * 10) / 10)
+        }, timerStep)
     }
 
     stop() {
