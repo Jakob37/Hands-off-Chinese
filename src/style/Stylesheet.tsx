@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
     },
     card: {
         marginTop: 16,
-        paddingHorizontal: 16,
+        paddingHorizontal: 8,
     },
     footerCard: {
         paddingTop: 4,

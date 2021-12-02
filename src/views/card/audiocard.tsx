@@ -6,9 +6,12 @@ import { TouchableOpacity } from "react-native"
 import Amplify, { Storage } from "aws-amplify"
 import Sound from "react-native-sound"
 import { HocDb } from "src/backend/database"
+import Icon from "react-native-vector-icons/FontAwesome"
 
-const playAudio = async (key:string, callback: ((track: Sound) => void)|null = null) => {
-
+const playAudio = async (
+    key: string,
+    callback: ((track: Sound) => void) | null = null
+) => {
     const signedUrl = await Storage.get(key)
 
     const track = new Sound(signedUrl, null, (e) => {
@@ -36,12 +39,12 @@ const removeTrack = async (englishKey, chineseKey) => {
 }
 
 interface AudioCardParam {
-    id: string,
-    chineseKey: string,
-    chinese: string,
-    englishKey: string,
-    english: string,
-    pauseAction: () => void,
+    id: string
+    chineseKey: string
+    chinese: string
+    englishKey: string
+    english: string
+    pauseAction: () => void
     db: HocDb
 }
 
@@ -64,18 +67,13 @@ const AudioCard = (param: AudioCardParam) => {
                 },
             ]}
         >
-            <View style={{flex: 1}}>
+            <View style={{ flex: 10 }}>
                 <TouchableOpacity
                     onPress={() => {
                         playAudio(param.chineseKey)
                     }}
                 >
-                    <Text
-                        style={[
-                            styles.cardText,
-                            { color: cardTextColor() },
-                        ]}
-                    >
+                    <Text style={[styles.cardText, { color: cardTextColor() }]}>
                         {param.chinese}
                     </Text>
                 </TouchableOpacity>
@@ -84,38 +82,33 @@ const AudioCard = (param: AudioCardParam) => {
                         playAudio(param.englishKey)
                     }}
                 >
-                    <Text
-                        style={[
-                            styles.cardText,
-                            { color: cardTextColor() },
-                        ]}
-                    >
+                    <Text style={[styles.cardText, { color: cardTextColor() }]}>
                         {param.english}
                     </Text>
                 </TouchableOpacity>
             </View>
 
-            <TouchableOpacity
-                onPress={() => {
-                    param.pauseAction()
-                    param.db.toggleIsActive(param.id)
-                    setIsPaused(!param.db.getIsActive(param.id))
-                    // setIsPaused(!isPaused)
-                }}
-            >
-                <View>
-                    <Text
-                        style={{
-                            color: cardTextColor(),
-                            fontWeight: "bold",
-                            fontSize: 24,
-                            margin: 20
-                        }}
-                    >
-                        | |
-                    </Text>
-                </View>
-            </TouchableOpacity>
+            <View style={{ flex: 1 }}>
+                <TouchableOpacity
+                    onPress={() => {
+                        console.log("Toggle settings")
+                    }}
+                >
+                    <Icon name="gear" size={20} color="gray"></Icon>
+                </TouchableOpacity>
+            </View>
+
+            <View style={{ flex: 1 }}>
+                <TouchableOpacity
+                    onPress={() => {
+                        param.pauseAction()
+                        param.db.toggleIsActive(param.id)
+                        setIsPaused(!param.db.getIsActive(param.id))
+                    }}
+                >
+                    <Icon name="pause" size={20} color="gray"></Icon>
+                </TouchableOpacity>
+            </View>
         </View>
     )
 }
