@@ -7,6 +7,8 @@ import Amplify, { Storage } from "aws-amplify"
 import Sound from "react-native-sound"
 import { HocDb } from "src/backend/database"
 import Icon from "react-native-vector-icons/FontAwesome"
+import AudioCardActive from "./audiocardactive"
+import AudioCardSettings from "./audiocardsettings"
 
 const playAudio = async (
     key: string,
@@ -50,6 +52,8 @@ interface AudioCardParam {
 
 const AudioCard = (param: AudioCardParam) => {
     const [isPaused, setIsPaused] = React.useState(false)
+    const [settingMode, setSettingMode] = React.useState(false)
+    const [cardHeight, setCardHeight] = React.useState(0)
 
     const cardTextColor = () => {
         return isPaused ? "gray" : "black"
@@ -66,49 +70,39 @@ const AudioCard = (param: AudioCardParam) => {
                     justifyContent: "space-between",
                 },
             ]}
+            onLayout={(event) => {
+                const { height } = event.nativeEvent.layout
+                if (height > cardHeight) {
+                    setCardHeight(height)
+                }
+            }}
         >
-            <View style={{ flex: 10 }}>
-                <TouchableOpacity
-                    onPress={() => {
-                        playAudio(param.chineseKey)
+            {settingMode ? (
+                <AudioCardSettings
+                    removeCallback={() => {
+                        console.warn('Not implemented!')
                     }}
-                >
-                    <Text style={[styles.cardText, { color: cardTextColor() }]}>
-                        {param.chinese}
-                    </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    onPress={() => {
-                        playAudio(param.englishKey)
+                    backCallback={() => {
+                        setSettingMode(false)
                     }}
-                >
-                    <Text style={[styles.cardText, { color: cardTextColor() }]}>
-                        {param.english}
-                    </Text>
-                </TouchableOpacity>
-            </View>
-
-            <View style={{ flex: 1 }}>
-                <TouchableOpacity
-                    onPress={() => {
-                        console.log("Toggle settings")
+                    minCardHeight={cardHeight}
+                />
+            ) : (
+                <AudioCardActive
+                    id={param.id}
+                    chineseKey={param.chineseKey}
+                    chinese={param.chinese}
+                    englishKey={param.englishKey}
+                    english={param.english}
+                    cardTextColor={cardTextColor()}
+                    pauseAction={param.pauseAction}
+                    db={param.db}
+                    setIsPaused={setIsPaused}
+                    setSettingMode={() => {
+                        setSettingMode(true)
                     }}
-                >
-                    <Icon name="gear" size={20} color="gray"></Icon>
-                </TouchableOpacity>
-            </View>
-
-            <View style={{ flex: 1 }}>
-                <TouchableOpacity
-                    onPress={() => {
-                        param.pauseAction()
-                        param.db.toggleIsActive(param.id)
-                        setIsPaused(!param.db.getIsActive(param.id))
-                    }}
-                >
-                    <Icon name="pause" size={20} color="gray"></Icon>
-                </TouchableOpacity>
-            </View>
+                ></AudioCardActive>
+            )}
         </View>
     )
 }
