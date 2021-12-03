@@ -53,6 +53,8 @@ const App: React.FunctionComponent<DefaultState> = ({
         defaultIsSelectedView
     )
 
+    const [enterCategory, setEnterCategory] = React.useState("")
+
     return (
         <View style={{ flex: 1 }}>
             {!isSelectedView ? (
@@ -62,13 +64,6 @@ const App: React.FunctionComponent<DefaultState> = ({
             ) : (
                 <></>
             )}
-
-            {/* <Button
-                title="Testbutton"
-                onPress={async () => {
-                    loadDatabase()
-                }}
-            /> */}
 
             {!isSelectedView ? (
                 <ScrollView>
@@ -109,6 +104,10 @@ const App: React.FunctionComponent<DefaultState> = ({
                     )
                 }}
                 db={db}
+                startCategory={enterCategory}
+                updateCategory={(category) => {
+                    setEnterCategory(category)
+                }}
             />
         </View>
     )

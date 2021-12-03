@@ -14,6 +14,8 @@ interface FooterParam {
     addNew: (english, chinese, category) => void,
     isSelectedView: boolean,
     db: HocDb
+    startCategory: string
+    updateCategory: (category: string) => void
 }
 
 const Footer = (param: FooterParam) => {
@@ -29,6 +31,8 @@ const Footer = (param: FooterParam) => {
                 <CategoryFooter
                     refreshCategories={param.refreshCategories}
                     addEntry={param.addNew}
+                    startCategory={param.startCategory}
+                    updateCategory={param.updateCategory}
                 />
             )}
         </View>

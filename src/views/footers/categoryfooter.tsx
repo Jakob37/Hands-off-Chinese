@@ -1,18 +1,16 @@
-import React, {
-    ReactElement, useState
-} from "react"
+import React, { ReactElement, useState } from "react"
 import { View, Text, TextInput } from "react-native"
 import { styles } from "../../style/Stylesheet"
 import { FooterButton } from "./util"
 
 interface AddAudioRowParam {
-    label: string,
-    placeholder: string,
-    setUpdatedText: (text:string) => void
+    label: string
+    placeholder: string
+    setUpdatedText: (text: string) => void
+    value: string
 }
 
 const AddAudioRow = (param: AddAudioRowParam) => {
-
     return (
         <View style={styles.inputField}>
             <Text style={{ fontSize: 16, flex: 1 }}>{param.label}</Text>
@@ -24,14 +22,17 @@ const AddAudioRow = (param: AddAudioRowParam) => {
                 }}
                 onChangeText={(newText) => param.setUpdatedText(newText)}
                 placeholder={param.placeholder}
+                value={param.value}
             ></TextInput>
         </View>
     )
 }
 
 interface CategoryFooterParam {
-    addEntry: (english:string, chinese:string, category:string) => void,
-    refreshCategories: () => void,
+    addEntry: (english: string, chinese: string, category: string) => void
+    refreshCategories: () => void
+    startCategory: string
+    updateCategory: (category: string) => void
 }
 
 const CategoryFooter = (param: CategoryFooterParam) => {
@@ -52,19 +53,25 @@ const CategoryFooter = (param: CategoryFooterParam) => {
                         }}
                     >
                         <AddAudioRow
+                            label="Category"
+                            placeholder="Category name"
+                            setUpdatedText={(text) => {
+                                setCategoryText(text)
+                                param.updateCategory(text)
+                            }}
+                            value={param.startCategory}
+                        ></AddAudioRow>
+
+                        <AddAudioRow
                             label="Chinese"
                             placeholder="Chinese text"
                             setUpdatedText={(text) => setChineseText(text)}
                         ></AddAudioRow>
+
                         <AddAudioRow
                             label="English"
                             placeholder="English text"
                             setUpdatedText={(text) => setEnglishText(text)}
-                        ></AddAudioRow>
-                        <AddAudioRow
-                            label="Category"
-                            placeholder="Category name"
-                            setUpdatedText={(text) => setCategoryText(text)}
                         ></AddAudioRow>
                     </View>
                     <View
@@ -117,4 +124,4 @@ const CategoryFooter = (param: CategoryFooterParam) => {
     )
 }
 
-export default CategoryFooter;
+export default CategoryFooter
