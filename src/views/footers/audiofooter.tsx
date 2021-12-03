@@ -1,5 +1,5 @@
-import React, { useEffect, Fragment, useState } from "react"
-import { TextInput, View, Text } from "react-native"
+import React, { useEffect, useState } from "react"
+import { Text, View } from "react-native"
 import { HocDb } from "src/backend/database"
 import { AudioPlayer } from "../../audio/AudioPlayer"
 import { AudioEntryPair } from "../../backend/audioentry"

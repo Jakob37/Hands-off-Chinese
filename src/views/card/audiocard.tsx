@@ -9,6 +9,7 @@ import { HocDb } from "src/backend/database"
 import Icon from "react-native-vector-icons/FontAwesome"
 import AudioCardActive from "./audiocardactive"
 import AudioCardSettings from "./audiocardsettings"
+import { removeEntry } from "../../backend/apicalls"
 
 const playAudio = async (
     key: string,
@@ -31,15 +32,6 @@ const playAudio = async (
     })
 }
 
-/**
- * @param {string} englishKey
- * @param {string} chineseKey
- */
-const removeTrack = async (englishKey, chineseKey) => {
-    const result1 = await Storage.remove(englishKey)
-    const result2 = await Storage.remove(chineseKey)
-}
-
 interface AudioCardParam {
     id: string
     chineseKey: string
@@ -49,7 +41,6 @@ interface AudioCardParam {
     pauseAction: () => void
     db: HocDb
 }
-
 const AudioCard = (param: AudioCardParam) => {
     const [isPaused, setIsPaused] = React.useState(false)
     const [settingMode, setSettingMode] = React.useState(false)
@@ -79,13 +70,15 @@ const AudioCard = (param: AudioCardParam) => {
         >
             {settingMode ? (
                 <AudioCardSettings
-                    removeCallback={() => {
-                        console.warn('Not implemented!')
+                    removeCallback={(englishFile: string, chineseFile: string) => {
+                        removeEntry(englishFile, chineseFile)
                     }}
                     backCallback={() => {
                         setSettingMode(false)
                     }}
                     minCardHeight={cardHeight}
+                    englishFile={param.englishKey}
+                    chineseFile={param.chineseKey}
                 />
             ) : (
                 <AudioCardActive

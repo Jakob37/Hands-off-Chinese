@@ -99,7 +99,7 @@ const App: React.FunctionComponent<DefaultState> = ({
                         chineseText,
                         categoryText,
                         () => {
-                            console.warn("Completed logic coming here!")
+                            console.log("Completed logic coming here!")
                         }
                     )
                 }}

@@ -7,9 +7,8 @@ interface AddAudioRowParam {
     label: string
     placeholder: string
     setUpdatedText: (text: string) => void
-    value: string
+    value: string|null
 }
-
 const AddAudioRow = (param: AddAudioRowParam) => {
     return (
         <View style={styles.inputField}>
@@ -22,7 +21,7 @@ const AddAudioRow = (param: AddAudioRowParam) => {
                 }}
                 onChangeText={(newText) => param.setUpdatedText(newText)}
                 placeholder={param.placeholder}
-                value={param.value}
+                value={param.value != null ? param.value : undefined}
             ></TextInput>
         </View>
     )
@@ -34,13 +33,12 @@ interface CategoryFooterParam {
     startCategory: string
     updateCategory: (category: string) => void
 }
-
 const CategoryFooter = (param: CategoryFooterParam) => {
     const [addEntryOpen, setAddEntryOpen] = useState(false)
 
     const [englishText, setEnglishText] = useState("")
     const [chineseText, setChineseText] = useState("")
-    const [categoryText, setCategoryText] = useState("")
+    const [categoryText, setCategoryText] = useState(param.startCategory)
 
     return (
         <>
@@ -66,12 +64,14 @@ const CategoryFooter = (param: CategoryFooterParam) => {
                             label="Chinese"
                             placeholder="Chinese text"
                             setUpdatedText={(text) => setChineseText(text)}
+                            value={null}
                         ></AddAudioRow>
 
                         <AddAudioRow
                             label="English"
                             placeholder="English text"
                             setUpdatedText={(text) => setEnglishText(text)}
+                            value={null}
                         ></AddAudioRow>
                     </View>
                     <View

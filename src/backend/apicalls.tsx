@@ -1,7 +1,6 @@
 import { getTimestamp } from "../util/util"
-import Amplify, { Storage } from "aws-amplify"
-import { makeRequest } from "./util"
 import { AudioEntry, AudioEntryPair } from "./audioentry"
+import { makeRequest } from "./util"
 
 interface MetaObj {
     category: string
@@ -15,12 +14,14 @@ interface MetaObj {
 const _getAllMeta = async (): Promise<MetaObj[]> => {
     const apiUrl =
         "https://1meap5kmbd.execute-api.eu-west-1.amazonaws.com/dev/allmeta"
-    const result = await makeRequest("GET", apiUrl) as string
+    const result = (await makeRequest("GET", apiUrl)) as string
     const items = JSON.parse(result).body.Items as MetaObj[]
     return items
 }
 
-const getMetaAsAudioEntries = async (): Promise<Map<string,AudioEntryPair>> => {
+const getMetaAsAudioEntries = async (): Promise<
+    Map<string, AudioEntryPair>
+> => {
     const items = await _getAllMeta()
     const entries = items.map((item) => new AudioEntry(item))
 
@@ -37,7 +38,6 @@ const getMetaAsAudioEntries = async (): Promise<Map<string,AudioEntryPair>> => {
         } else {
             currentEntry.addEnglishEntry(entry)
         }
-
     }
     return idToAudioEntryPair
 }
@@ -70,14 +70,13 @@ const getCategories = async () => {
     }
 }
 
-/**
- * @param {string} sharedId - Same for Chinese and English
- * @param {string} text
- * @param {string} filename
- * @param {string} category
- * @param {'english'|'chinese'} language
- */
-const submitMetadata = async (sharedId, text, filename, category, language) => {
+const submitMetadata = async (
+    sharedId: string,
+    text: string,
+    filename: string,
+    category: string,
+    language: "english" | "chinese"
+) => {
     const creationdate = new Date().getMilliseconds()
     const params = JSON.stringify({
         id: sharedId,
@@ -86,6 +85,7 @@ const submitMetadata = async (sharedId, text, filename, category, language) => {
         creationdate,
         category,
         language,
+        action: 'add'
     })
     const apiUrl =
         "https://1meap5kmbd.execute-api.eu-west-1.amazonaws.com/dev/meta"
@@ -96,11 +96,37 @@ const submitMetadata = async (sharedId, text, filename, category, language) => {
     apiTestXhr.setRequestHeader("Content-type", "application/json")
     apiTestXhr.onreadystatechange = (e) => {
         // @ts-ignore
-        console.warn("response", e.target.response)
+        console.log("response", e.target.response)
     }
     const result = await apiTestXhr.send(params)
     return result
 }
+
+const removeEntry = async (englishFile: string, chineseFile: string) => {
+    await removeRequest(englishFile)
+    await removeRequest(chineseFile)
+}
+
+const removeRequest = async (filename: string) => {
+    const apiTestXhr = new XMLHttpRequest()
+    const apiUrl =
+        "https://1meap5kmbd.execute-api.eu-west-1.amazonaws.com/dev/meta"
+    const isAsync = true
+    apiTestXhr.open("PUT", apiUrl, isAsync)
+    apiTestXhr.setRequestHeader("Content-type", "application/json")
+    apiTestXhr.onreadystatechange = (e) => {
+        // @ts-ignore
+        console.log("response", e.target.response)
+    }
+    const params = JSON.stringify({
+        filename,
+        action: 'delete'
+    })
+    console.log('request for params', params)
+    const result = await apiTestXhr.send(params)
+}
+
+
 
 /**
  * @param {string} filename
@@ -156,6 +182,11 @@ const generateAudio = (apiUrl, text, voice, prefix, onReadyCall = null) => {
  * @param {() => void} onReadyCall
  */
 const makeNewAudioEntry = async (english, chinese, category, onReadyCall) => {
+
+    if (category == '') {
+        throw new Error('Category must be non-empty')
+    }
+
     const { englishFilename, chineseFilename } = generatePollyAudio(
         english,
         chinese,
@@ -200,4 +231,5 @@ export {
     makeNewAudioEntry,
     getMetaAsAudioEntries,
     MetaObj,
+    removeEntry,
 }

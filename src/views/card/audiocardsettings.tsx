@@ -3,9 +3,11 @@ import { View, Text } from "react-native"
 import ClickableIcon from "../../util/clickableicon"
 
 interface AudioCardSettingsInterface {
-    removeCallback: () => void
+    removeCallback: (englishFile: string, chineseFile: string) => void
     backCallback: () => void
     minCardHeight: number
+    englishFile: string
+    chineseFile: string
 }
 
 const AudioCardSettings = (param: AudioCardSettingsInterface) => {
@@ -17,14 +19,16 @@ const AudioCardSettings = (param: AudioCardSettingsInterface) => {
                 flexDirection: "row",
                 alignItems: "center",
                 justifyContent: "space-between",
-                width: "100%"
+                width: "100%",
             }}
         >
             <ClickableIcon
                 icon="times"
                 size={30}
                 color="gray"
-                clickCallback={param.removeCallback}
+                clickCallback={() => {
+                    param.removeCallback(param.englishFile, param.chineseFile)
+                }}
             />
             <ClickableIcon
                 icon="exchange"
