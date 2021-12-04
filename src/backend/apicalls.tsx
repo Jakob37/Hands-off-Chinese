@@ -85,7 +85,7 @@ const submitMetadata = async (
         creationdate,
         category,
         language,
-        action: 'add'
+        action: "add",
     })
     const apiUrl =
         "https://1meap5kmbd.execute-api.eu-west-1.amazonaws.com/dev/meta"
@@ -120,13 +120,11 @@ const removeRequest = async (filename: string) => {
     }
     const params = JSON.stringify({
         filename,
-        action: 'delete'
+        action: "delete",
     })
-    console.log('request for params', params)
+    console.log("request for params", params)
     const result = await apiTestXhr.send(params)
 }
-
-
 
 /**
  * @param {string} filename
@@ -175,16 +173,14 @@ const generateAudio = (apiUrl, text, voice, prefix, onReadyCall = null) => {
     return `${prefix}_${text}`
 }
 
-/**
- * @param {string} english
- * @param {string} chinese
- * @param {string} category
- * @param {() => void} onReadyCall
- */
-const makeNewAudioEntry = async (english, chinese, category, onReadyCall) => {
-
-    if (category == '') {
-        throw new Error('Category must be non-empty')
+const makeNewAudioEntry = async (
+    english: string,
+    chinese: string,
+    category: string,
+    onReadyCall: () => void
+) => {
+    if (category == "") {
+        throw new Error("Category must be non-empty")
     }
 
     const { englishFilename, chineseFilename } = generatePollyAudio(
@@ -195,6 +191,22 @@ const makeNewAudioEntry = async (english, chinese, category, onReadyCall) => {
     const id = `id-${new Date().getMilliseconds()}`
     submitMetadata(id, english, englishFilename, category, "english")
     submitMetadata(id, chinese, chineseFilename, category, "chinese")
+}
+
+const makeMultipleAudioEntries = (entries: [string, string, string][]) => {
+    for (const row of entries) {
+        if (row.length < 3) {
+            throw new Error(
+                `Each row should contain at least three entries. Found: ${row}`
+            )
+        }
+    }
+
+    for (const [category, chinese, english] of entries) {
+        makeNewAudioEntry(english, chinese, category, () => {
+            console.log(`Uploaded entry: ${category} ${chinese} ${english}`)
+        })
+    }
 }
 
 /**
@@ -232,4 +244,5 @@ export {
     getMetaAsAudioEntries,
     MetaObj,
     removeEntry,
+    makeMultipleAudioEntries,
 }

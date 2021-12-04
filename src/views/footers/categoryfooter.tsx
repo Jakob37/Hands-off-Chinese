@@ -1,10 +1,10 @@
 import React, { useState } from "react"
 import { Text, TextInput, View } from "react-native"
-import { makeNewAudioEntry } from "../../backend/apicalls"
+import { makeMultipleAudioEntries, makeNewAudioEntry } from "../../backend/apicalls"
 import {
     parseCsv,
     pickFileFromDisk,
-    writeCsvToDownloads
+    writeCsvToDownloads,
 } from "../../backend/parsing"
 import { styles } from "../../style/Stylesheet"
 import { FooterButton } from "./util"
@@ -131,7 +131,7 @@ const CategoryFooter = (param: CategoryFooterParam) => {
                             writeCsvToDownloads("fruits.csv", downloadData)
                         }}
                     >
-                        Write
+                        Write(test)
                     </FooterButton>
                     <FooterButton
                         onPress={async () => {
@@ -142,23 +142,10 @@ const CategoryFooter = (param: CategoryFooterParam) => {
                             } else {
                                 console.log("No result file found")
                             }
-                            console.log("Final CSV", parsedCsv)
 
                             if (parsedCsv != null) {
-                                for (const [
-                                    category,
-                                    chinese,
-                                    english,
-                                ] of parsedCsv) {
-                                    makeNewAudioEntry(
-                                        english,
-                                        chinese,
-                                        category,
-                                        () => {
-                                            console.log('Entry created')
-                                        }
-                                    )
-                                }
+                                // FIXME: 
+                                makeMultipleAudioEntries(parsedCsv)
                             }
                         }}
                     >
