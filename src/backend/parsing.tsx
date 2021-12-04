@@ -22,7 +22,7 @@ interface FileInfo {
 }
 
 async function pickFileFromDisk(
-    debug: boolean = false
+    debug: boolean = true
 ): Promise<FileInfo | null> {
     let resultFile: FileInfo | null = null
     try {
@@ -44,7 +44,7 @@ async function pickFileFromDisk(
                 console.log("picker cancelled")
             }
         } else {
-            console.log("picker error", err)
+            Toast.show("Error", err)
         }
     }
     return resultFile
@@ -55,6 +55,7 @@ async function parseCsv(filePath: string): Promise<string[][] | null> {
     try {
         const contents = await RNFS.readFile(filePath)
         cells = contents.split("\n").map((col) => col.split(","))
+        Toast.show(`Found ${cells.length} entries`)
     } catch (e) {
         console.log("Parsing error", e)
     }

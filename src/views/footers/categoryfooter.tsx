@@ -1,6 +1,11 @@
-import React, { ReactElement, useState } from "react"
-import { View, Text, TextInput } from "react-native"
-import { parseCsv, pickFileFromDisk, writeCsvToDownloads } from "../../backend/parsing"
+import React, { useState } from "react"
+import { Text, TextInput, View } from "react-native"
+import { makeNewAudioEntry } from "../../backend/apicalls"
+import {
+    parseCsv,
+    pickFileFromDisk,
+    writeCsvToDownloads
+} from "../../backend/parsing"
 import { styles } from "../../style/Stylesheet"
 import { FooterButton } from "./util"
 
@@ -119,26 +124,42 @@ const CategoryFooter = (param: CategoryFooterParam) => {
                     <FooterButton
                         onPress={async () => {
                             const downloadData = [
-                                ["C1", "Chinese1", "English1"],
-                                ["C1", "Chinese2", "English2"],
-                            ];
-                            writeCsvToDownloads("test.csv", downloadData)
+                                ["Fruits", "苹果", "Apple"],
+                                ["Fruits", "牛油果", "Avocado"],
+                                ["Fruits", "柠檬", "Lemon"],
+                            ]
+                            writeCsvToDownloads("fruits.csv", downloadData)
                         }}
                     >
                         Write
                     </FooterButton>
                     <FooterButton
                         onPress={async () => {
-                            console.log("starting new picking")
                             let resultFile = await pickFileFromDisk()
-
+                            let parsedCsv = null
                             if (resultFile != null) {
-                                parseCsv(resultFile.uri)
+                                parsedCsv = await parseCsv(resultFile.uri)
                             } else {
                                 console.log("No result file found")
                             }
+                            console.log("Final CSV", parsedCsv)
 
-                            console.log("picking done")
+                            if (parsedCsv != null) {
+                                for (const [
+                                    category,
+                                    chinese,
+                                    english,
+                                ] of parsedCsv) {
+                                    makeNewAudioEntry(
+                                        english,
+                                        chinese,
+                                        category,
+                                        () => {
+                                            console.log('Entry created')
+                                        }
+                                    )
+                                }
+                            }
                         }}
                     >
                         Bulk
