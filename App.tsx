@@ -10,6 +10,8 @@ import Footer from "./src/views/footers/footer"
 import CategoryCardList from "./src/views/list/categorycardlist"
 import ScrollableAudioCardList from "./src/views/list/scrollableaudiocardlist"
 
+import DocumentPicker from 'react-native-document-picker'
+
 // FIXME: Leave Amplify
 Amplify.configure(awsconfig)
 // Needed to run in production? (verify)
