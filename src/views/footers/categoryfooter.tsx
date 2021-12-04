@@ -1,9 +1,8 @@
 import React, { ReactElement, useState } from "react"
 import { View, Text, TextInput } from "react-native"
+import { parseCsv, pickFileFromDisk, writeCsvToDownloads } from "../../backend/parsing"
 import { styles } from "../../style/Stylesheet"
 import { FooterButton } from "./util"
-import DocumentPicker from "react-native-document-picker"
-import RNFS from "react-native-fs"
 
 interface AddAudioRowParam {
     label: string
@@ -119,18 +118,11 @@ const CategoryFooter = (param: CategoryFooterParam) => {
                     </FooterButton>
                     <FooterButton
                         onPress={async () => {
-                            // const path = RNFS.DocumentDirectoryPath + '/test.csv'
-                            const path =
-                                RNFS.DownloadDirectoryPath + "/test.csv"
-                            console.log("Path: ", path)
-                            const fileContent = "Category,chinese,english"
-                            RNFS.writeFile(path, fileContent, "utf8")
-                                .then((success) => {
-                                    console.log("FILE WRITTEN")
-                                })
-                                .catch((err) => {
-                                    console.log(err.message)
-                                })
+                            const downloadData = [
+                                ["C1", "Chinese1", "English1"],
+                                ["C1", "Chinese2", "English2"],
+                            ];
+                            writeCsvToDownloads("test.csv", downloadData)
                         }}
                     >
                         Write
@@ -138,43 +130,12 @@ const CategoryFooter = (param: CategoryFooterParam) => {
                     <FooterButton
                         onPress={async () => {
                             console.log("starting new picking")
-                            let resultFile = null
-                            try {
-                                const res = await DocumentPicker.pick({
-                                    type: [DocumentPicker.types.allFiles],
-                                })
-                                resultFile = res[0]
-                                console.log(
-                                    resultFile.uri,
-                                    resultFile.type,
-                                    resultFile.name,
-                                    resultFile.size
-                                )
-                                // console.log(
-                                //     res.uri,
-                                //     res.type,
-                                //     res.name,
-                                //     res.size
-                                // )
-                            } catch (err) {
-                                if (DocumentPicker.isCancel(err)) {
-                                    console.log("picker cancelled")
-                                } else {
-                                    console.log("picker error", err)
-                                    // throw err
-                                }
-                            }
+                            let resultFile = await pickFileFromDisk()
 
                             if (resultFile != null) {
-                                console.log('Parsing result file')
-                                try {
-                                    const contents = await RNFS.readFile(resultFile.uri)
-                                    console.log(contents)
-                                } catch (e) {
-                                    console.log('Parsing error', e)
-                                }
+                                parseCsv(resultFile.uri)
                             } else {
-                                console.log('No result file found')
+                                console.log("No result file found")
                             }
 
                             console.log("picking done")
