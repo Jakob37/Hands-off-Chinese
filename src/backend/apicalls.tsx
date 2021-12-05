@@ -193,7 +193,7 @@ const makeNewAudioEntry = async (
     await submitMetadata(id, chinese, chineseFilename, category, "chinese")
 }
 
-const makeMultipleAudioEntries = (entries: [string, string, string][]) => {
+const makeMultipleAudioEntries = async (entries: [string, string, string][]) => {
     for (const row of entries) {
         if (row.length < 3) {
             throw new Error(
@@ -203,7 +203,7 @@ const makeMultipleAudioEntries = (entries: [string, string, string][]) => {
     }
 
     for (const [category, chinese, english] of entries) {
-        makeNewAudioEntry(english, chinese, category, () => {})
+        await makeNewAudioEntry(english, chinese, category, () => {})
     }
 }
 
