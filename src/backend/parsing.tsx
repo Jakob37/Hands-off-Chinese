@@ -22,7 +22,7 @@ interface FileInfo {
 }
 
 async function pickFileFromDisk(
-    debug: boolean = true
+    debug: boolean = false
 ): Promise<FileInfo | null> {
     let resultFile: FileInfo | null = null
     try {

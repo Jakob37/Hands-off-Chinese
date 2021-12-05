@@ -10,7 +10,7 @@ import Footer from "./src/views/footers/footer"
 import CategoryCardList from "./src/views/list/categorycardlist"
 import ScrollableAudioCardList from "./src/views/list/scrollableaudiocardlist"
 
-import DocumentPicker from 'react-native-document-picker'
+import DocumentPicker from "react-native-document-picker"
 
 // FIXME: Leave Amplify
 Amplify.configure(awsconfig)
@@ -82,7 +82,7 @@ const App: React.FunctionComponent<DefaultState> = ({
             ) : (
                 <ScrollableAudioCardList
                     audioList={audioList}
-                    refreshS3List={() => console.log("Refresh S3 placeholder")}
+                    refreshS3List={() => {}}
                     db={db}
                 />
             )}
@@ -100,9 +100,7 @@ const App: React.FunctionComponent<DefaultState> = ({
                         englishText,
                         chineseText,
                         categoryText,
-                        () => {
-                            console.log("Completed logic coming here!")
-                        }
+                        () => {}
                     )
                 }}
                 db={db}

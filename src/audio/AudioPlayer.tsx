@@ -89,7 +89,6 @@ class AudioPlayer {
     }
 
     playEvent() {
-        console.log("Play event enter")
         if (!this.isPlaying) {
             return
         }
@@ -98,8 +97,6 @@ class AudioPlayer {
             this.stop()
             return
         }
-
-        console.log("Play event for state", this.audioState)
 
         if (this.audioState == AudioState.playing_english) {
             this.playRandom()

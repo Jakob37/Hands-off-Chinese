@@ -21,7 +21,6 @@ class HocDb {
     }
 
     toggleIsActive(id: string) {
-        console.log('toggling', id, 'to', !this.getIsActive(id))
         this._idToActive.set(id, !this.getIsActive(id))
     }
 

@@ -77,7 +77,7 @@ const submitMetadata = async (
     category: string,
     language: "english" | "chinese"
 ) => {
-    const creationdate = new Date().getMilliseconds()
+    const creationdate = new Date().getTime()
     const params = JSON.stringify({
         id: sharedId,
         text,
@@ -96,7 +96,7 @@ const submitMetadata = async (
     apiTestXhr.setRequestHeader("Content-type", "application/json")
     apiTestXhr.onreadystatechange = (e) => {
         // @ts-ignore
-        console.log("response", e.target.response)
+        // console.log("response", e.target.response)
     }
     const result = await apiTestXhr.send(params)
     return result
@@ -116,13 +116,12 @@ const removeRequest = async (filename: string) => {
     apiTestXhr.setRequestHeader("Content-type", "application/json")
     apiTestXhr.onreadystatechange = (e) => {
         // @ts-ignore
-        console.log("response", e.target.response)
+        // console.log("response", e.target.response)
     }
     const params = JSON.stringify({
         filename,
         action: "delete",
     })
-    console.log("request for params", params)
     const result = await apiTestXhr.send(params)
 }
 
@@ -183,14 +182,15 @@ const makeNewAudioEntry = async (
         throw new Error("Category must be non-empty")
     }
 
-    const { englishFilename, chineseFilename } = generatePollyAudio(
+    console.log('generating polly audio')
+    const { englishFilename, chineseFilename } = await generatePollyAudio(
         english,
         chinese,
         onReadyCall
     )
-    const id = `id-${new Date().getMilliseconds()}`
-    submitMetadata(id, english, englishFilename, category, "english")
-    submitMetadata(id, chinese, chineseFilename, category, "chinese")
+    const id = `id-${english}-${chinese}`
+    await submitMetadata(id, english, englishFilename, category, "english")
+    await submitMetadata(id, chinese, chineseFilename, category, "chinese")
 }
 
 const makeMultipleAudioEntries = (entries: [string, string, string][]) => {
@@ -203,23 +203,26 @@ const makeMultipleAudioEntries = (entries: [string, string, string][]) => {
     }
 
     for (const [category, chinese, english] of entries) {
-        makeNewAudioEntry(english, chinese, category, () => {
-            console.log(`Uploaded entry: ${category} ${chinese} ${english}`)
-        })
+        makeNewAudioEntry(english, chinese, category, () => {})
     }
 }
 
-/**
- * @param {string} english
- * @param {string} chinese
- * @param {() => void} onReadyCall
- * @returns {{englishFilename:string, chineseFilename:string}}
- */
-const generatePollyAudio = (english, chinese, onReadyCall) => {
+interface GeneratePollyAudioReturned {
+    englishFilename: string
+    chineseFilename: string
+}
+
+const generatePollyAudio = async (
+    english: string,
+    chinese: string,
+    onReadyCall: () => void
+): Promise<GeneratePollyAudioReturned> => {
     const englishVoice = "Emma"
     const chineseVoice = "Zhiyu"
 
-    const chineseFilename = generateAudio(
+    console.log('starting generating')
+
+    const chineseFilename = await generateAudio(
         "https://1meap5kmbd.execute-api.eu-west-1.amazonaws.com/dev/polly",
         chinese,
         chineseVoice,
@@ -227,12 +230,20 @@ const generatePollyAudio = (english, chinese, onReadyCall) => {
         onReadyCall
     )
 
-    const englishFilename = generateAudio(
+    console.log('generated chinese', chineseFilename)
+
+    const englishFilename = await generateAudio(
         "https://1meap5kmbd.execute-api.eu-west-1.amazonaws.com/dev/polly",
         english,
         englishVoice,
         getTimestamp(),
         onReadyCall
+    )
+    console.log(
+        "Generating english audio for",
+        english,
+        "got filename",
+        englishFilename
     )
     return { chineseFilename, englishFilename }
 }
