@@ -12,9 +12,9 @@ interface AudioCardActiveParam {
     englishKey: string
     english: string
     cardTextColor: string
-    pauseAction: () => void
-    db: HocDb
-    setIsPaused: (isPaused: boolean) => void
+    // pauseAction: () => void
+    // db: HocDb
+    togglePaused: () => void
     setSettingMode: () => void
 }
 
@@ -65,9 +65,10 @@ const AudioCardActive = (param: AudioCardActiveParam) => {
             <View style={{ flex: 1 }}>
                 <TouchableOpacity
                     onPress={() => {
-                        param.pauseAction()
-                        param.db.toggleIsActive(param.id)
-                        param.setIsPaused(!param.db.getIsActive(param.id))
+                        param.togglePaused()
+                        // param.pauseAction()
+                        // param.db.toggleIsActive(param.id)
+                        // param.setIsPaused(!param.db.getIsActive(param.id))
                     }}
                 >
                     <Icon name="pause" size={20} color="gray"></Icon>

@@ -137,6 +137,10 @@ class AudioPlayer {
         this.isPlaying = false
         clearInterval(this.interval)
     }
+
+    pauseAll() {
+        this.allAudioPairs.map((audioPair) => (audioPair.paused = true))
+    }
 }
 
 async function playSound(

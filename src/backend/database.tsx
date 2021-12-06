@@ -28,6 +28,13 @@ class HocDb {
         return Array.from(this._idToEntry.values())
     }
 
+    pauseAll() {
+        console.log('pausing all')
+        for (const id of Array.from(this._idToActive.keys())) {
+            this._idToActive.set(id, false)
+        }
+    }
+
     getCategories(): string[] {
         const allCategories = new Set(
             this._getAllEntries().map((entry) => entry.category)

@@ -14,10 +14,9 @@ interface AudioPlayerRowParam {
     setUpdatedText: (text: string) => void
 }
 
-const fontSize = 16;
+const fontSize = 16
 
 const AudioPlayerRow = (param: AudioPlayerRowParam) => {
-
     const [counter, setCounter] = useState(0)
     const [lastDuration, setLastDuration] = useState(0)
 
@@ -33,12 +32,24 @@ const AudioPlayerRow = (param: AudioPlayerRowParam) => {
     })
 
     return (
-        <View style={[styles.inputField, {display:"flex", flexDirection:"row", justifyContent:"space-between"}]}>
-            <Text style={{ fontSize }}>{`${audioPlayer.delay/1000}s`}</Text>
-            <Text style={{ fontSize }}>{`Time: ${counter}s`}</Text>
-            <Text style={{ fontSize }}>{`Nbr active: ${activeNbr}`}</Text>
-            <Text style={{ fontSize }}>{`${audioPlayer.getState()}`}</Text>
-        </View>
+        <>
+            <View
+                style={[
+                    styles.inputField,
+                    {
+                        display: "flex",
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                    },
+                ]}
+            >
+                <Text style={{ fontSize }}>{`${
+                    audioPlayer.delay / 1000
+                }s`}</Text>
+                <Text style={{ fontSize }}>{`Time: ${counter}s`}</Text>
+                <Text style={{ fontSize }}>{`Nbr active: ${activeNbr}`}</Text>
+            </View>
+        </>
     )
 }
 
@@ -89,6 +100,13 @@ const AudioFooter = (param: AudioFooterParam) => {
                     }}
                 >
                     Stop
+                </FooterButton>
+                <FooterButton
+                    onPress={() => {
+                        param.db.pauseAll()
+                    }}
+                >
+                    Pause all
                 </FooterButton>
                 <FooterButton onPress={param.backToMenu}>Back</FooterButton>
             </View>

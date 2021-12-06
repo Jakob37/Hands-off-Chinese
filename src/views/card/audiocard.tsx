@@ -1,15 +1,13 @@
-import { styles } from "../../style/Stylesheet"
-import React from "react"
-import { View, Text } from "react-native"
-import { TouchableOpacity } from "react-native"
-
-import Amplify, { Storage } from "aws-amplify"
+import { Storage } from "aws-amplify"
+import React, { useState } from "react"
+import { View } from "react-native"
 import Sound from "react-native-sound"
 import { HocDb } from "src/backend/database"
-import Icon from "react-native-vector-icons/FontAwesome"
+import { removeEntry } from "../../backend/apicalls"
+import { styles } from "../../style/Stylesheet"
 import AudioCardActive from "./audiocardactive"
 import AudioCardSettings from "./audiocardsettings"
-import { removeEntry } from "../../backend/apicalls"
+
 
 const playAudio = async (
     key: string,
@@ -38,16 +36,15 @@ interface AudioCardParam {
     chinese: string
     englishKey: string
     english: string
-    pauseAction: () => void
-    db: HocDb
+    isPaused: boolean
+    togglePaused: () => void
 }
 const AudioCard = (param: AudioCardParam) => {
-    const [isPaused, setIsPaused] = React.useState(false)
-    const [settingMode, setSettingMode] = React.useState(false)
-    const [cardHeight, setCardHeight] = React.useState(0)
+    const [settingMode, setSettingMode] = useState(false)
+    const [cardHeight, setCardHeight] = useState(0)
 
     const cardTextColor = () => {
-        return isPaused ? "gray" : "black"
+        return param.isPaused ? "gray" : "black"
     }
 
     return (
@@ -88,9 +85,7 @@ const AudioCard = (param: AudioCardParam) => {
                     englishKey={param.englishKey}
                     english={param.english}
                     cardTextColor={cardTextColor()}
-                    pauseAction={param.pauseAction}
-                    db={param.db}
-                    setIsPaused={setIsPaused}
+                    togglePaused={param.togglePaused}
                     setSettingMode={() => {
                         setSettingMode(true)
                     }}
