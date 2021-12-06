@@ -18,30 +18,16 @@ const AudioCardList = (param: Param) => {
 
     return (
         <View>
-            {param.listEntries.map((audioObj, i) => {
+            {param.listEntries.map((audioEntry, i) => {
                 return (
                     <AudioCard
                         key={i}
-                        id={audioObj.id}
-                        english={audioObj.englishText}
-                        englishKey={audioObj.englishFilename}
-                        chinese={audioObj.chineseText}
-                        chineseKey={audioObj.chineseFilename}
+                        audioEntryPair={audioEntry}
                         togglePaused={() => {
-                            console.log('---')
                             let pausedArr = Array.from(isPausedArr)
-                            console.log(pausedArr)
                             const currPaused = pausedArr[i]
-                            console.log(currPaused)
-
                             pausedArr[i] = !currPaused
-                            console.log(pausedArr)
                             setIsPausedArr(pausedArr)
-
-                            // const currArr = Array(isPaused)
-                            // currArr[i] = true
-                            // currArr[i] = isPaused
-                            // setIsPausedArr(currArr)
                         }}
                         isPaused={isPausedArr[i]}
                     />

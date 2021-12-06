@@ -1,16 +1,18 @@
 import React from "react"
 import { View, TouchableOpacity, Text } from "react-native"
 import Icon from "react-native-vector-icons/FontAwesome"
+import { AudioEntryPair } from "src/backend/audioentry"
 import { HocDb } from "../..//backend/database"
 import { styles } from "../../style/Stylesheet"
 import { playAudio } from "./audiocard"
 
 interface AudioCardActiveParam {
-    id: string
-    chineseKey: string
-    chinese: string
-    englishKey: string
-    english: string
+    // id: string
+    // chineseKey: string
+    // chinese: string
+    // englishKey: string
+    // english: string
+    audioEntryPair: AudioEntryPair
     cardTextColor: string
     // pauseAction: () => void
     // db: HocDb
@@ -24,7 +26,7 @@ const AudioCardActive = (param: AudioCardActiveParam) => {
             <View style={{ flex: 10 }}>
                 <TouchableOpacity
                     onPress={() => {
-                        playAudio(param.chineseKey)
+                        playAudio(param.audioEntryPair.chineseKey)
                     }}
                 >
                     <Text
@@ -33,12 +35,12 @@ const AudioCardActive = (param: AudioCardActiveParam) => {
                             { color: param.cardTextColor },
                         ]}
                     >
-                        {param.chinese}
+                        {param.audioEntryPair.chinese}
                     </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     onPress={() => {
-                        playAudio(param.englishKey)
+                        playAudio(param.audioEntryPair.englishKey)
                     }}
                 >
                     <Text
@@ -47,7 +49,7 @@ const AudioCardActive = (param: AudioCardActiveParam) => {
                             { color: param.cardTextColor },
                         ]}
                     >
-                        {param.english}
+                        {param.audioEntryPair.english}
                     </Text>
                 </TouchableOpacity>
             </View>

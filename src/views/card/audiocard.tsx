@@ -2,13 +2,13 @@ import { Storage } from "aws-amplify"
 import React, { useState } from "react"
 import { View } from "react-native"
 import Sound from "react-native-sound"
-import { HocDb } from "src/backend/database"
+import { AudioEntryPair } from "src/backend/audioentry"
 import { removeEntry } from "../../backend/apicalls"
 import { styles } from "../../style/Stylesheet"
 import AudioCardActive from "./audiocardactive"
 import AudioCardSettings from "./audiocardsettings"
 
-
+// FIXME: Clearly move this to util location
 const playAudio = async (
     key: string,
     callback: ((track: Sound) => void) | null = null
@@ -31,11 +31,7 @@ const playAudio = async (
 }
 
 interface AudioCardParam {
-    id: string
-    chineseKey: string
-    chinese: string
-    englishKey: string
-    english: string
+    audioEntryPair: AudioEntryPair
     isPaused: boolean
     togglePaused: () => void
 }
@@ -74,16 +70,12 @@ const AudioCard = (param: AudioCardParam) => {
                         setSettingMode(false)
                     }}
                     minCardHeight={cardHeight}
-                    englishFile={param.englishKey}
-                    chineseFile={param.chineseKey}
+                    englishFile={param.audioEntryPair.englishKey}
+                    chineseFile={param.audioEntryPair.chineseKey}
                 />
             ) : (
                 <AudioCardActive
-                    id={param.id}
-                    chineseKey={param.chineseKey}
-                    chinese={param.chinese}
-                    englishKey={param.englishKey}
-                    english={param.english}
+                    audioEntryPair={param.audioEntryPair}
                     cardTextColor={cardTextColor()}
                     togglePaused={param.togglePaused}
                     setSettingMode={() => {

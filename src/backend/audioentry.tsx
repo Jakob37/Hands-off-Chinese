@@ -36,10 +36,10 @@ class AudioEntryPair {
     id: string
     category: string
     creationdate: number
-    englishFilename: string
-    chineseFilename: string
-    englishText: string
-    chineseText: string
+    englishKey: string
+    chineseKey: string
+    english: string
+    chinese: string
 
     paused: boolean = false
 
@@ -53,16 +53,16 @@ class AudioEntryPair {
         console.assert(chineseEntry == null)
         this.chineseEntry = chineseEntry
         this.assignEntry(chineseEntry)
-        this.chineseFilename = chineseEntry.filename
-        this.chineseText = chineseEntry.text
+        this.chineseKey = chineseEntry.filename
+        this.chinese = chineseEntry.text
     }
 
     addEnglishEntry(englishEntry: AudioEntry) {
         console.assert(englishEntry == null)
         this.englishEntry = englishEntry
         this.assignEntry(englishEntry)
-        this.englishFilename = englishEntry.filename
-        this.englishText = englishEntry.text
+        this.englishKey = englishEntry.filename
+        this.english = englishEntry.text
     }
 
     isComplete(): boolean {
@@ -71,10 +71,10 @@ class AudioEntryPair {
 
     getListFormat(): [string,string,string,string,boolean] {
         return [
-            this.englishText,
-            this.englishFilename,
-            this.chineseText,
-            this.chineseFilename,
+            this.english,
+            this.englishKey,
+            this.chinese,
+            this.chineseKey,
             true,
         ]
     }
@@ -85,10 +85,10 @@ class AudioEntryPair {
             `Is complete: ${this.isComplete()}`,
             `Category: ${this.category}`,
             `Creation date: ${this.creationdate}`,
-            `English file name: ${this.englishFilename}`,
-            `Chinese file name: ${this.chineseFilename}`,
-            `English text: ${this.englishText}`,
-            `Chinese text: ${this.chineseText}`,
+            `English file name: ${this.englishKey}`,
+            `Chinese file name: ${this.chineseKey}`,
+            `English text: ${this.english}`,
+            `Chinese text: ${this.chinese}`,
         ].join("\n")
     }
 }
