@@ -172,6 +172,10 @@ const generateAudio = (apiUrl, text, voice, prefix, onReadyCall = null) => {
     return `${prefix}_${text}`
 }
 
+const sleep = async (ms: number) => {
+    return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
 const makeNewAudioEntry = async (
     english: string,
     chinese: string,
@@ -182,7 +186,7 @@ const makeNewAudioEntry = async (
         throw new Error("Category must be non-empty")
     }
 
-    console.log('generating polly audio')
+    console.log("generating polly audio")
     const { englishFilename, chineseFilename } = await generatePollyAudio(
         english,
         chinese,
@@ -190,11 +194,17 @@ const makeNewAudioEntry = async (
     )
     const id = `id-${english}-${chinese}`
     await submitMetadata(id, english, englishFilename, category, "english")
+    await sleep(100)
     await submitMetadata(id, chinese, chineseFilename, category, "chinese")
 }
 
-const makeMultipleAudioEntries = async (entries: [string, string, string][]) => {
+const makeMultipleAudioEntries = async (entries: string[]) => {
     for (const row of entries) {
+        if (row.length == 1 && row[0] == "") {
+            console.log("Skipping empty row")
+            continue
+        }
+        console.log("Processing row", row)
         if (row.length < 3) {
             throw new Error(
                 `Each row should contain at least three entries. Found: ${row}`
@@ -202,7 +212,10 @@ const makeMultipleAudioEntries = async (entries: [string, string, string][]) => 
         }
     }
 
-    for (const [category, chinese, english] of entries) {
+    for (const entry of entries) {
+        const category = entry[0]
+        const chinese = entry[1]
+        const english = entry[2]
         await makeNewAudioEntry(english, chinese, category, () => {})
     }
 }
@@ -220,7 +233,7 @@ const generatePollyAudio = async (
     const englishVoice = "Emma"
     const chineseVoice = "Zhiyu"
 
-    console.log('starting generating')
+    console.log("starting generating")
 
     const chineseFilename = await generateAudio(
         "https://1meap5kmbd.execute-api.eu-west-1.amazonaws.com/dev/polly",
@@ -230,7 +243,7 @@ const generatePollyAudio = async (
         onReadyCall
     )
 
-    console.log('generated chinese', chineseFilename)
+    console.log("generated chinese", chineseFilename)
 
     const englishFilename = await generateAudio(
         "https://1meap5kmbd.execute-api.eu-west-1.amazonaws.com/dev/polly",

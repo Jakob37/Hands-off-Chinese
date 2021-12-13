@@ -17,6 +17,7 @@ const ScrollableAudioCardList = (param: Param) => {
                 listEntries={param.audioList}
                 endAction={param.refreshS3List} 
                 db={param.db}
+                pauseAllCurrent={() => {}}
             />
         </ScrollView>
     )

@@ -1,6 +1,9 @@
 import React, { useState } from "react"
 import { Text, TextInput, View } from "react-native"
-import { makeMultipleAudioEntries, makeNewAudioEntry } from "../../backend/apicalls"
+import {
+    makeMultipleAudioEntries,
+    makeNewAudioEntry,
+} from "../../backend/apicalls"
 import {
     parseCsv,
     pickFileFromDisk,
@@ -140,11 +143,13 @@ const CategoryFooter = (param: CategoryFooterParam) => {
                             if (resultFile != null) {
                                 parsedCsv = await parseCsv(resultFile.uri)
                             } else {
-                                console.log("No result file found")
+                                console.log(
+                                    `No result file found for ${resultFile.uri}`
+                                )
                             }
 
                             if (parsedCsv != null) {
-                                // FIXME: 
+                                // FIXME:
                                 makeMultipleAudioEntries(parsedCsv)
                             }
                         }}
