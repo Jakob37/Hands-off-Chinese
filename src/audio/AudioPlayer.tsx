@@ -31,7 +31,7 @@ class AudioPlayer {
 
     audioState: number = AudioState.stopped
     currentlyPlayingPair: AudioEntryPair | null = null
-    delay: number = 3000
+    delay: number = 4000
 
     startTime: number = 0
     getTimeSinceStart(): number {
@@ -54,6 +54,14 @@ class AudioPlayer {
     load(audioEntries: AudioEntryPair[], db: HocDb) {
         this.allAudioPairs = audioEntries
         this.db = db
+    }
+
+    incrementDelay() {
+        this.delay += 1000;
+    }
+
+    reduceDelay() {
+        this.delay -= 1000;
     }
 
     setDelay(delay: number) {

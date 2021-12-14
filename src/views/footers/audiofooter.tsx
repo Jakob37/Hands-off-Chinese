@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react"
-import { Text, View } from "react-native"
+import { Text, TouchableOpacity, View } from "react-native"
+import Icon from "react-native-vector-icons/FontAwesome"
 import { HocDb } from "src/backend/database"
 import { AudioPlayer } from "../../audio/AudioPlayer"
 import { AudioEntryPair } from "../../backend/audioentry"
@@ -22,6 +23,8 @@ const AudioPlayerRow = (param: AudioPlayerRowParam) => {
 
     const [activeNbr, setActiveNbr] = useState(0)
 
+    const [delay, setDelay] = useState(audioPlayer.delay / 1000)
+
     audioPlayer.addTimerHook((number) => {
         setCounter(number)
         setActiveNbr(audioPlayer.getNumberActiveClips())
@@ -43,9 +46,36 @@ const AudioPlayerRow = (param: AudioPlayerRowParam) => {
                     },
                 ]}
             >
-                <Text style={{ fontSize }}>{`${
-                    audioPlayer.delay / 1000
-                }s`}</Text>
+                <View
+                    style={{
+                        display: "flex",
+                        flexDirection: "row",
+                        minWidth: "20%",
+                        justifyContent: "space-between",
+                        alignItems: "center"
+                    }}
+                >
+                    <Text style={{ fontSize }}>{`${delay}s`}</Text>
+
+                    <TouchableOpacity
+                        onPress={() => {
+                            audioPlayer.incrementDelay()
+                            setDelay(audioPlayer.delay / 1000)
+                        }}
+                    >
+                        <Icon name="plus" size={20} color="black"></Icon>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                        onPress={() => {
+                            audioPlayer.reduceDelay()
+                            setDelay(audioPlayer.delay / 1000)
+                        }}
+                    >
+                        <Icon name="minus" size={20} color="black"></Icon>
+                    </TouchableOpacity>
+                </View>
+
                 <Text style={{ fontSize }}>{`Time: ${counter}s`}</Text>
                 <Text style={{ fontSize }}>{`Nbr active: ${activeNbr}`}</Text>
             </View>
