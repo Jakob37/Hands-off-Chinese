@@ -87,6 +87,7 @@ interface AudioFooterParam {
     audioEntries: AudioEntryPair[]
     backToMenu: () => void
     db: HocDb
+    pauseAll: () => void
 }
 const AudioFooter = (param: AudioFooterParam) => {
     useEffect(() => {
@@ -133,7 +134,7 @@ const AudioFooter = (param: AudioFooterParam) => {
                 </FooterButton>
                 <FooterButton
                     onPress={() => {
-                        param.db.pauseAll()
+                        param.pauseAll()
                     }}
                 >
                     Pause all

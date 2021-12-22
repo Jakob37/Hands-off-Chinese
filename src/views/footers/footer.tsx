@@ -16,6 +16,7 @@ interface FooterParam {
     db: HocDb
     startCategory: string
     updateCategory: (category: string) => void
+    pauseAll: () => void
 }
 
 const Footer = (param: FooterParam) => {
@@ -26,6 +27,7 @@ const Footer = (param: FooterParam) => {
                     backToMenu={param.backToMenu}
                     audioEntries={param.audioEntries}
                     db={param.db}
+                    pauseAll={param.pauseAll}
                 />
             ) : (
                 <CategoryFooter

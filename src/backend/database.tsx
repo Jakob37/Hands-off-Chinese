@@ -30,7 +30,6 @@ class HocDb {
     }
 
     pauseAll() {
-        console.log('pausing all')
         for (const id of Array.from(this._idToActive.keys())) {
             this._idToActive.set(id, false)
         }
