@@ -1,5 +1,5 @@
 import { getTimestamp } from "../util/util"
-import { AudioEntry, AudioEntryPair } from "./audioentry"
+import { addChineseEntry, addEnglishEntry, AudioEntry, AudioEntryPair } from "./audioentry"
 import { makeRequest } from "./util"
 
 interface MetaObj {
@@ -26,17 +26,17 @@ const getMetaAsAudioEntries = async (): Promise<
     const entries = items.map((item) => new AudioEntry(item))
 
     const idToAudioEntryPair = new Map<string, AudioEntryPair>()
-    for (const entry of entries) {
-        const id = entry.id
+    for (const newEntry of entries) {
+        const id = newEntry.id
         let currentEntry = idToAudioEntryPair.get(id)
         if (currentEntry == null) {
             currentEntry = new AudioEntryPair()
             idToAudioEntryPair.set(id, currentEntry)
         }
-        if (entry.language == "chinese") {
-            currentEntry.addChineseEntry(entry)
+        if (newEntry.language == "chinese") {
+            addChineseEntry(currentEntry, newEntry)
         } else {
-            currentEntry.addEnglishEntry(entry)
+            addEnglishEntry(currentEntry, newEntry)
         }
     }
     return idToAudioEntryPair

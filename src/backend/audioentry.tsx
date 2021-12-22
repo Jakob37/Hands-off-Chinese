@@ -42,55 +42,74 @@ class AudioEntryPair {
     chinese: string
 
     paused: boolean = false
-
-    assignEntry(entry: AudioEntry) {
-        this.id = entry.id
-        this.category = entry.category
-        this.creationdate = entry.creationdate
-    }
-
-    addChineseEntry(chineseEntry: AudioEntry) {
-        console.assert(chineseEntry == null)
-        this.chineseEntry = chineseEntry
-        this.assignEntry(chineseEntry)
-        this.chineseKey = chineseEntry.filename
-        this.chinese = chineseEntry.text
-    }
-
-    addEnglishEntry(englishEntry: AudioEntry) {
-        console.assert(englishEntry == null)
-        this.englishEntry = englishEntry
-        this.assignEntry(englishEntry)
-        this.englishKey = englishEntry.filename
-        this.english = englishEntry.text
-    }
-
-    isComplete(): boolean {
-        return this.chineseEntry != null && this.englishEntry != null
-    }
-
-    getListFormat(): [string,string,string,string,boolean] {
-        return [
-            this.english,
-            this.englishKey,
-            this.chinese,
-            this.chineseKey,
-            true,
-        ]
-    }
-
-    toString(): string {
-        return [
-            `ID: ${this.id}`,
-            `Is complete: ${this.isComplete()}`,
-            `Category: ${this.category}`,
-            `Creation date: ${this.creationdate}`,
-            `English file name: ${this.englishKey}`,
-            `Chinese file name: ${this.chineseKey}`,
-            `English text: ${this.english}`,
-            `Chinese text: ${this.chinese}`,
-        ].join("\n")
-    }
 }
 
-export { AudioEntry, AudioEntryPair }
+function copyEntry(entry: AudioEntryPair): AudioEntryPair {
+    const copy = new AudioEntryPair()
+    copy.chineseEntry = entry.chineseEntry
+    copy.englishEntry = entry.englishEntry
+
+    copy.id = entry.id
+    copy.category = entry.category
+    copy.creationdate = entry.creationdate
+    copy.englishKey = entry.englishKey
+    copy.chineseKey = entry.chineseKey
+    copy.english = entry.english
+    copy.chinese = entry.chinese
+    copy.paused = entry.paused
+    return copy
+}
+
+function assignEntry(entry: AudioEntryPair, newEntry: AudioEntry) {
+    entry.id = newEntry.id
+    entry.category = newEntry.category
+    entry.creationdate = newEntry.creationdate
+}
+
+function addChineseEntry(entry: AudioEntryPair, chineseEntry: AudioEntry) {
+    console.assert(chineseEntry == null)
+    entry.chineseEntry = chineseEntry
+    assignEntry(entry, chineseEntry)
+    entry.chineseKey = chineseEntry.filename
+    entry.chinese = chineseEntry.text
+}
+
+function addEnglishEntry(entry: AudioEntryPair, englishEntry: AudioEntry) {
+    console.assert(englishEntry == null)
+    entry.englishEntry = englishEntry
+    assignEntry(entry, englishEntry)
+    entry.englishKey = englishEntry.filename
+    entry.english = englishEntry.text
+}
+
+function isComplete(entry: AudioEntryPair,): boolean {
+    return entry.chineseEntry != null && entry.englishEntry != null
+}
+
+function getListFormat(entry: AudioEntryPair): [string, string, string, string, boolean] {
+    return [
+        entry.english,
+        entry.englishKey,
+        entry.chinese,
+        entry.chineseKey,
+        true,
+    ]
+}
+
+function toString(entry: AudioEntryPair): string {
+    return [
+        `ID: ${entry.id}`,
+        `Is complete: ${isComplete(entry)}`,
+        `Category: ${entry.category}`,
+        `Creation date: ${entry.creationdate}`,
+        `English file name: ${entry.englishKey}`,
+        `Chinese file name: ${entry.chineseKey}`,
+        `English text: ${entry.english}`,
+        `Chinese text: ${entry.chinese}`,
+    ].join("\n")
+}
+
+export {
+    AudioEntry, AudioEntryPair, copyEntry, assignEntry, addChineseEntry,
+    addEnglishEntry, isComplete, getListFormat, toString
+}
