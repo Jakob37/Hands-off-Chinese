@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from "react"
-import { Text, TouchableOpacity, View } from "react-native"
-import Icon from "react-native-vector-icons/FontAwesome"
-import { HocDb } from "src/backend/database"
-import { AudioPlayer } from "../../audio/AudioPlayer"
-import { AudioEntryPair } from "../../backend/audioentry"
-import { styles } from "../../style/Stylesheet"
-import { FooterButton } from "./util"
+import { RootState } from 'App'
+import React, { useEffect, useState } from 'react'
+import { Text, TouchableOpacity, View } from 'react-native'
+import Icon from 'react-native-vector-icons/FontAwesome'
+import { useSelector } from 'react-redux'
+import { HocDb } from 'src/backend/database'
+import { AudioPlayer } from '../../audio/AudioPlayer'
+import { AudioEntryPair } from '../../backend/audioentry'
+import { styles } from '../../style/Stylesheet'
+import { FooterButton } from './util'
 
 const audioPlayer = new AudioPlayer()
 
@@ -40,19 +42,19 @@ const AudioPlayerRow = (param: AudioPlayerRowParam) => {
                 style={[
                     styles.inputField,
                     {
-                        display: "flex",
-                        flexDirection: "row",
-                        justifyContent: "space-between",
+                        display: 'flex',
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
                     },
                 ]}
             >
                 <View
                     style={{
-                        display: "flex",
-                        flexDirection: "row",
-                        minWidth: "20%",
-                        justifyContent: "space-between",
-                        alignItems: "center"
+                        display: 'flex',
+                        flexDirection: 'row',
+                        minWidth: '20%',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
                     }}
                 >
                     <Text style={{ fontSize }}>{`${delay}s`}</Text>
@@ -94,6 +96,10 @@ const AudioFooter = (param: AudioFooterParam) => {
         audioPlayer.load(param.audioEntries, param.db)
     }, [param.audioEntries])
 
+    const availableMeals = useSelector(
+        (state: RootState) => state.meals.filteredMeals
+    )
+
     return (
         <>
             <AudioPlayerRow
@@ -105,12 +111,20 @@ const AudioFooter = (param: AudioFooterParam) => {
                 style={[
                     styles.footerCard,
                     {
-                        display: "flex",
-                        flexDirection: "row",
-                        justifyContent: "space-between",
+                        display: 'flex',
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
                     },
                 ]}
             >
+                <FooterButton
+                    onPress={() => {
+                        console.log('Hello testing')
+                        console.log('Available meals', availableMeals)
+                    }}
+                >
+                    Test
+                </FooterButton>
                 <FooterButton
                     onPress={() => {
                         audioPlayer.play()

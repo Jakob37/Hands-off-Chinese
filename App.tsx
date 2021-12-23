@@ -1,31 +1,24 @@
-import Amplify, { Storage } from "aws-amplify"
-import React, { useEffect, useState } from "react"
-import awsconfig from "./src/aws-exports"
-import { Button, ScrollView, Text, View } from "react-native"
-import { AudioEntryPair } from "src/backend/audioentry"
-import { makeNewAudioEntry } from "./src/backend/apicalls"
-import { HocDb } from "./src/backend/database"
-import { styles } from "./src/style/Stylesheet"
-import Footer from "./src/views/footers/footer"
-import CategoryCardList from "./src/views/list/categorycardlist"
-import ScrollableAudioCardList from "./src/views/list/scrollableaudiocardlist"
+import Amplify, { Storage } from 'aws-amplify'
+import React, { useEffect, useState } from 'react'
+import awsconfig from './src/aws-exports'
+import { Button, ScrollView, Text, View } from 'react-native'
+import { AudioEntryPair } from 'src/backend/audioentry'
+import { makeNewAudioEntry } from './src/backend/apicalls'
+import { HocDb } from './src/backend/database'
+import { styles } from './src/style/Stylesheet'
+import Footer from './src/views/footers/footer'
+import CategoryCardList from './src/views/list/categorycardlist'
+import ScrollableAudioCardList from './src/views/list/scrollableaudiocardlist'
 import { createStore, combineReducers } from 'redux'
 import { Provider } from 'react-redux'
 
-import mealsReducer from "store/reducers/meals"
-
-import DocumentPicker from "react-native-document-picker"
+import mealsReducer from './store/reducers/meals'
+import { useSelector } from 'react-redux'
 
 // FIXME: Leave Amplify
 Amplify.configure(awsconfig)
 // Needed to run in production? (verify)
 Amplify.register(Storage)
-
-const rootReducer = combineReducers({
-    meals: mealsReducer
-})
-
-const store = createStore(rootReducer)
 
 const db = new HocDb()
 
@@ -38,12 +31,26 @@ interface DefaultState {
 
 // const defaultState =
 
+const rootReducer = combineReducers({
+    meals: mealsReducer,
+})
+
+const store = createStore(rootReducer)
+
+// Infer the `RootState` and `AppDispatch` types from the store itself
+export type RootState = ReturnType<typeof store.getState>
+// Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
+export type AppDispatch = typeof store.dispatch
+
 const App: React.FunctionComponent<DefaultState> = ({
     audioListDefault = [],
     defaultCategory = null,
-    defaultDisplayCategoryList = ["Loading from AWS..."],
+    defaultDisplayCategoryList = ['Loading from AWS...'],
     defaultIsSelectedView = false,
 }) => {
+
+    
+
     const loadDatabase = () => {
         db.initDatabase((db) => {
             setDisplayCategoryList(db.getCategories())
@@ -61,11 +68,10 @@ const App: React.FunctionComponent<DefaultState> = ({
     const [displayCategoryList, setDisplayCategoryList] = useState(
         defaultDisplayCategoryList
     )
-    const [isSelectedView, setIsSelectedView] = useState(
-        defaultIsSelectedView
-    )
+    const [isSelectedView, setIsSelectedView] = useState(defaultIsSelectedView)
 
-    const [enterCategory, setEnterCategory] = useState("")
+    const [enterCategory, setEnterCategory] = useState('')
+
 
     const handleToggleComplete = (id: string) => {
         const updatedEntries = audioEntries.map((item) => {
@@ -73,23 +79,21 @@ const App: React.FunctionComponent<DefaultState> = ({
                 const updatedItem = {
                     ...item,
                     paused: !item.paused,
-                };
+                }
                 return updatedItem
             }
 
-            return item;
-        });
+            return item
+        })
 
-        setAudioEntries(updatedEntries);
+        setAudioEntries(updatedEntries)
     }
-
-
 
     const pauseAll = () => {
         const pausedEntries = audioEntries.map((entry) => {
             const updatedEntry = {
                 ...entry,
-                paused: true
+                paused: true,
             }
             return updatedEntry
         })
@@ -107,6 +111,14 @@ const App: React.FunctionComponent<DefaultState> = ({
                     <></>
                 )}
 
+                {/* <Button
+                    onPress={() => {
+                        console.log('hello world!')
+                        console.log('Available meals:', availableMeals)
+                    }}
+                    title="test"
+                ></Button> */}
+
                 {!isSelectedView ? (
                     <ScrollView>
                         <CategoryCardList
@@ -122,7 +134,7 @@ const App: React.FunctionComponent<DefaultState> = ({
                 ) : (
                     <ScrollableAudioCardList
                         audioList={audioEntries}
-                        refreshS3List={() => { }}
+                        refreshS3List={() => {}}
                         db={db}
                         handleToggleComplete={handleToggleComplete}
                     />
@@ -141,7 +153,7 @@ const App: React.FunctionComponent<DefaultState> = ({
                             englishText,
                             chineseText,
                             categoryText,
-                            () => { }
+                            () => {}
                         )
                     }}
                     db={db}
