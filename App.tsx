@@ -9,6 +9,10 @@ import { styles } from "./src/style/Stylesheet"
 import Footer from "./src/views/footers/footer"
 import CategoryCardList from "./src/views/list/categorycardlist"
 import ScrollableAudioCardList from "./src/views/list/scrollableaudiocardlist"
+import { createStore, combineReducers } from 'redux'
+import { Provider } from 'react-redux'
+
+import mealsReducer from "store/reducers/meals"
 
 import DocumentPicker from "react-native-document-picker"
 
@@ -16,6 +20,12 @@ import DocumentPicker from "react-native-document-picker"
 Amplify.configure(awsconfig)
 // Needed to run in production? (verify)
 Amplify.register(Storage)
+
+const rootReducer = combineReducers({
+    meals: mealsReducer
+})
+
+const store = createStore(rootReducer)
 
 const db = new HocDb()
 
@@ -87,60 +97,62 @@ const App: React.FunctionComponent<DefaultState> = ({
     }
 
     return (
-        <View style={{ flex: 1 }}>
-            {!isSelectedView ? (
-                <View>
-                    <Text style={styles.header}>Hands-off Chinese</Text>
-                </View>
-            ) : (
-                <></>
-            )}
+        <Provider store={store}>
+            <View style={{ flex: 1 }}>
+                {!isSelectedView ? (
+                    <View>
+                        <Text style={styles.header}>Hands-off Chinese</Text>
+                    </View>
+                ) : (
+                    <></>
+                )}
 
-            {!isSelectedView ? (
-                <ScrollView>
-                    <CategoryCardList
-                        categories={displayCategoryList}
-                        displayCategories={displayCategoryList}
-                        selectAction={(category) => {
-                            retrieveCategoryEntriesList(category)
-                            setIsSelectedView(true)
-                            setCurrCategory(category)
-                        }}
+                {!isSelectedView ? (
+                    <ScrollView>
+                        <CategoryCardList
+                            categories={displayCategoryList}
+                            displayCategories={displayCategoryList}
+                            selectAction={(category) => {
+                                retrieveCategoryEntriesList(category)
+                                setIsSelectedView(true)
+                                setCurrCategory(category)
+                            }}
+                        />
+                    </ScrollView>
+                ) : (
+                    <ScrollableAudioCardList
+                        audioList={audioEntries}
+                        refreshS3List={() => { }}
+                        db={db}
+                        handleToggleComplete={handleToggleComplete}
                     />
-                </ScrollView>
-            ) : (
-                <ScrollableAudioCardList
-                    audioList={audioEntries}
-                    refreshS3List={() => { }}
-                    db={db}
-                    handleToggleComplete={handleToggleComplete}
-                />
-            )}
+                )}
 
-            <Footer
-                audioEntries={audioEntries}
-                isSelectedView={isSelectedView}
-                backToMenu={() => {
-                    setIsSelectedView(false)
-                    setCurrCategory(null)
-                }}
-                refreshCategories={loadDatabase}
-                addNew={(englishText, chineseText, categoryText) => {
-                    makeNewAudioEntry(
-                        englishText,
-                        chineseText,
-                        categoryText,
-                        () => { }
-                    )
-                }}
-                db={db}
-                startCategory={enterCategory}
-                updateCategory={(category) => {
-                    setEnterCategory(category)
-                }}
-                pauseAll={pauseAll}
-            />
-        </View>
+                <Footer
+                    audioEntries={audioEntries}
+                    isSelectedView={isSelectedView}
+                    backToMenu={() => {
+                        setIsSelectedView(false)
+                        setCurrCategory(null)
+                    }}
+                    refreshCategories={loadDatabase}
+                    addNew={(englishText, chineseText, categoryText) => {
+                        makeNewAudioEntry(
+                            englishText,
+                            chineseText,
+                            categoryText,
+                            () => { }
+                        )
+                    }}
+                    db={db}
+                    startCategory={enterCategory}
+                    updateCategory={(category) => {
+                        setEnterCategory(category)
+                    }}
+                    pauseAll={pauseAll}
+                />
+            </View>
+        </Provider>
     )
 }
 
