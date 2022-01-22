@@ -8,7 +8,8 @@ Outline
 * Start the local server (required?) `npm run start`
 * Run the app (automatically starting emulator) `npm run ios`
 
-Next steps
+Issues
 
-* Make sure the icons render correctly (is `Icon.loadFont();` the solution?)
+* `Icon.loadFont()` needed when loading icons.
+* Clearing previous builds needed when re-building app.
 * See how to build directly to an iPhone device
