@@ -68,7 +68,6 @@ const App: React.FunctionComponent<DefaultState> = ({
         defaultDisplayCategoryList
     )
     const [isSelectedView, setIsSelectedView] = useState(defaultIsSelectedView)
-
     const [enterCategory, setEnterCategory] = useState('')
 
     const handleToggleComplete = (id: string) => {
@@ -98,22 +97,8 @@ const App: React.FunctionComponent<DefaultState> = ({
         setAudioEntries(pausedEntries)
     }
 
-
     return (
         <Provider store={store}>
-            <View>
-                <Button
-                    onPress={() => {
-                        // const available = useSelector(
-                        //     (state) => state.meals.filteredMeals
-                        // )
-                        // console.log('test', data)
-                    }}
-                    title="Test button"
-                >
-                    Test
-                </Button>
-            </View>
             <View style={{ flex: 1 }}>
                 {!isSelectedView ? (
                     <View>
@@ -125,10 +110,11 @@ const App: React.FunctionComponent<DefaultState> = ({
 
                 {/* <Button
                     onPress={() => {
-                        console.log('hello world!')
-                        console.log('Available meals:', availableMeals)
+                        const newCategory = `Category: ${Math.random()}`
+                        console.log('Adding category', newCategory)
+                        console.log('Existing categories:')
                     }}
-                    title="test"
+                    title="Test the categories"
                 ></Button> */}
 
                 {!isSelectedView ? (

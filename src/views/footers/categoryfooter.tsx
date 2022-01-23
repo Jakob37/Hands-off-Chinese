@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Text, TextInput, View } from 'react-native'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
+import { addCategory } from '../../../store/actions/testcategories'
 import {
     makeMultipleAudioEntries,
     makeNewAudioEntry,
@@ -50,8 +51,31 @@ const CategoryFooter = (param: CategoryFooterParam) => {
     const [chineseText, setChineseText] = useState('')
     const [categoryText, setCategoryText] = useState(param.startCategory)
 
-    const categories = useSelector((state) => state.categories.categories);
+    // let categories
+    // const updateCategories = () => {
+    // }
+    // addCategory('Added 1')
+    // addCategory('Added 2')
+    // addCategory('Added 3')
+    const dispatch = useDispatch()
+    const addCategoryHandler = (category: string) => {
+        dispatch(addCategory(category))
+    }
+    addCategoryHandler('New category');
+    let categories = useSelector((state) => state.categories.categories)
 
+    // updateCategories()
+
+    // const categories = useSelector((state) => state.categories.categories)
+
+    //     <Button
+    //     onPress={() => {
+    //         const newCategory = `Category: ${Math.random()}`
+    //         console.log('Adding category', newCategory)
+    //         console.log('Existing categories:')
+    //     }}
+    //     title="Test the categories"
+    // ></Button>
 
     return (
         <>
@@ -165,9 +189,15 @@ const CategoryFooter = (param: CategoryFooterParam) => {
                             // const available = useSelector(
                             //     state => state.categories.categories
                             // )
-                            console.log('test', categories)
+                            const newCategory = `Category: ${Math.random()}`
+                            // addCategory(newCategory)
+                            console.log('Adding category', newCategory)
+                            addCategoryHandler(newCategory);
+                            console.log('All categories', categories)
                         }}
-                    >Test</FooterButton>
+                    >
+                        Test
+                    </FooterButton>
                     <FooterButton onPress={param.refreshCategories}>
                         Refresh
                     </FooterButton>
