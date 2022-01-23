@@ -1,6 +1,7 @@
 import React from "react"
 import { View, TouchableOpacity, Text } from "react-native"
 import Icon from "react-native-vector-icons/FontAwesome"
+Icon.loadFont()
 import { AudioEntryPair } from "src/backend/audioentry"
 import { HocDb } from "../..//backend/database"
 import { styles } from "../../style/Stylesheet"

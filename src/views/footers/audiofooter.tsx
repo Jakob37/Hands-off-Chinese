@@ -2,6 +2,7 @@ import { RootState } from 'App'
 import React, { useEffect, useState } from 'react'
 import { Text, TouchableOpacity, View } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome'
+Icon.loadFont()
 import { useSelector } from 'react-redux'
 import { HocDb } from 'src/backend/database'
 import { AudioPlayer } from '../../audio/AudioPlayer'
