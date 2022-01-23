@@ -1,10 +1,11 @@
-import { RootState } from 'App'
 import React, { useEffect, useState } from 'react'
 import { Text, TouchableOpacity, View } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome'
+import { useDispatch } from 'react-redux'
 Icon.loadFont()
 import { useSelector } from 'react-redux'
 import { HocDb } from 'src/backend/database'
+import { toggleEntriesPaused } from '../../../store/actions/audioentries'
 import { AudioPlayer } from '../../audio/AudioPlayer'
 import { AudioEntryPair } from '../../backend/audioentry'
 import { styles } from '../../style/Stylesheet'
@@ -90,16 +91,18 @@ interface AudioFooterParam {
     audioEntries: AudioEntryPair[]
     backToMenu: () => void
     db: HocDb
-    pauseAll: () => void
 }
 const AudioFooter = (param: AudioFooterParam) => {
     useEffect(() => {
         audioPlayer.load(param.audioEntries, param.db)
     }, [param.audioEntries])
 
-    const availableMeals = useSelector(
-        (state: RootState) => state.meals.filteredMeals
-    )
+    const currentlyShownIds = useSelector((state) => state.audioEntries.currentIds);
+
+    const dispatch = useDispatch();
+    const toggleEntriesPausedHandler = (ids: Set<string>) => {
+        dispatch(toggleEntriesPaused(ids))
+    }
 
     return (
         <>
@@ -121,7 +124,6 @@ const AudioFooter = (param: AudioFooterParam) => {
                 <FooterButton
                     onPress={() => {
                         console.log('Hello testing')
-                        console.log('Available meals', availableMeals)
                     }}
                 >
                     Test
@@ -149,7 +151,11 @@ const AudioFooter = (param: AudioFooterParam) => {
                 </FooterButton>
                 <FooterButton
                     onPress={() => {
-                        param.pauseAll()
+                        console.log(
+                            'Attempting (and failing) to pause all in current category'
+                        )
+                        console.log('Currently shown', currentlyShownIds)
+                        toggleEntriesPausedHandler(currentlyShownIds)
                     }}
                 >
                     Pause all

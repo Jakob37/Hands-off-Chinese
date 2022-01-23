@@ -9,7 +9,6 @@ const initialState = {
 const categoriesReducer = (state = initialState, action) => {
     switch (action.type) {
         case ADD_CATEGORY:
-            console.log('Adding')
             state.categories.push(action.category)
         default:
             return state

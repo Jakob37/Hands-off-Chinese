@@ -52,32 +52,6 @@ const CategoryFooter = (param: CategoryFooterParam) => {
     const [chineseText, setChineseText] = useState('')
     const [categoryText, setCategoryText] = useState(param.startCategory)
 
-    // let categories
-    // const updateCategories = () => {
-    // }
-    // addCategory('Added 1')
-    // addCategory('Added 2')
-    // addCategory('Added 3')
-    const dispatch = useDispatch()
-    const addCategoryHandler = (category: string) => {
-        dispatch(addCategory(category))
-    }
-    addCategoryHandler('New category');
-    let categories = useSelector((state) => state.categories.categories)
-
-    // updateCategories()
-
-    // const categories = useSelector((state) => state.categories.categories)
-
-    //     <Button
-    //     onPress={() => {
-    //         const newCategory = `Category: ${Math.random()}`
-    //         console.log('Adding category', newCategory)
-    //         console.log('Existing categories:')
-    //     }}
-    //     title="Test the categories"
-    // ></Button>
-
     return (
         <>
             {addEntryOpen ? (

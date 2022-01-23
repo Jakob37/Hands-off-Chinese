@@ -1,27 +1,23 @@
-import React from "react"
-import { View, TouchableOpacity, Text } from "react-native"
-import Icon from "react-native-vector-icons/FontAwesome"
+import React from 'react'
+import { View, TouchableOpacity, Text } from 'react-native'
+import Icon from 'react-native-vector-icons/FontAwesome'
+import { useSelector } from 'react-redux'
 Icon.loadFont()
-import { AudioEntryPair } from "src/backend/audioentry"
-import { HocDb } from "../..//backend/database"
-import { styles } from "../../style/Stylesheet"
-import { playAudio } from "./audiocard"
+import { AudioEntryPair } from 'src/backend/audioentry'
+import { HocDb } from '../..//backend/database'
+import { styles } from '../../style/Stylesheet'
+import { playAudio } from './audiocard'
 
 interface AudioCardActiveParam {
-    // id: string
-    // chineseKey: string
-    // chinese: string
-    // englishKey: string
-    // english: string
     audioEntryPair: AudioEntryPair
     cardTextColor: string
-    // pauseAction: () => void
-    // db: HocDb
     togglePaused: () => void
     setSettingMode: () => void
 }
 
 const AudioCardActive = (param: AudioCardActiveParam) => {
+    const pausedIds = useSelector((state) => state.audioEntries.pausedIds)
+
     return (
         <>
             <View style={{ flex: 10 }}>
@@ -33,7 +29,12 @@ const AudioCardActive = (param: AudioCardActiveParam) => {
                     <Text
                         style={[
                             styles.cardText,
-                            { color: param.cardTextColor },
+                            {
+                                color: pausedIds.has(param.audioEntryPair.id)
+                                    ? 'red'
+                                    : 'green',
+                            },
+                            // { color: param.cardTextColor },
                         ]}
                     >
                         {param.audioEntryPair.chinese}
@@ -69,9 +70,6 @@ const AudioCardActive = (param: AudioCardActiveParam) => {
                 <TouchableOpacity
                     onPress={() => {
                         param.togglePaused()
-                        // param.pauseAction()
-                        // param.db.toggleIsActive(param.id)
-                        // param.setIsPaused(!param.db.getIsActive(param.id))
                     }}
                 >
                     <Icon name="pause" size={20} color="gray"></Icon>

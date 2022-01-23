@@ -1,19 +1,26 @@
 import { HocDb } from '../../src/backend/database'
 
 const LOAD_DATABASE = 'LOAD_DATABASE'
-const TOGGLE_ENTRY_PAUSED = 'TOGGLE_ENTRY_PAUSED'
+const TOGGLE_ENTRIES_PAUSED = 'TOGGLE_ENTRIES_PAUSED'
+const SET_CURRENT_ENTRIES = 'SET_CURRENT_ENTRIES'
 
 const loadDatabase = (callback: (db: HocDb) => void) => {
     return { type: LOAD_DATABASE, callback }
 }
 
-const toggleEntryPaused = (id: string) => {
-    return { type: TOGGLE_ENTRY_PAUSED, id }
+const toggleEntriesPaused = (ids: Set<string>) => {
+    return { type: TOGGLE_ENTRIES_PAUSED, ids }
 }
 
-export { 
+const setCurrentEntries = (ids: Set<string>) => {
+    return { type: SET_CURRENT_ENTRIES, ids }
+}
+
+export {
     LOAD_DATABASE,
     loadDatabase,
-    TOGGLE_ENTRY_PAUSED,
-    toggleEntryPaused
+    TOGGLE_ENTRIES_PAUSED,
+    toggleEntriesPaused,
+    SET_CURRENT_ENTRIES,
+    setCurrentEntries,
 }

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { ScrollView, Text, View, Button } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
 import { AudioEntryPair } from 'src/backend/audioentry'
-import { loadDatabase } from './store/actions/audioentries'
+import { loadDatabase, setCurrentEntries } from './store/actions/audioentries'
 import { makeNewAudioEntry } from './src/backend/apicalls'
 import { styles } from './src/style/Stylesheet'
 import Footer from './src/views/footers/footer'
@@ -27,9 +27,11 @@ const MainScreen: React.FunctionComponent<DefaultState> = ({
     const loadDatabaseHandler = (callback) => {
         dispatch(loadDatabase(callback))
     }
+    const setCurrentEntriesHandler = (ids: Set<string>) => {
+        dispatch(setCurrentEntries(ids))
+    }
 
     const loadDatabaseInMainScreen = () => {
-
         loadDatabaseHandler((loadedDb) => {
             db = loadedDb
             setDisplayCategoryList(db.getCategories())
@@ -43,11 +45,11 @@ const MainScreen: React.FunctionComponent<DefaultState> = ({
     useEffect(loadDatabaseInMainScreen, [])
 
     const pausedIds = useSelector((state) => state.audioEntries.pausedIds)
-
-
+    // const currentIds = useSelector((state) => state.audioEntries.currentIds)
 
     const retrieveCategoryEntriesList = (category: string) => {
         const audioEntries = db.getAudioEntries(category)
+        setCurrentEntriesHandler(new Set(audioEntries.map((entry) => entry.id)))
         setAudioEntries(audioEntries)
     }
 
@@ -57,33 +59,6 @@ const MainScreen: React.FunctionComponent<DefaultState> = ({
     )
     const [isSelectedView, setIsSelectedView] = useState(defaultIsSelectedView)
     const [enterCategory, setEnterCategory] = useState('')
-
-    const handleToggleComplete = (id: string) => {
-        const updatedEntries = audioEntries.map((item) => {
-            if (item.id === id) {
-                const updatedItem = {
-                    ...item,
-                    paused: !item.paused,
-                }
-                return updatedItem
-            }
-
-            return item
-        })
-
-        setAudioEntries(updatedEntries)
-    }
-
-    const pauseAll = () => {
-        const pausedEntries = audioEntries.map((entry) => {
-            const updatedEntry = {
-                ...entry,
-                paused: true,
-            }
-            return updatedEntry
-        })
-        setAudioEntries(pausedEntries)
-    }
 
     return (
         <View style={{ flex: 1 }}>
@@ -95,10 +70,12 @@ const MainScreen: React.FunctionComponent<DefaultState> = ({
                 <></>
             )}
 
-            <Button onPress={() => {
-                console.log('Paused IDs')
-                console.log(pausedIds)
-            }} title="Test"></Button>
+            <Button
+                onPress={() => {
+                    console.log('Paused IDs')
+                }}
+                title="Test"
+            ></Button>
 
             {!isSelectedView ? (
                 <ScrollView>
@@ -115,7 +92,7 @@ const MainScreen: React.FunctionComponent<DefaultState> = ({
                 <ScrollableAudioCardList
                     audioList={audioEntries}
                     refreshS3List={() => {}}
-                    handleToggleComplete={handleToggleComplete}
+                    pausedIds={pausedIds}
                 />
             )}
 
@@ -140,7 +117,6 @@ const MainScreen: React.FunctionComponent<DefaultState> = ({
                 updateCategory={(category) => {
                     setEnterCategory(category)
                 }}
-                pauseAll={pauseAll}
             />
         </View>
     )

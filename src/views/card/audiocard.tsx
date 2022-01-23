@@ -1,12 +1,12 @@
-import { Storage } from "aws-amplify"
-import React, { useState } from "react"
-import { View } from "react-native"
-import Sound from "react-native-sound"
-import { AudioEntryPair } from "src/backend/audioentry"
-import { removeEntry } from "../../backend/apicalls"
-import { styles } from "../../style/Stylesheet"
-import AudioCardActive from "./audiocardactive"
-import AudioCardSettings from "./audiocardsettings"
+import { Storage } from 'aws-amplify'
+import React, { useState } from 'react'
+import { View } from 'react-native'
+import Sound from 'react-native-sound'
+import { AudioEntryPair } from 'src/backend/audioentry'
+import { removeEntry } from '../../backend/apicalls'
+import { styles } from '../../style/Stylesheet'
+import AudioCardActive from './audiocardactive'
+import AudioCardSettings from './audiocardsettings'
 
 // FIXME: Clearly move this to util location
 const playAudio = async (
@@ -17,7 +17,7 @@ const playAudio = async (
 
     const track = new Sound(signedUrl, null, (e) => {
         if (e) {
-            console.warn("error loading track:", e)
+            console.warn('error loading track:', e)
         } else {
             if (callback != null) {
                 track.play(() => {
@@ -36,23 +36,19 @@ interface AudioCardParam {
     togglePaused: () => void
 }
 const AudioCard = (param: AudioCardParam) => {
-
     const [settingMode, setSettingMode] = useState(false)
     const [cardHeight, setCardHeight] = useState(0)
-
-    const cardTextColor = () => {
-        return param.isPaused ? "gray" : "black"
-    }
+    // const [isPaused, setIsPaused] = useState(param.isPaused)
 
     return (
         <View
             style={[
                 styles.card,
                 {
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "space-between",
+                    display: 'flex',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
                 },
             ]}
             onLayout={(event) => {
@@ -64,7 +60,10 @@ const AudioCard = (param: AudioCardParam) => {
         >
             {settingMode ? (
                 <AudioCardSettings
-                    removeCallback={(englishFile: string, chineseFile: string) => {
+                    removeCallback={(
+                        englishFile: string,
+                        chineseFile: string
+                    ) => {
                         removeEntry(englishFile, chineseFile)
                     }}
                     backCallback={() => {
@@ -77,8 +76,11 @@ const AudioCard = (param: AudioCardParam) => {
             ) : (
                 <AudioCardActive
                     audioEntryPair={param.audioEntryPair}
-                    cardTextColor={cardTextColor()}
-                    togglePaused={param.togglePaused}
+                    cardTextColor={param.isPaused ? 'gray' : 'black'}
+                    togglePaused={() => {
+                        // setIsPaused(!isPaused)
+                        param.togglePaused()
+                    }}
                     setSettingMode={() => {
                         setSettingMode(true)
                     }}
