@@ -7,7 +7,6 @@ const initialState = {
 }
 
 const categoriesReducer = (state = initialState, action) => {
-    console.log('Calling reducer with action', action.type)
     switch (action.type) {
         case ADD_CATEGORY:
             console.log('Adding')

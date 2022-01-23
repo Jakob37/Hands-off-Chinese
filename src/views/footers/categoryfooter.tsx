@@ -43,6 +43,7 @@ interface CategoryFooterParam {
     refreshCategories: () => void
     startCategory: string
     updateCategory: (category: string) => void
+    loadDb: () => void
 }
 const CategoryFooter = (param: CategoryFooterParam) => {
     const [addEntryOpen, setAddEntryOpen] = useState(false)
@@ -185,18 +186,13 @@ const CategoryFooter = (param: CategoryFooterParam) => {
                         Bulk
                     </FooterButton>
                     <FooterButton
-                        onPress={() => {
-                            // const available = useSelector(
-                            //     state => state.categories.categories
-                            // )
-                            const newCategory = `Category: ${Math.random()}`
-                            // addCategory(newCategory)
-                            console.log('Adding category', newCategory)
-                            addCategoryHandler(newCategory);
-                            console.log('All categories', categories)
-                        }}
+                        onPress={param.loadDb}
+                        // onPress={() => {
+                        //     const newCategory = `Category: ${Math.random()}`
+                        //     addCategoryHandler(newCategory);
+                        // }}
                     >
-                        Test
+                        Load
                     </FooterButton>
                     <FooterButton onPress={param.refreshCategories}>
                         Refresh

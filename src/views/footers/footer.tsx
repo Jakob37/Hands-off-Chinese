@@ -17,6 +17,7 @@ interface FooterParam {
     startCategory: string
     updateCategory: (category: string) => void
     pauseAll: () => void
+    loadDb: () => void
 }
 
 const Footer = (param: FooterParam) => {
@@ -35,6 +36,7 @@ const Footer = (param: FooterParam) => {
                     addEntry={param.addNew}
                     startCategory={param.startCategory}
                     updateCategory={param.updateCategory}
+                    loadDb={param.loadDb}
                 />
             )}
         </View>
