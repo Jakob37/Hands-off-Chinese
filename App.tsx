@@ -1,8 +1,12 @@
 import Amplify, { Storage } from 'aws-amplify'
-import React from 'react'
+import React, { useMemo, useState } from 'react'
 import { Provider } from 'react-redux'
 import { combineReducers, createStore } from 'redux'
 import { AudioEntryPair } from 'src/backend/audioentry'
+import {
+    PausedIdsContext,
+    ShownIdsContext,
+} from './store/contexts/mytestcontext'
 import MainScreen from './mainscreen'
 import awsconfig from './src/aws-exports'
 import audioEntriesReducer from './store/reducers/audioentries'
@@ -41,8 +45,6 @@ const store = createStore(rootReducer)
 
 // Is the 'connect' function correct here?
 
-
-
 // // Infer the `RootState` and `AppDispatch` types from the store itself
 // export type RootState = ReturnType<typeof store.getState>
 // // Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
@@ -56,10 +58,23 @@ interface DefaultState {
 }
 
 const App: React.FunctionComponent = () => {
+    const [pausedIds, setPausedIds] = useState([])
+    const pausedIdsMemo = useMemo(
+        () => ({ pausedIds, setPausedIds }),
+        [pausedIds]
+    )
+
+    const [shownIds, setShownIds] = useState([])
+    const shownIdsMemo = useMemo(() => ({ shownIds, setShownIds }), [shownIds])
+
     return (
-        <Provider store={store}>
-            <MainScreen />
-        </Provider>
+        <PausedIdsContext.Provider value={pausedIdsMemo}>
+            <ShownIdsContext.Provider value={shownIdsMemo}>
+                <Provider store={store}>
+                    <MainScreen />
+                </Provider>
+            </ShownIdsContext.Provider>
+        </PausedIdsContext.Provider>
     )
 }
 

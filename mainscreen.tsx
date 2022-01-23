@@ -16,6 +16,8 @@ interface DefaultState {
     defaultIsSelectedView: boolean
 }
 
+
+
 let db: HocDb
 
 const MainScreen: React.FunctionComponent<DefaultState> = ({
@@ -44,7 +46,7 @@ const MainScreen: React.FunctionComponent<DefaultState> = ({
 
     useEffect(loadDatabaseInMainScreen, [])
 
-    const pausedIds = useSelector((state) => state.audioEntries.pausedIds)
+    // const pausedIds = useSelector((state) => state.audioEntries.pausedIds)
     // const currentIds = useSelector((state) => state.audioEntries.currentIds)
 
     const retrieveCategoryEntriesList = (category: string) => {
@@ -73,6 +75,7 @@ const MainScreen: React.FunctionComponent<DefaultState> = ({
             <Button
                 onPress={() => {
                     console.log('Paused IDs')
+
                 }}
                 title="Test"
             ></Button>
@@ -92,7 +95,7 @@ const MainScreen: React.FunctionComponent<DefaultState> = ({
                 <ScrollableAudioCardList
                     audioList={audioEntries}
                     refreshS3List={() => {}}
-                    pausedIds={pausedIds}
+                    // pausedIds={pausedIds}
                 />
             )}
 

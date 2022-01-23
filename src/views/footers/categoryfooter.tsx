@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
+import { useContext } from 'react'
 import { Text, TextInput, View } from 'react-native'
 import { useSelector, useDispatch } from 'react-redux'
+import { PausedIdsContext } from '../../../store/contexts/mytestcontext'
 import { addCategory } from '../../../store/actions/testcategories'
 import {
     makeMultipleAudioEntries,
@@ -51,6 +53,8 @@ const CategoryFooter = (param: CategoryFooterParam) => {
     const [englishText, setEnglishText] = useState('')
     const [chineseText, setChineseText] = useState('')
     const [categoryText, setCategoryText] = useState(param.startCategory)
+
+    const { indices, setIndices } = useContext(PausedIdsContext)
 
     return (
         <>
@@ -168,7 +172,18 @@ const CategoryFooter = (param: CategoryFooterParam) => {
                     >
                         Load
                     </FooterButton>
-                    <FooterButton onPress={param.refreshCategories}>
+                    <FooterButton
+                        onPress={() => {
+                            console.log('Obtained context values', indices)
+                            const updatedIndices = [
+                                ...indices,
+                                Math.round(Math.random() * 10),
+                            ]
+                            // [...indices, Math.round(Math.random] * 10)
+                            setIndices(updatedIndices)
+                            param.refreshCategories()
+                        }}
+                    >
                         Refresh
                     </FooterButton>
                 </View>

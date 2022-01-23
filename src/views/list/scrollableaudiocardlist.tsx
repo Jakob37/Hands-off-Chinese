@@ -7,7 +7,7 @@ import { AudioCardList } from "./audiocardlist"
 interface Param {
     audioList: AudioEntryPair[],
     refreshS3List: () => void,
-    pausedIds: Set<string>
+    // pausedIds: Set<string>
 }
 
 const ScrollableAudioCardList = (param: Param) => {
@@ -16,7 +16,7 @@ const ScrollableAudioCardList = (param: Param) => {
             <AudioCardList
                 listEntries={param.audioList}
                 endAction={param.refreshS3List} 
-                pausedIds={param.pausedIds}
+                // pausedIds={param.pausedIds}
             />
         </ScrollView>
     )
