@@ -13,6 +13,7 @@ import { createStore, combineReducers } from 'redux'
 import { Provider } from 'react-redux'
 
 import mealsReducer from './store/reducers/meals'
+import categoriesReducer from './store/reducers/testcategories'
 import { useSelector } from 'react-redux'
 
 // FIXME: Leave Amplify
@@ -33,6 +34,7 @@ interface DefaultState {
 
 const rootReducer = combineReducers({
     meals: mealsReducer,
+    categories: categoriesReducer,
 })
 
 const store = createStore(rootReducer)
@@ -48,9 +50,6 @@ const App: React.FunctionComponent<DefaultState> = ({
     defaultDisplayCategoryList = ['Loading from AWS...'],
     defaultIsSelectedView = false,
 }) => {
-
-    
-
     const loadDatabase = () => {
         db.initDatabase((db) => {
             setDisplayCategoryList(db.getCategories())
@@ -71,7 +70,6 @@ const App: React.FunctionComponent<DefaultState> = ({
     const [isSelectedView, setIsSelectedView] = useState(defaultIsSelectedView)
 
     const [enterCategory, setEnterCategory] = useState('')
-
 
     const handleToggleComplete = (id: string) => {
         const updatedEntries = audioEntries.map((item) => {
@@ -100,8 +98,22 @@ const App: React.FunctionComponent<DefaultState> = ({
         setAudioEntries(pausedEntries)
     }
 
+
     return (
         <Provider store={store}>
+            <View>
+                <Button
+                    onPress={() => {
+                        // const available = useSelector(
+                        //     (state) => state.meals.filteredMeals
+                        // )
+                        // console.log('test', data)
+                    }}
+                    title="Test button"
+                >
+                    Test
+                </Button>
+            </View>
             <View style={{ flex: 1 }}>
                 {!isSelectedView ? (
                     <View>

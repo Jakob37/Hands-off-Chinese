@@ -1,16 +1,17 @@
-import React, { useState } from "react"
-import { Text, TextInput, View } from "react-native"
+import React, { useState } from 'react'
+import { Text, TextInput, View } from 'react-native'
+import { useSelector } from 'react-redux'
 import {
     makeMultipleAudioEntries,
     makeNewAudioEntry,
-} from "../../backend/apicalls"
+} from '../../backend/apicalls'
 import {
     parseCsv,
     pickFileFromDisk,
     writeCsvToDownloads,
-} from "../../backend/parsing"
-import { styles } from "../../style/Stylesheet"
-import { FooterButton } from "./util"
+} from '../../backend/parsing'
+import { styles } from '../../style/Stylesheet'
+import { FooterButton } from './util'
 
 interface AddAudioRowParam {
     label: string
@@ -25,7 +26,7 @@ const AddAudioRow = (param: AddAudioRowParam) => {
             <TextInput
                 style={{
                     borderWidth: 1,
-                    borderColor: "gray",
+                    borderColor: 'gray',
                     flex: 3,
                 }}
                 onChangeText={(newText) => param.setUpdatedText(newText)}
@@ -45,9 +46,12 @@ interface CategoryFooterParam {
 const CategoryFooter = (param: CategoryFooterParam) => {
     const [addEntryOpen, setAddEntryOpen] = useState(false)
 
-    const [englishText, setEnglishText] = useState("")
-    const [chineseText, setChineseText] = useState("")
+    const [englishText, setEnglishText] = useState('')
+    const [chineseText, setChineseText] = useState('')
     const [categoryText, setCategoryText] = useState(param.startCategory)
+
+    const categories = useSelector((state) => state.categories.categories);
+
 
     return (
         <>
@@ -56,7 +60,7 @@ const CategoryFooter = (param: CategoryFooterParam) => {
                     <View
                         style={{
                             borderTopWidth: 1,
-                            borderTopColor: "lightgray",
+                            borderTopColor: 'lightgray',
                         }}
                     >
                         <AddAudioRow
@@ -87,9 +91,9 @@ const CategoryFooter = (param: CategoryFooterParam) => {
                         style={[
                             styles.footerCard,
                             {
-                                display: "flex",
-                                flexDirection: "row",
-                                justifyContent: "space-between",
+                                display: 'flex',
+                                flexDirection: 'row',
+                                justifyContent: 'space-between',
                             },
                         ]}
                     >
@@ -115,9 +119,9 @@ const CategoryFooter = (param: CategoryFooterParam) => {
                     style={[
                         styles.footerCard,
                         {
-                            display: "flex",
-                            flexDirection: "row",
-                            justifyContent: "space-between",
+                            display: 'flex',
+                            flexDirection: 'row',
+                            justifyContent: 'space-between',
                         },
                     ]}
                 >
@@ -127,11 +131,11 @@ const CategoryFooter = (param: CategoryFooterParam) => {
                     <FooterButton
                         onPress={async () => {
                             const downloadData = [
-                                ["Fruits", "苹果", "Apple"],
-                                ["Fruits", "牛油果", "Avocado"],
-                                ["Fruits", "柠檬", "Lemon"],
+                                ['Fruits', '苹果', 'Apple'],
+                                ['Fruits', '牛油果', 'Avocado'],
+                                ['Fruits', '柠檬', 'Lemon'],
                             ]
-                            writeCsvToDownloads("fruits.csv", downloadData)
+                            writeCsvToDownloads('fruits.csv', downloadData)
                         }}
                     >
                         Write(test)
@@ -156,6 +160,14 @@ const CategoryFooter = (param: CategoryFooterParam) => {
                     >
                         Bulk
                     </FooterButton>
+                    <FooterButton
+                        onPress={() => {
+                            // const available = useSelector(
+                            //     state => state.categories.categories
+                            // )
+                            console.log('test', categories)
+                        }}
+                    >Test</FooterButton>
                     <FooterButton onPress={param.refreshCategories}>
                         Refresh
                     </FooterButton>
