@@ -1,25 +1,21 @@
-import React, { useEffect, useState } from 'react'
-import { useContext } from 'react'
+import React, { useContext } from 'react'
+import { useEffect } from 'react'
 import { View } from 'react-native'
-import { useDispatch } from 'react-redux'
 import { AudioEntryPair } from 'src/backend/audioentry'
 import { PausedIdsContext } from '../../../store/contexts/mytestcontext'
-import { toggleEntriesPaused } from '../../../store/actions/audioentries'
 import { AudioCard } from '../card/audiocard'
 
 interface Param {
     listEntries: AudioEntryPair[]
     endAction: () => void
-    // pausedIds: Set<string>
 }
 
 const AudioCardList = (param: Param) => {
     const { pausedIds, setPausedIds } = useContext(PausedIdsContext)
 
-    // const dispatch = useDispatch()
-    // const toggleEntryPausedHandler = (id: string) => {
-    //     dispatch(toggleEntriesPaused(new Set([id])))
-    // }
+    useEffect(() => {
+        console.log('--- Testing responding pausedIds change ---')
+    }, [pausedIds])
 
     return (
         <View>
@@ -29,8 +25,6 @@ const AudioCardList = (param: Param) => {
                         key={i}
                         audioEntryPair={audioEntry}
                         togglePaused={() => {
-                            console.log('Current ID', audioEntry.id)
-                            console.log('Paused IDs', pausedIds)
                             if (!pausedIds.includes(audioEntry.id)) {
                                 console.log('adding')
                                 setPausedIds([...pausedIds, audioEntry.id])

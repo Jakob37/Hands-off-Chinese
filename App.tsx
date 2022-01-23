@@ -58,17 +58,23 @@ interface DefaultState {
 }
 
 const App: React.FunctionComponent = () => {
-    const [pausedIds, setPausedIds] = useState([])
-    const pausedIdsMemo = useMemo(
-        () => ({ pausedIds, setPausedIds }),
-        [pausedIds]
-    )
+    const [pausedIdsState, setPausedIdsState] = useState([])
+    // const pausedIdsMemo = useMemo(
+    //     () => ({ pausedIds, setPausedIds }),
+    //     [pausedIds]
+    // )
 
     const [shownIds, setShownIds] = useState([])
     const shownIdsMemo = useMemo(() => ({ shownIds, setShownIds }), [shownIds])
 
     return (
-        <PausedIdsContext.Provider value={pausedIdsMemo}>
+        <PausedIdsContext.Provider
+            value={{
+                pausedIds: pausedIdsState,
+                setPausedIds: (pausedIds: string[]) =>
+                    setPausedIdsState([...pausedIds]),
+            }}
+        >
             <ShownIdsContext.Provider value={shownIdsMemo}>
                 <Provider store={store}>
                     <MainScreen />

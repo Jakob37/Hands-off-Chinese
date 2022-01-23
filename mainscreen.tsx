@@ -9,14 +9,14 @@ import Footer from './src/views/footers/footer'
 import CategoryCardList from './src/views/list/categorycardlist'
 import ScrollableAudioCardList from './src/views/list/scrollableaudiocardlist'
 import { HocDb } from './src/backend/database'
+import { useContext } from 'react'
+import { ShownIdsContext } from './store/contexts/mytestcontext'
 
 interface DefaultState {
     audioListDefault: AudioEntryPair[]
     defaultDisplayCategoryList: string[]
     defaultIsSelectedView: boolean
 }
-
-
 
 let db: HocDb
 
@@ -29,10 +29,10 @@ const MainScreen: React.FunctionComponent<DefaultState> = ({
     const loadDatabaseHandler = (callback) => {
         dispatch(loadDatabase(callback))
     }
-    const setCurrentEntriesHandler = (ids: Set<string>) => {
-        dispatch(setCurrentEntries(ids))
-    }
 
+    const { shownIds, setShownIds } = useContext(ShownIdsContext)
+
+    // FIXME: Is this needed?
     const loadDatabaseInMainScreen = () => {
         loadDatabaseHandler((loadedDb) => {
             db = loadedDb
@@ -46,12 +46,13 @@ const MainScreen: React.FunctionComponent<DefaultState> = ({
 
     useEffect(loadDatabaseInMainScreen, [])
 
-    // const pausedIds = useSelector((state) => state.audioEntries.pausedIds)
-    // const currentIds = useSelector((state) => state.audioEntries.currentIds)
-
     const retrieveCategoryEntriesList = (category: string) => {
         const audioEntries = db.getAudioEntries(category)
-        setCurrentEntriesHandler(new Set(audioEntries.map((entry) => entry.id)))
+        const shownIds = audioEntries.map((entry) => entry.id)
+
+        setShownIds(shownIds)
+
+        // setCurrentEntriesHandler(new Set(audioEntries.map((entry) => entry.id)))
         setAudioEntries(audioEntries)
     }
 
@@ -75,7 +76,6 @@ const MainScreen: React.FunctionComponent<DefaultState> = ({
             <Button
                 onPress={() => {
                     console.log('Paused IDs')
-
                 }}
                 title="Test"
             ></Button>

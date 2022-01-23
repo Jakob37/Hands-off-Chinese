@@ -1,14 +1,13 @@
 import React from 'react'
 
-const pausedIds: string[] = []
+// const pausedIds: string[] = []
 const PausedIdsContext = React.createContext({
-    pausedIds,
+    pausedIds: [] as string[],
     setPausedIds: (ids: string[]) => {},
 })
 
-const shownIds: string[] = []
 const ShownIdsContext = React.createContext({
-    shownIds,
+    shownIds: [] as string[],
     setShownIds: (ids: string[]) => {},
 })
 

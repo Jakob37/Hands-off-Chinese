@@ -2,7 +2,10 @@ import React, { useState } from 'react'
 import { useContext } from 'react'
 import { Text, TextInput, View } from 'react-native'
 import { useSelector, useDispatch } from 'react-redux'
-import { PausedIdsContext } from '../../../store/contexts/mytestcontext'
+import {
+    PausedIdsContext,
+    ShownIdsContext,
+} from '../../../store/contexts/mytestcontext'
 import { addCategory } from '../../../store/actions/testcategories'
 import {
     makeMultipleAudioEntries,
@@ -54,7 +57,8 @@ const CategoryFooter = (param: CategoryFooterParam) => {
     const [chineseText, setChineseText] = useState('')
     const [categoryText, setCategoryText] = useState(param.startCategory)
 
-    const { indices, setIndices } = useContext(PausedIdsContext)
+    const { pausedIds, setPausedIds } = useContext(PausedIdsContext)
+    const { shownIds } = useContext(ShownIdsContext)
 
     return (
         <>
@@ -174,13 +178,20 @@ const CategoryFooter = (param: CategoryFooterParam) => {
                     </FooterButton>
                     <FooterButton
                         onPress={() => {
-                            console.log('Obtained context values', indices)
-                            const updatedIndices = [
-                                ...indices,
-                                Math.round(Math.random() * 10),
+                            // console.log('Obtained context values', indices)
+                            const updatedPausedIds = [
+                                ...pausedIds,
+                                ...shownIds.filter((shownId) =>
+                                    !pausedIds.includes(shownId)
+                                ),
                             ]
+
+                            console.log('paused IDs', pausedIds)
+                            console.log('shown IDs', shownIds)
+                            console.log('combined IDs', updatedPausedIds)
                             // [...indices, Math.round(Math.random] * 10)
-                            setIndices(updatedIndices)
+                            setPausedIds([])
+                            // setPausedIds(updatedPausedIds)
                             param.refreshCategories()
                         }}
                     >

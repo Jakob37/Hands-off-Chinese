@@ -38,7 +38,6 @@ interface AudioCardParam {
 const AudioCard = (param: AudioCardParam) => {
     const [settingMode, setSettingMode] = useState(false)
     const [cardHeight, setCardHeight] = useState(0)
-    // const [isPaused, setIsPaused] = useState(param.isPaused)
 
     return (
         <View
