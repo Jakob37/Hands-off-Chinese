@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { ScrollView, Text, View } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { ScrollView, Text, View, Button } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
 import { AudioEntryPair } from 'src/backend/audioentry'
 import { loadDatabase } from './store/actions/audioentries'
@@ -10,84 +10,41 @@ import CategoryCardList from './src/views/list/categorycardlist'
 import ScrollableAudioCardList from './src/views/list/scrollableaudiocardlist'
 import { HocDb } from './src/backend/database'
 
-
 interface DefaultState {
     audioListDefault: AudioEntryPair[]
-    defaultCategory: string | null
     defaultDisplayCategoryList: string[]
     defaultIsSelectedView: boolean
 }
 
-let db
+let db: HocDb
 
 const MainScreen: React.FunctionComponent<DefaultState> = ({
     audioListDefault = [],
-    defaultCategory = null,
     defaultDisplayCategoryList = ['Loading from AWS...'],
     defaultIsSelectedView = false,
 }) => {
-
-    const availableMeals = useSelector(
-        (state) => state.meals.filteredMeals
-    )
-
     const dispatch = useDispatch()
-    const loadDatabaseHandler = () => {
-        dispatch(loadDatabase((loadedDb) => {
-            console.log('Callback!')
-            db = loadedDb
-            console.log(loadedDb)
-        }))
+    const loadDatabaseHandler = (callback) => {
+        dispatch(loadDatabase(callback))
     }
-
 
     const loadDatabaseInMainScreen = () => {
 
-
-        console.log('Calling loading')
-
-        // const availableMeals = useSelector(
-        //     (state) => state.meals.filteredMeals
-        // )
-    
-        // console.log('---> Meals found inside:', availableMeals)
-
-
-        loadDatabaseHandler()
-        // console.log('Obtained db', obtainedDb)
-
-        
-
-        // db = useSelector((state) => state.audioEntries.db)
-
-        // let categories = useSelector((state) => state.categories.categories)
-
-        // useDispatch()
-
-        // db = useSelector((state) => state.audioEntries.db)
-        // db = useSelector(
-        //     (state: RootState) => state.audioEntries.db
-        // )
-        // db.initDatabase((db) => {
-        //     setDisplayCategoryList(db.getCategories())
-        // })
-
-        console.log('Calling loading end')
+        loadDatabaseHandler((loadedDb) => {
+            db = loadedDb
+            setDisplayCategoryList(db.getCategories())
+        })
     }
 
     const refresh = () => {
         console.log('Refresh')
-
-        console.log('Available meals', availableMeals)
-
-        console.log(db)
-
-        // const result = useSelector((state) => state.categories.categories)
-
-        // console.log(categories)
     }
 
-    // useEffect(loadDatabase, [])
+    useEffect(loadDatabaseInMainScreen, [])
+
+    const pausedIds = useSelector((state) => state.audioEntries.pausedIds)
+
+
 
     const retrieveCategoryEntriesList = (category: string) => {
         const audioEntries = db.getAudioEntries(category)
@@ -95,7 +52,6 @@ const MainScreen: React.FunctionComponent<DefaultState> = ({
     }
 
     const [audioEntries, setAudioEntries] = useState(audioListDefault)
-    const [currCategory, setCurrCategory] = useState(defaultCategory)
     const [displayCategoryList, setDisplayCategoryList] = useState(
         defaultDisplayCategoryList
     )
@@ -139,14 +95,10 @@ const MainScreen: React.FunctionComponent<DefaultState> = ({
                 <></>
             )}
 
-            {/* <Button
-                    onPress={() => {
-                        const newCategory = `Category: ${Math.random()}`
-                        console.log('Adding category', newCategory)
-                        console.log('Existing categories:')
-                    }}
-                    title="Test the categories"
-                ></Button> */}
+            <Button onPress={() => {
+                console.log('Paused IDs')
+                console.log(pausedIds)
+            }} title="Test"></Button>
 
             {!isSelectedView ? (
                 <ScrollView>
@@ -156,7 +108,6 @@ const MainScreen: React.FunctionComponent<DefaultState> = ({
                         selectAction={(category) => {
                             retrieveCategoryEntriesList(category)
                             setIsSelectedView(true)
-                            setCurrCategory(category)
                         }}
                     />
                 </ScrollView>
@@ -164,7 +115,6 @@ const MainScreen: React.FunctionComponent<DefaultState> = ({
                 <ScrollableAudioCardList
                     audioList={audioEntries}
                     refreshS3List={() => {}}
-                    db={db}
                     handleToggleComplete={handleToggleComplete}
                 />
             )}
@@ -174,7 +124,6 @@ const MainScreen: React.FunctionComponent<DefaultState> = ({
                 isSelectedView={isSelectedView}
                 backToMenu={() => {
                     setIsSelectedView(false)
-                    setCurrCategory(null)
                 }}
                 refreshCategories={refresh}
                 addNew={(englishText, chineseText, categoryText) => {

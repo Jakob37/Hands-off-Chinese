@@ -36,6 +36,7 @@ interface AudioCardParam {
     togglePaused: () => void
 }
 const AudioCard = (param: AudioCardParam) => {
+
     const [settingMode, setSettingMode] = useState(false)
     const [cardHeight, setCardHeight] = useState(0)
 

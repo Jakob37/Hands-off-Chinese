@@ -7,7 +7,6 @@ import { AudioCardList } from "./audiocardlist"
 interface Param {
     audioList: AudioEntryPair[],
     refreshS3List: () => void,
-    db: HocDb
     handleToggleComplete: (id: string) => void
 }
 
@@ -17,7 +16,6 @@ const ScrollableAudioCardList = (param: Param) => {
             <AudioCardList
                 listEntries={param.audioList}
                 endAction={param.refreshS3List} 
-                db={param.db}
                 handleToggleComplete={param.handleToggleComplete}
             />
         </ScrollView>

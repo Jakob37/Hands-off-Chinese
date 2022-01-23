@@ -1,17 +1,22 @@
 import React, { useState } from "react"
 import { View } from "react-native"
+import { useDispatch } from "react-redux"
 import { AudioEntryPair } from "src/backend/audioentry"
-import { HocDb } from "src/backend/database"
+import { toggleEntryPaused } from "../../../store/actions/audioentries"
 import { AudioCard } from "../card/audiocard"
 
 interface Param {
     listEntries: AudioEntryPair[]
     endAction: () => void
-    db: HocDb
     handleToggleComplete: (id: string) => void
 }
 
 const AudioCardList = (param: Param) => {
+
+    const dispatch = useDispatch()
+    const toggleEntryPausedHandler = (id: string) => {
+        dispatch(toggleEntryPaused(id))
+    }
 
     return (
         <View>
@@ -22,7 +27,11 @@ const AudioCardList = (param: Param) => {
                         key={i}
                         audioEntryPair={audioEntry}
                         togglePaused={() => {
-                            param.handleToggleComplete(audioEntry.id)
+                            // console.log('Toggle paused', audioEntry)
+                            // console.log('i', i)
+                            console.log('Toggling ID', audioEntry.id)
+                            toggleEntryPausedHandler(audioEntry.id)
+                            // param.handleToggleComplete(audioEntry.id)
                         }}
                         isPaused={param.listEntries[i].paused}
                     />
