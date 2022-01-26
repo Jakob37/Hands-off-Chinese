@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react'
+import { useContext } from 'react'
 import { Text, TouchableOpacity, View } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome'
 import { useDispatch } from 'react-redux'
 Icon.loadFont()
 import { useSelector } from 'react-redux'
 import { HocDb } from 'src/backend/database'
+import { PausedIdsContext, ShownIdsContext } from '../../../store/contexts/mytestcontext'
 import { toggleEntriesPaused } from '../../../store/actions/audioentries'
 import { AudioPlayer } from '../../audio/AudioPlayer'
 import { AudioEntryPair } from '../../backend/audioentry'
@@ -97,12 +99,10 @@ const AudioFooter = (param: AudioFooterParam) => {
         audioPlayer.load(param.audioEntries, param.db)
     }, [param.audioEntries])
 
-    const currentlyShownIds = useSelector((state) => state.audioEntries.currentIds);
+    // const currentlyShownIds = useSelector((state) => state.audioEntries.currentIds);
 
-    const dispatch = useDispatch();
-    const toggleEntriesPausedHandler = (ids: Set<string>) => {
-        dispatch(toggleEntriesPaused(ids))
-    }
+    const { pausedIds, setPausedIds } = useContext(PausedIdsContext);
+    const { shownIds, setShownIds } = useContext(ShownIdsContext);
 
     return (
         <>
@@ -151,11 +151,16 @@ const AudioFooter = (param: AudioFooterParam) => {
                 </FooterButton>
                 <FooterButton
                     onPress={() => {
-                        console.log(
-                            'Attempting (and failing) to pause all in current category'
-                        )
-                        console.log('Currently shown', currentlyShownIds)
-                        toggleEntriesPausedHandler(currentlyShownIds)
+                        const finalPausedIds = Array.from(pausedIds)
+
+                        for (const currentId of shownIds) {
+                            if (!pausedIds.includes(currentId)) {
+                                finalPausedIds.push(currentId)
+                            }
+                        }
+
+                        console.log('Assigning paused', finalPausedIds)
+                        setPausedIds(finalPausedIds)
                     }}
                 >
                     Pause all

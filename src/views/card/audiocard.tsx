@@ -1,8 +1,11 @@
 import { Storage } from 'aws-amplify'
 import React, { useState } from 'react'
+import { useContext } from 'react'
 import { View } from 'react-native'
 import Sound from 'react-native-sound'
-import { AudioEntryPair } from 'src/backend/audioentry'
+import { AudioEntryPair } from '../../backend/audioentry'
+import { removeFromArray } from '../../util/util'
+import { PausedIdsContext } from '../../../store/contexts/mytestcontext'
 import { removeEntry } from '../../backend/apicalls'
 import { styles } from '../../style/Stylesheet'
 import AudioCardActive from './audiocardactive'
@@ -38,6 +41,7 @@ interface AudioCardParam {
 const AudioCard = (param: AudioCardParam) => {
     const [settingMode, setSettingMode] = useState(false)
     const [cardHeight, setCardHeight] = useState(0)
+    const { pausedIds, setPausedIds } = useContext(PausedIdsContext)
 
     return (
         <View
@@ -75,10 +79,24 @@ const AudioCard = (param: AudioCardParam) => {
             ) : (
                 <AudioCardActive
                     audioEntryPair={param.audioEntryPair}
-                    cardTextColor={param.isPaused ? 'gray' : 'black'}
+                    cardTextColor={
+                        pausedIds.includes(param.audioEntryPair.id)
+                            ? 'gray'
+                            : 'black'
+                    }
                     togglePaused={() => {
-                        // setIsPaused(!isPaused)
-                        param.togglePaused()
+
+                        if (!pausedIds.includes(param.audioEntryPair.id)) {
+                            const addArr = Array.from(pausedIds)
+                            addArr.push(param.audioEntryPair.id)
+                            setPausedIds(addArr)
+                        } else {
+                            const trimmedArr = removeFromArray(
+                                Array.from(pausedIds),
+                                param.audioEntryPair.id
+                            )
+                            setPausedIds(trimmedArr)
+                        }
                     }}
                     setSettingMode={() => {
                         setSettingMode(true)
