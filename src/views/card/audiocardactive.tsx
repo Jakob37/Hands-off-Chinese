@@ -1,7 +1,6 @@
 import React from 'react'
 import { View, TouchableOpacity, Text } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome'
-import { useSelector } from 'react-redux'
 Icon.loadFont()
 import { AudioEntryPair } from 'src/backend/audioentry'
 import { HocDb } from '../..//backend/database'
@@ -16,7 +15,6 @@ interface AudioCardActiveParam {
 }
 
 const AudioCardActive = (param: AudioCardActiveParam) => {
-    const pausedIds = useSelector((state) => state.audioEntries.pausedIds)
 
     return (
         <>
@@ -29,12 +27,7 @@ const AudioCardActive = (param: AudioCardActiveParam) => {
                     <Text
                         style={[
                             styles.cardText,
-                            {
-                                color: pausedIds.has(param.audioEntryPair.id)
-                                    ? 'red'
-                                    : 'green',
-                            },
-                            // { color: param.cardTextColor },
+                            { color: param.cardTextColor },
                         ]}
                     >
                         {param.audioEntryPair.chinese}

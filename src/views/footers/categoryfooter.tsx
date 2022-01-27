@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { useContext } from 'react'
 import { Text, TextInput, View } from 'react-native'
-import { useSelector, useDispatch } from 'react-redux'
 import {
     PausedIdsContext,
     ShownIdsContext,

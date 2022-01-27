@@ -2,12 +2,9 @@ import React, { useEffect, useState } from 'react'
 import { useContext } from 'react'
 import { Text, TouchableOpacity, View } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome'
-import { useDispatch } from 'react-redux'
 Icon.loadFont()
-import { useSelector } from 'react-redux'
 import { HocDb } from 'src/backend/database'
 import { PausedIdsContext, ShownIdsContext } from '../../../store/contexts/mytestcontext'
-import { toggleEntriesPaused } from '../../../store/actions/audioentries'
 import { AudioPlayer } from '../../audio/AudioPlayer'
 import { AudioEntryPair } from '../../backend/audioentry'
 import { styles } from '../../style/Stylesheet'
@@ -98,8 +95,6 @@ const AudioFooter = (param: AudioFooterParam) => {
     useEffect(() => {
         audioPlayer.load(param.audioEntries, param.db)
     }, [param.audioEntries])
-
-    // const currentlyShownIds = useSelector((state) => state.audioEntries.currentIds);
 
     const { pausedIds, setPausedIds } = useContext(PausedIdsContext);
     const { shownIds, setShownIds } = useContext(ShownIdsContext);

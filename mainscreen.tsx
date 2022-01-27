@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { ScrollView, Text, View, Button } from 'react-native'
-import { useDispatch, useSelector } from 'react-redux'
 import { AudioEntryPair } from 'src/backend/audioentry'
-import { loadDatabase, setCurrentEntries } from './store/actions/audioentries'
+// import { loadDatabase, setCurrentEntries } from './store/actions/audioentries'
 import { makeNewAudioEntry } from './src/backend/apicalls'
 import { styles } from './src/style/Stylesheet'
 import Footer from './src/views/footers/footer'
@@ -18,49 +17,37 @@ interface DefaultState {
     defaultIsSelectedView: boolean
 }
 
-let db: HocDb
+let db: HocDb = new HocDb();
 
-const MainScreen: React.FunctionComponent<DefaultState> = ({
-    audioListDefault = [],
-    defaultDisplayCategoryList = ['Loading from AWS...'],
-    defaultIsSelectedView = false,
-}) => {
-    const dispatch = useDispatch()
-    const loadDatabaseHandler = (callback) => {
-        dispatch(loadDatabase(callback))
-    }
+const MainScreen: React.FunctionComponent = () => {
+    const { setShownIds } = useContext(ShownIdsContext)
 
-    const { shownIds, setShownIds } = useContext(ShownIdsContext)
-
-    // FIXME: Is this needed?
     const loadDatabaseInMainScreen = () => {
-        loadDatabaseHandler((loadedDb) => {
-            db = loadedDb
+        db.initDatabase(() => {
             setDisplayCategoryList(db.getCategories())
         })
     }
 
-    const refresh = () => {
-        console.log('Refresh')
-    }
+    // const refresh = () => {
+    //     db.initDatabase(() => {
+    //         setDisplayCategoryList(db.getCategories())
+    //     })
+    // }
 
     useEffect(loadDatabaseInMainScreen, [])
 
     const retrieveCategoryEntriesList = (category: string) => {
         const audioEntries = db.getAudioEntries(category)
         const shownIds = audioEntries.map((entry) => entry.id)
-
         setShownIds(shownIds)
-
-        // setCurrentEntriesHandler(new Set(audioEntries.map((entry) => entry.id)))
         setAudioEntries(audioEntries)
     }
 
-    const [audioEntries, setAudioEntries] = useState(audioListDefault)
-    const [displayCategoryList, setDisplayCategoryList] = useState(
-        defaultDisplayCategoryList
-    )
-    const [isSelectedView, setIsSelectedView] = useState(defaultIsSelectedView)
+    const [audioEntries, setAudioEntries] = useState([])
+    const [displayCategoryList, setDisplayCategoryList] = useState([
+        'Loading from AWS...',
+    ])
+    const [isSelectedView, setIsSelectedView] = useState(false)
     const [enterCategory, setEnterCategory] = useState('')
 
     return (
@@ -72,13 +59,6 @@ const MainScreen: React.FunctionComponent<DefaultState> = ({
             ) : (
                 <></>
             )}
-
-            <Button
-                onPress={() => {
-                    console.log('Paused IDs')
-                }}
-                title="Test"
-            ></Button>
 
             {!isSelectedView ? (
                 <ScrollView>
@@ -105,7 +85,7 @@ const MainScreen: React.FunctionComponent<DefaultState> = ({
                 backToMenu={() => {
                     setIsSelectedView(false)
                 }}
-                refreshCategories={refresh}
+                refreshCategories={loadDatabaseInMainScreen}
                 addNew={(englishText, chineseText, categoryText) => {
                     makeNewAudioEntry(
                         englishText,
