@@ -168,16 +168,11 @@ const CategoryFooter = (param: CategoryFooterParam) => {
                     </FooterButton>
                     <FooterButton
                         onPress={param.loadDb}
-                        // onPress={() => {
-                        //     const newCategory = `Category: ${Math.random()}`
-                        //     addCategoryHandler(newCategory);
-                        // }}
                     >
                         Load
                     </FooterButton>
                     <FooterButton
                         onPress={() => {
-                            // console.log('Obtained context values', indices)
                             const updatedPausedIds = [
                                 ...pausedIds,
                                 ...shownIds.filter((shownId) =>
@@ -185,9 +180,6 @@ const CategoryFooter = (param: CategoryFooterParam) => {
                                 ),
                             ]
 
-                            console.log('paused IDs', pausedIds)
-                            console.log('shown IDs', shownIds)
-                            console.log('combined IDs', updatedPausedIds)
                             // [...indices, Math.round(Math.random] * 10)
                             setPausedIds([])
                             // setPausedIds(updatedPausedIds)

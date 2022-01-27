@@ -3,22 +3,22 @@ const { View } = require("react-native")
 const { CategoryCard } = require("../card/categorycard")
 
 interface Param {
-    displayCategories: string[],
+    currentCategories: string[],
     categories: string[],
-    selectAction: (category:string) => void
+    selectCategoryAction: (category:string) => void
 }
 
 const CategoryCardList = (param: Param) => {
     return (
         <View>
-            {param.displayCategories.map((displayCategory, i) => {
+            {param.currentCategories.map((displayCategory, i) => {
                 return (
                     <CategoryCard
                         key={i}
                         category={displayCategory}
                         selectAction={() => { 
                             const category = param.categories[i];
-                            param.selectAction(category) 
+                            param.selectCategoryAction(category) 
                         }}
                     />
                 )

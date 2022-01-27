@@ -10,6 +10,7 @@ import ScrollableAudioCardList from './src/views/list/scrollableaudiocardlist'
 import { HocDb } from './src/backend/database'
 import { useContext } from 'react'
 import { ShownIdsContext } from './store/contexts/mytestcontext'
+import { AudioCardList } from './src/views/list/audiocardlist'
 
 interface DefaultState {
     audioListDefault: AudioEntryPair[]
@@ -17,23 +18,25 @@ interface DefaultState {
     defaultIsSelectedView: boolean
 }
 
-let db: HocDb = new HocDb();
+let db: HocDb = new HocDb()
+
+// To think about: React Navigation?
+// https://blog.logrocket.com/navigating-react-native-apps-using-react-navigation/
 
 const MainScreen: React.FunctionComponent = () => {
+    const [audioEntries, setAudioEntries] = useState([])
+    const [currentCategories, setCurrentCategories] = useState([
+        'Loading from AWS...',
+    ])
+    const [isSelectedView, setIsSelectedView] = useState(false)
+    const [enterCategory, setEnterCategory] = useState('')
     const { setShownIds } = useContext(ShownIdsContext)
 
     const loadDatabaseInMainScreen = () => {
         db.initDatabase(() => {
-            setDisplayCategoryList(db.getCategories())
+            setCurrentCategories(db.getCategories())
         })
     }
-
-    // const refresh = () => {
-    //     db.initDatabase(() => {
-    //         setDisplayCategoryList(db.getCategories())
-    //     })
-    // }
-
     useEffect(loadDatabaseInMainScreen, [])
 
     const retrieveCategoryEntriesList = (category: string) => {
@@ -42,13 +45,6 @@ const MainScreen: React.FunctionComponent = () => {
         setShownIds(shownIds)
         setAudioEntries(audioEntries)
     }
-
-    const [audioEntries, setAudioEntries] = useState([])
-    const [displayCategoryList, setDisplayCategoryList] = useState([
-        'Loading from AWS...',
-    ])
-    const [isSelectedView, setIsSelectedView] = useState(false)
-    const [enterCategory, setEnterCategory] = useState('')
 
     return (
         <View style={{ flex: 1 }}>
@@ -63,20 +59,21 @@ const MainScreen: React.FunctionComponent = () => {
             {!isSelectedView ? (
                 <ScrollView>
                     <CategoryCardList
-                        categories={displayCategoryList}
-                        displayCategories={displayCategoryList}
-                        selectAction={(category) => {
+                        categories={currentCategories}
+                        currentCategories={currentCategories}
+                        selectCategoryAction={(category) => {
                             retrieveCategoryEntriesList(category)
                             setIsSelectedView(true)
                         }}
                     />
                 </ScrollView>
             ) : (
-                <ScrollableAudioCardList
-                    audioList={audioEntries}
-                    refreshS3List={() => {}}
-                    // pausedIds={pausedIds}
-                />
+                <ScrollView>
+                    <AudioCardList
+                        listEntries={audioEntries}
+                        endAction={() => {}}
+                    />
+                </ScrollView>
             )}
 
             <Footer
