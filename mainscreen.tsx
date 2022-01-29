@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { ScrollView, Text, View, Button } from 'react-native'
 import { AudioEntryPair } from 'src/backend/audioentry'
-// import { loadDatabase, setCurrentEntries } from './store/actions/audioentries'
 import { makeNewAudioEntry } from './src/backend/apicalls'
 import { styles } from './src/style/Stylesheet'
 import Footer from './src/views/footers/footer'
 import CategoryCardList from './src/views/list/categorycardlist'
-import ScrollableAudioCardList from './src/views/list/scrollableaudiocardlist'
 import { HocDb } from './src/backend/database'
 import { useContext } from 'react'
 import { ShownIdsContext } from './store/contexts/mytestcontext'
@@ -48,13 +46,13 @@ const MainScreen: React.FunctionComponent = () => {
 
     return (
         <View style={{ flex: 1 }}>
-            {!isSelectedView ? (
+            {/* {!isSelectedView ? (
                 <View>
                     <Text style={styles.header}>Hands-off Chinese</Text>
                 </View>
             ) : (
                 <></>
-            )}
+            )} */}
 
             {!isSelectedView ? (
                 <ScrollView>

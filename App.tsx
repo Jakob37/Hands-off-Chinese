@@ -4,13 +4,19 @@ import MainScreen from './mainscreen'
 import awsconfig from './src/aws-exports'
 import {
     PausedIdsContext,
-    ShownIdsContext
+    ShownIdsContext,
 } from './store/contexts/mytestcontext'
+
+import { NavigationContainer } from '@react-navigation/native'
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import { TestScreen } from './src/scratch/testscreen'
 
 // FIXME: Leave Amplify
 Amplify.configure(awsconfig)
 // Needed to run in production? (verify)
 Amplify.register(Storage)
+
+const Stack = createNativeStackNavigator()
 
 const App: React.FunctionComponent = () => {
     const [pausedIds, setPausedIds] = useState([])
@@ -24,7 +30,17 @@ const App: React.FunctionComponent = () => {
             }}
         >
             <ShownIdsContext.Provider value={{ shownIds, setShownIds }}>
-                <MainScreen />
+                <NavigationContainer>
+                    <Stack.Navigator>
+                        {/* <MainScreen /> */}
+                        <Stack.Screen
+                            name="Home"
+                            component={MainScreen}
+                            options={{ title: 'Hands-off Chinese' }}
+                        />
+                        <Stack.Screen name="Test" component={TestScreen} />
+                    </Stack.Navigator>
+                </NavigationContainer>
             </ShownIdsContext.Provider>
         </PausedIdsContext.Provider>
     )

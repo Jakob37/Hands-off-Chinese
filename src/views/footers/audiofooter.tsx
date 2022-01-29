@@ -97,7 +97,7 @@ const AudioFooter = (param: AudioFooterParam) => {
     }, [param.audioEntries])
 
     const { pausedIds, setPausedIds } = useContext(PausedIdsContext);
-    const { shownIds, setShownIds } = useContext(ShownIdsContext);
+    const { shownIds } = useContext(ShownIdsContext);
 
     return (
         <>
@@ -147,14 +147,11 @@ const AudioFooter = (param: AudioFooterParam) => {
                 <FooterButton
                     onPress={() => {
                         const finalPausedIds = Array.from(pausedIds)
-
                         for (const currentId of shownIds) {
                             if (!pausedIds.includes(currentId)) {
                                 finalPausedIds.push(currentId)
                             }
                         }
-
-                        console.log('Assigning paused', finalPausedIds)
                         setPausedIds(finalPausedIds)
                     }}
                 >
