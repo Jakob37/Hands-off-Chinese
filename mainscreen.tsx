@@ -9,6 +9,11 @@ import { HocDb } from './src/backend/database'
 import { useContext } from 'react'
 import { ShownIdsContext } from './store/contexts/mytestcontext'
 import { AudioCardList } from './src/views/list/audiocardlist'
+import AudioFooter from './src/views/footers/audiofooter'
+import CategoryFooter from './src/views/footers/categoryfooter'
+
+// import { NavigationContainer } from '@react-navigation/native';
+// import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 interface DefaultState {
     audioListDefault: AudioEntryPair[]
@@ -21,7 +26,10 @@ let db: HocDb = new HocDb()
 // To think about: React Navigation?
 // https://blog.logrocket.com/navigating-react-native-apps-using-react-navigation/
 
-const MainScreen: React.FunctionComponent = () => {
+// Getting started with AWS CloudFormation
+// https://levelup.gitconnected.com/setup-serverless-applications-with-aws-cloudformation-6042850f64d5
+
+const MainScreen = ({ navigation }) => {
     const [audioEntries, setAudioEntries] = useState([])
     const [currentCategories, setCurrentCategories] = useState([
         'Loading from AWS...',
@@ -46,35 +54,38 @@ const MainScreen: React.FunctionComponent = () => {
 
     return (
         <View style={{ flex: 1 }}>
-            {/* {!isSelectedView ? (
-                <View>
-                    <Text style={styles.header}>Hands-off Chinese</Text>
-                </View>
-            ) : (
-                <></>
-            )} */}
+            <ScrollView>
+                <CategoryCardList
+                    categories={currentCategories}
+                    currentCategories={currentCategories}
+                    selectCategoryAction={(category) => {
+                        navigation.navigate('Test', {
+                            audioEntries,
+                        })
+                        retrieveCategoryEntriesList(category)
+                        // setIsSelectedView(true)
+                    }}
+                />
+            </ScrollView>
 
-            {!isSelectedView ? (
-                <ScrollView>
-                    <CategoryCardList
-                        categories={currentCategories}
-                        currentCategories={currentCategories}
-                        selectCategoryAction={(category) => {
-                            retrieveCategoryEntriesList(category)
-                            setIsSelectedView(true)
-                        }}
-                    />
-                </ScrollView>
-            ) : (
-                <ScrollView>
-                    <AudioCardList
-                        listEntries={audioEntries}
-                        endAction={() => {}}
-                    />
-                </ScrollView>
-            )}
+            <CategoryFooter
+                refreshCategories={loadDatabaseInMainScreen}
+                addEntry={(englishText, chineseText, categoryText) => {
+                    makeNewAudioEntry(
+                        englishText,
+                        chineseText,
+                        categoryText,
+                        () => {}
+                    )
+                }}
+                startCategory={enterCategory}
+                updateCategory={(category) => {
+                    setEnterCategory(category)
+                }}
+                loadDb={loadDatabaseInMainScreen}
+            />
 
-            <Footer
+            {/* <Footer
                 audioEntries={audioEntries}
                 isSelectedView={isSelectedView}
                 backToMenu={() => {
@@ -95,7 +106,7 @@ const MainScreen: React.FunctionComponent = () => {
                 updateCategory={(category) => {
                     setEnterCategory(category)
                 }}
-            />
+            /> */}
         </View>
     )
 }

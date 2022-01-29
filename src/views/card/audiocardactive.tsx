@@ -5,7 +5,7 @@ Icon.loadFont()
 import { AudioEntryPair } from 'src/backend/audioentry'
 import { HocDb } from '../..//backend/database'
 import { styles } from '../../style/Stylesheet'
-import { playAudio } from './audiocard'
+import { playAudio } from './util'
 
 interface AudioCardActiveParam {
     audioEntryPair: AudioEntryPair
@@ -21,6 +21,7 @@ const AudioCardActive = (param: AudioCardActiveParam) => {
             <View style={{ flex: 10 }}>
                 <TouchableOpacity
                     onPress={() => {
+                        console.log('Playing key', param.audioEntryPair.chineseKey)
                         playAudio(param.audioEntryPair.chineseKey)
                     }}
                 >

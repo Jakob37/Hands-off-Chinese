@@ -88,7 +88,6 @@ const AudioPlayerRow = (param: AudioPlayerRowParam) => {
 
 interface AudioFooterParam {
     audioEntries: AudioEntryPair[]
-    backToMenu: () => void
     db: HocDb
 }
 const AudioFooter = (param: AudioFooterParam) => {
@@ -157,7 +156,6 @@ const AudioFooter = (param: AudioFooterParam) => {
                 >
                     Pause all
                 </FooterButton>
-                <FooterButton onPress={param.backToMenu}>Back</FooterButton>
             </View>
         </>
     )

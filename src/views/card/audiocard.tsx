@@ -1,8 +1,6 @@
-import { Storage } from 'aws-amplify'
 import React, { useState } from 'react'
 import { useContext } from 'react'
 import { View } from 'react-native'
-import Sound from 'react-native-sound'
 import { AudioEntryPair } from '../../backend/audioentry'
 import { removeFromArray } from '../../util/util'
 import { PausedIdsContext } from '../../../store/contexts/mytestcontext'
@@ -10,28 +8,6 @@ import { removeEntry } from '../../backend/apicalls'
 import { styles } from '../../style/Stylesheet'
 import AudioCardActive from './audiocardactive'
 import AudioCardSettings from './audiocardsettings'
-
-// FIXME: Clearly move this to util location
-const playAudio = async (
-    key: string,
-    callback: ((track: Sound) => void) | null = null
-) => {
-    const signedUrl = await Storage.get(key)
-
-    const track = new Sound(signedUrl, null, (e) => {
-        if (e) {
-            console.warn('error loading track:', e)
-        } else {
-            if (callback != null) {
-                track.play(() => {
-                    callback(track)
-                })
-            } else {
-                track.play()
-            }
-        }
-    })
-}
 
 interface AudioCardParam {
     audioEntryPair: AudioEntryPair
@@ -107,4 +83,4 @@ const AudioCard = (param: AudioCardParam) => {
     )
 }
 
-export { AudioCard, playAudio }
+export { AudioCard }

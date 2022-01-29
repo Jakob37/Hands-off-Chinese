@@ -9,7 +9,7 @@ import {
 
 import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import { TestScreen } from './src/scratch/testscreen'
+import { CardScreen } from './src/scratch/cardscreen'
 
 // FIXME: Leave Amplify
 Amplify.configure(awsconfig)
@@ -38,7 +38,11 @@ const App: React.FunctionComponent = () => {
                             component={MainScreen}
                             options={{ title: 'Hands-off Chinese' }}
                         />
-                        <Stack.Screen name="Test" component={TestScreen} />
+                        <Stack.Screen
+                            name="Test"
+                            options={{ title: 'Audio entries ' }}
+                            component={CardScreen}
+                        />
                     </Stack.Navigator>
                 </NavigationContainer>
             </ShownIdsContext.Provider>

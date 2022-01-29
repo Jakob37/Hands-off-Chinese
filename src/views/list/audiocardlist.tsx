@@ -7,7 +7,6 @@ import { AudioCard } from '../card/audiocard'
 
 interface Param {
     listEntries: AudioEntryPair[]
-    endAction: () => void
 }
 
 const AudioCardList = (param: Param) => {

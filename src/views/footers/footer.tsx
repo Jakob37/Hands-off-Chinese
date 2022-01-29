@@ -24,7 +24,6 @@ const Footer = (param: FooterParam) => {
         <View>
             {param.isSelectedView ? (
                 <AudioFooter
-                    backToMenu={param.backToMenu}
                     audioEntries={param.audioEntries}
                     db={param.db}
                 />
