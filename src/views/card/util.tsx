@@ -1,6 +1,6 @@
 import Sound from "react-native-sound"
 import { Storage } from 'aws-amplify'
-import awsmobile from "../../../src/aws-exports"
+// import awsmobile from "../../../src/aws-exports"
 
 
 // FIXME: Clearly move this to util location
@@ -10,11 +10,11 @@ const playAudio = async (
 ) => {
 
     console.log('Attempting to play audio for key', key)
-    console.log('Config', awsmobile)
+    // console.log('Config', awsmobile)
 
-    const config = awsmobile;
+    // const config = awsmobile;
 
-    const signedUrl = await Storage.get(key, awsmobile)
+    // const signedUrl = await Storage.get(key, awsmobile)
 
     // console.log('Signed URL', signedUrl)
 

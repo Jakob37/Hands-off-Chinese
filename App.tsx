@@ -1,7 +1,7 @@
-import Amplify, { Storage } from 'aws-amplify'
+import Amplify from 'aws-amplify'
 import React, { useState } from 'react'
 import MainScreen from './mainscreen'
-import awsconfig from './src/aws-exports'
+import awsconfig from './src/custom-aws-exports'
 import {
     PausedIdsContext,
     ShownIdsContext,
@@ -11,10 +11,9 @@ import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { CardScreen } from './src/scratch/cardscreen'
 
-// FIXME: Leave Amplify
-Amplify.configure(awsconfig)
-// Needed to run in production? (verify)
-Amplify.register(Storage)
+Amplify.configure(awsconfig);
+
+import { withAuthenticator } from 'aws-amplify-react-native/dist/Auth'
 
 const Stack = createNativeStackNavigator()
 
@@ -50,4 +49,4 @@ const App: React.FunctionComponent = () => {
     )
 }
 
-export default App
+export default withAuthenticator(App)
