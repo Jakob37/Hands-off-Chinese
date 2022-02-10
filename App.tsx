@@ -11,9 +11,11 @@ import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { CardScreen } from './src/scratch/cardscreen'
 
-Amplify.configure(awsconfig);
+Amplify.configure(awsconfig)
 
 import { withAuthenticator } from 'aws-amplify-react-native/dist/Auth'
+// import { Authenticator } from '@aws-amplify/ui-react'
+// import '@aws-amplify/ui-react/styles.css'
 
 const Stack = createNativeStackNavigator()
 
@@ -22,6 +24,8 @@ const App: React.FunctionComponent = () => {
     const [shownIds, setShownIds] = useState([])
 
     return (
+        // <Authenticator>
+        //     {({ signOut, user }) => (
         <PausedIdsContext.Provider
             value={{
                 pausedIds,
@@ -46,7 +50,10 @@ const App: React.FunctionComponent = () => {
                 </NavigationContainer>
             </ShownIdsContext.Provider>
         </PausedIdsContext.Provider>
+        // )}
+        // </Authenticator>
     )
 }
 
 export default withAuthenticator(App)
+// export default App

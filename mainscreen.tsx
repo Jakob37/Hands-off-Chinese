@@ -11,6 +11,7 @@ import { ShownIdsContext } from './store/contexts/mytestcontext'
 import { AudioCardList } from './src/views/list/audiocardlist'
 import AudioFooter from './src/views/footers/audiofooter'
 import CategoryFooter from './src/views/footers/categoryfooter'
+import { Auth } from 'aws-amplify'
 
 // import { NavigationContainer } from '@react-navigation/native';
 // import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -38,6 +39,8 @@ const MainScreen = ({ navigation }) => {
     const [enterCategory, setEnterCategory] = useState('')
     const { setShownIds } = useContext(ShownIdsContext)
 
+    const [currentEmail, setCurrentEmail] = useState('[No email]')
+
     const loadDatabaseInMainScreen = () => {
         db.initDatabase(() => {
             setCurrentCategories(db.getCategories())
@@ -54,6 +57,21 @@ const MainScreen = ({ navigation }) => {
 
     return (
         <View style={{ flex: 1 }}>
+            <View>
+                <Text>
+                    Current email: {currentEmail}
+                </Text>
+            </View>
+            <Button
+                onPress={async () => {
+                    console.log('Testing current user')
+                    const currUser = await Auth.currentAuthenticatedUser()
+                    setCurrentEmail(currUser.attributes.email)
+                    console.log(currUser.attributes)
+                    // console.log(`Assigning email: ${currUser.email}`)
+                }}
+                title="Test"
+            ></Button>
             <ScrollView>
                 <CategoryCardList
                     categories={currentCategories}
