@@ -1,21 +1,26 @@
-import { getTimestamp } from "../util/util"
-import { addChineseEntry, addEnglishEntry, AudioEntry, AudioEntryPair } from "./audioentry"
-import { makeRequest } from "./util"
+import { getTimestamp } from '../util/util'
+import { ALL_ENTRIES_URL } from './api'
+import {
+    addChineseEntry,
+    addEnglishEntry,
+    AudioEntry,
+    AudioEntryPair,
+} from './audioentry'
+import { makeRequest } from './util'
 
 interface MetaObj {
     category: string
     creationdate: number
     filename: string
     id: string
-    language: "english" | "chinese"
+    language: 'english' | 'chinese'
     text: string
 }
 
 const _getAllMeta = async (): Promise<MetaObj[]> => {
-    const apiUrl =
-        "https://1meap5kmbd.execute-api.eu-west-1.amazonaws.com/dev/allmeta"
-    const result = (await makeRequest("GET", apiUrl)) as string
-    const items = JSON.parse(result).body.Items as MetaObj[]
+    const result = (await makeRequest('GET', ALL_ENTRIES_URL)) as string
+    const parsedResult = JSON.parse(result)
+    const items = parsedResult.Items as MetaObj[]
     return items
 }
 
@@ -33,7 +38,7 @@ const getMetaAsAudioEntries = async (): Promise<
             currentEntry = new AudioEntryPair()
             idToAudioEntryPair.set(id, currentEntry)
         }
-        if (newEntry.language == "chinese") {
+        if (newEntry.language == 'chinese') {
             addChineseEntry(currentEntry, newEntry)
         } else {
             addEnglishEntry(currentEntry, newEntry)
@@ -50,7 +55,7 @@ const getCategories = async () => {
 
     const categoryToCount = new Map()
     for (const item of items) {
-        if (item.language != "chinese") {
+        if (item.language != 'chinese') {
             const category = item.category
             if (categoryToCount.get(category) == null) {
                 categoryToCount.set(category, 1)
@@ -75,7 +80,7 @@ const submitMetadata = async (
     text: string,
     filename: string,
     category: string,
-    language: "english" | "chinese"
+    language: 'english' | 'chinese'
 ) => {
     const creationdate = new Date().getTime()
     const params = JSON.stringify({
@@ -85,15 +90,15 @@ const submitMetadata = async (
         creationdate,
         category,
         language,
-        action: "add",
+        action: 'add',
     })
     const apiUrl =
-        "https://1meap5kmbd.execute-api.eu-west-1.amazonaws.com/dev/meta"
+        'https://1meap5kmbd.execute-api.eu-west-1.amazonaws.com/dev/meta'
 
     const apiTestXhr = new XMLHttpRequest()
     const isAsync = true
-    apiTestXhr.open("PUT", apiUrl, isAsync)
-    apiTestXhr.setRequestHeader("Content-type", "application/json")
+    apiTestXhr.open('PUT', apiUrl, isAsync)
+    apiTestXhr.setRequestHeader('Content-type', 'application/json')
     apiTestXhr.onreadystatechange = (e) => {
         // @ts-ignore
         // console.log("response", e.target.response)
@@ -110,17 +115,17 @@ const removeEntry = async (englishFile: string, chineseFile: string) => {
 const removeRequest = async (filename: string) => {
     const apiTestXhr = new XMLHttpRequest()
     const apiUrl =
-        "https://1meap5kmbd.execute-api.eu-west-1.amazonaws.com/dev/meta"
+        'https://1meap5kmbd.execute-api.eu-west-1.amazonaws.com/dev/meta'
     const isAsync = true
-    apiTestXhr.open("PUT", apiUrl, isAsync)
-    apiTestXhr.setRequestHeader("Content-type", "application/json")
+    apiTestXhr.open('PUT', apiUrl, isAsync)
+    apiTestXhr.setRequestHeader('Content-type', 'application/json')
     apiTestXhr.onreadystatechange = (e) => {
         // @ts-ignore
         // console.log("response", e.target.response)
     }
     const params = JSON.stringify({
         filename,
-        action: "delete",
+        action: 'delete',
     })
     const result = await apiTestXhr.send(params)
 }
@@ -134,8 +139,8 @@ const getMeta = async (filename) => {
 
     const apiTestXhr = new XMLHttpRequest()
     const isAsync = true
-    apiTestXhr.open("GET", apiUrl + "?" + params, isAsync)
-    apiTestXhr.setRequestHeader("Content-type", "application/json")
+    apiTestXhr.open('GET', apiUrl + '?' + params, isAsync)
+    apiTestXhr.setRequestHeader('Content-type', 'application/json')
     apiTestXhr.onreadystatechange = (e) => {
         // @ts-ignore
         // console.warn(e.target.response);
@@ -158,8 +163,8 @@ const generateAudio = (apiUrl, text, voice, prefix, onReadyCall = null) => {
 
     const pollyXhr = new XMLHttpRequest()
     const isAsync = true
-    pollyXhr.open("POST", apiUrl, isAsync)
-    pollyXhr.setRequestHeader("Content-type", "application/json")
+    pollyXhr.open('POST', apiUrl, isAsync)
+    pollyXhr.setRequestHeader('Content-type', 'application/json')
     pollyXhr.onreadystatechange = function (e) {
         // @ts-ignore
         // console.warn('response', e.target.response);
@@ -182,29 +187,29 @@ const makeNewAudioEntry = async (
     category: string,
     onReadyCall: () => void
 ) => {
-    if (category == "") {
-        throw new Error("Category must be non-empty")
+    if (category == '') {
+        throw new Error('Category must be non-empty')
     }
 
-    console.log("generating polly audio")
+    console.log('generating polly audio')
     const { englishFilename, chineseFilename } = await generatePollyAudio(
         english,
         chinese,
         onReadyCall
     )
     const id = `id-${english}-${chinese}`
-    await submitMetadata(id, english, englishFilename, category, "english")
+    await submitMetadata(id, english, englishFilename, category, 'english')
     await sleep(100)
-    await submitMetadata(id, chinese, chineseFilename, category, "chinese")
+    await submitMetadata(id, chinese, chineseFilename, category, 'chinese')
 }
 
 const makeMultipleAudioEntries = async (entries: string[]) => {
     for (const row of entries) {
-        if (row.length == 1 && row[0] == "") {
-            console.log("Skipping empty row")
+        if (row.length == 1 && row[0] == '') {
+            console.log('Skipping empty row')
             continue
         }
-        console.log("Processing row", row)
+        console.log('Processing row', row)
         if (row.length < 3) {
             throw new Error(
                 `Each row should contain at least three entries. Found: ${row}`
@@ -230,32 +235,32 @@ const generatePollyAudio = async (
     chinese: string,
     onReadyCall: () => void
 ): Promise<GeneratePollyAudioReturned> => {
-    const englishVoice = "Emma"
-    const chineseVoice = "Zhiyu"
+    const englishVoice = 'Emma'
+    const chineseVoice = 'Zhiyu'
 
-    console.log("starting generating")
+    console.log('starting generating')
 
     const chineseFilename = await generateAudio(
-        "https://1meap5kmbd.execute-api.eu-west-1.amazonaws.com/dev/polly",
+        'https://1meap5kmbd.execute-api.eu-west-1.amazonaws.com/dev/polly',
         chinese,
         chineseVoice,
         getTimestamp(),
         onReadyCall
     )
 
-    console.log("generated chinese", chineseFilename)
+    console.log('generated chinese', chineseFilename)
 
     const englishFilename = await generateAudio(
-        "https://1meap5kmbd.execute-api.eu-west-1.amazonaws.com/dev/polly",
+        'https://1meap5kmbd.execute-api.eu-west-1.amazonaws.com/dev/polly',
         english,
         englishVoice,
         getTimestamp(),
         onReadyCall
     )
     console.log(
-        "Generating english audio for",
+        'Generating english audio for',
         english,
-        "got filename",
+        'got filename',
         englishFilename
     )
     return { chineseFilename, englishFilename }
