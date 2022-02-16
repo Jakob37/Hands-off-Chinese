@@ -1,5 +1,5 @@
 import { getTimestamp } from '../util/util'
-import { ALL_ENTRIES_URL } from './api'
+import { ALL_ENTRIES_URL, POLLY_URL, SINGLE_ENTRIES_URL } from './api'
 import {
     addChineseEntry,
     addEnglishEntry,
@@ -92,12 +92,10 @@ const submitMetadata = async (
         language,
         action: 'add',
     })
-    const apiUrl =
-        'https://1meap5kmbd.execute-api.eu-west-1.amazonaws.com/dev/meta'
 
     const apiTestXhr = new XMLHttpRequest()
     const isAsync = true
-    apiTestXhr.open('PUT', apiUrl, isAsync)
+    apiTestXhr.open('PUT', SINGLE_ENTRIES_URL, isAsync)
     apiTestXhr.setRequestHeader('Content-type', 'application/json')
     apiTestXhr.onreadystatechange = (e) => {
         // @ts-ignore
@@ -114,10 +112,8 @@ const removeEntry = async (englishFile: string, chineseFile: string) => {
 
 const removeRequest = async (filename: string) => {
     const apiTestXhr = new XMLHttpRequest()
-    const apiUrl =
-        'https://1meap5kmbd.execute-api.eu-west-1.amazonaws.com/dev/meta'
     const isAsync = true
-    apiTestXhr.open('PUT', apiUrl, isAsync)
+    apiTestXhr.open('PUT', SINGLE_ENTRIES_URL, isAsync)
     apiTestXhr.setRequestHeader('Content-type', 'application/json')
     apiTestXhr.onreadystatechange = (e) => {
         // @ts-ignore
@@ -135,7 +131,7 @@ const removeRequest = async (filename: string) => {
  */
 const getMeta = async (filename) => {
     const params = `filename=${filename}`
-    const apiUrl = `https://1meap5kmbd.execute-api.eu-west-1.amazonaws.com/dev/meta`
+    const apiUrl = SINGLE_ENTRIES_URL
 
     const apiTestXhr = new XMLHttpRequest()
     const isAsync = true
@@ -241,7 +237,7 @@ const generatePollyAudio = async (
     console.log('starting generating')
 
     const chineseFilename = await generateAudio(
-        'https://1meap5kmbd.execute-api.eu-west-1.amazonaws.com/dev/polly',
+        POLLY_URL,
         chinese,
         chineseVoice,
         getTimestamp(),
@@ -251,7 +247,7 @@ const generatePollyAudio = async (
     console.log('generated chinese', chineseFilename)
 
     const englishFilename = await generateAudio(
-        'https://1meap5kmbd.execute-api.eu-west-1.amazonaws.com/dev/polly',
+        POLLY_URL,
         english,
         englishVoice,
         getTimestamp(),
