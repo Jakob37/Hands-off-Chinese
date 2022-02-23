@@ -1,3 +1,4 @@
+import axios from 'axios'
 import { getTimestamp } from '../util/util'
 import { ALL_ENTRIES_URL, POLLY_URL, SINGLE_ENTRIES_URL } from './api'
 import {
@@ -147,28 +148,50 @@ const getMeta = async (filename) => {
 }
 
 /**
- * @param {string} apiUrl
+ * @param {string} url
  * @param {string} text
  * @param {string} voice
  * @param {string} prefix
  * @param {() => void} onReadyCall
  * @returns {string}
  */
-const generateAudio = (apiUrl, text, voice, prefix, onReadyCall = null) => {
+const generateAudio = (url, text, voice, prefix, onReadyCall = null) => {
+
+    console.log("Hitting generate audio")
+
     const params = `{"text": "${text}", "voice": "${voice}", "prefix": "${prefix}"}`
 
-    const pollyXhr = new XMLHttpRequest()
-    const isAsync = true
-    pollyXhr.open('POST', apiUrl, isAsync)
-    pollyXhr.setRequestHeader('Content-type', 'application/json')
-    pollyXhr.onreadystatechange = function (e) {
-        // @ts-ignore
-        // console.warn('response', e.target.response);
-        if (onReadyCall != null) {
-            onReadyCall()
-        }
-    }
-    pollyXhr.send(params)
+    axios
+        .post(url, params)
+        .then(function (response) {
+            console.log(response.data)
+            console.log(Object.keys(response))
+            if (onReadyCall != null) {
+                onReadyCall()
+            }
+        })
+        .catch(function (error) {
+            console.log('error')
+            if (error.response) {
+                console.log(error.response.data)
+            } else {
+                console.log('Unknown error type encountered')
+                console.log(error)
+            }
+        })
+
+    // const pollyXhr = new XMLHttpRequest()
+    // const isAsync = true
+    // pollyXhr.open('POST', apiUrl, isAsync)
+    // pollyXhr.setRequestHeader('Content-type', 'application/json')
+    // pollyXhr.onreadystatechange = function (e) {
+    //     // @ts-ignore
+    //     // console.warn('response', e.target.response);
+    //     if (onReadyCall != null) {
+    //         onReadyCall()
+    //     }
+    // }
+    // pollyXhr.send(params)
 
     return `${prefix}_${text}`
 }
