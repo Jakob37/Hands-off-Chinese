@@ -76,6 +76,80 @@ const getCategories = async () => {
     }
 }
 
+const makeNewAudioEntry = async (
+    english: string,
+    chinese: string,
+    category: string,
+    onReadyCall: () => void
+) => {
+    if (category == '') {
+        throw new Error('Category must be non-empty')
+    }
+
+    console.log('generating polly audio')
+    const { englishFilename, chineseFilename } = await generatePollyAudio(
+        english,
+        chinese,
+        onReadyCall
+    )
+    const id = `id-${english}-${chinese}`
+
+    console.log('Going to run new submit meta data')
+    await submitMetaDataNew(
+        id,
+        'nouseryet',
+        english,
+        chinese,
+        englishFilename,
+        chineseFilename,
+        new Date().getTime().toString(),
+        category
+    )
+
+    // await submitMetadata(id, english, englishFilename, category, 'english')
+    // await sleep(100)
+    // await submitMetadata(id, chinese, chineseFilename, category, 'chinese')
+}
+
+const submitMetaDataNew = async (
+    id: string,
+    user: string,
+    english: string,
+    chinese: string,
+    filenameenglish: string,
+    filenamechinese: string,
+    creationdate: string,
+    category: string
+) => {
+    const params = {
+        id,
+        user,
+        english,
+        chinese,
+        filenameenglish,
+        filenamechinese,
+        creationdate,
+        category,
+    }
+    console.log('Submitting meta data', params)
+    axios
+        .post(SINGLE_ENTRIES_URL, params)
+        .then(function (response) {
+            console.log('Response!')
+            console.log(response.data)
+            console.log(Object.keys(response))
+        })
+        .catch(function (error) {
+            console.log('error')
+            if (error.response) {
+                console.log(error.response.data)
+            } else {
+                console.log('Unknown error type encountered')
+                console.log(error)
+            }
+        })
+}
+
 const submitMetadata = async (
     sharedId: string,
     text: string,
@@ -156,8 +230,7 @@ const getMeta = async (filename) => {
  * @returns {string}
  */
 const generateAudio = (url, text, voice, prefix, onReadyCall = null) => {
-
-    console.log("Hitting generate audio")
+    console.log('Hitting generate audio')
 
     const params = `{"text": "${text}", "voice": "${voice}", "prefix": "${prefix}"}`
 
@@ -198,28 +271,6 @@ const generateAudio = (url, text, voice, prefix, onReadyCall = null) => {
 
 const sleep = async (ms: number) => {
     return new Promise((resolve) => setTimeout(resolve, ms))
-}
-
-const makeNewAudioEntry = async (
-    english: string,
-    chinese: string,
-    category: string,
-    onReadyCall: () => void
-) => {
-    if (category == '') {
-        throw new Error('Category must be non-empty')
-    }
-
-    console.log('generating polly audio')
-    const { englishFilename, chineseFilename } = await generatePollyAudio(
-        english,
-        chinese,
-        onReadyCall
-    )
-    const id = `id-${english}-${chinese}`
-    await submitMetadata(id, english, englishFilename, category, 'english')
-    await sleep(100)
-    await submitMetadata(id, chinese, chineseFilename, category, 'chinese')
 }
 
 const makeMultipleAudioEntries = async (entries: string[]) => {
