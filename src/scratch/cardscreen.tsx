@@ -5,6 +5,7 @@ import { AudioCardList } from '../views/list/audiocardlist'
 // import { createStackNavigator, createAppContainer } from 'react-navigation'
 
 function CardScreen({ route, navigation }) {
+
     return (
         <View style={{ flex: 1 }}>
             {/* <Text>Navigation end-point</Text>
@@ -21,9 +22,7 @@ function CardScreen({ route, navigation }) {
             </Text>
             <Text>Navigation: {JSON.stringify(navigation, null, 2)}</Text> */}
             <ScrollView>
-                <AudioCardList
-                    listEntries={route.params.audioEntries}
-                />
+                <AudioCardList listEntries={route.params.audioEntries} />
             </ScrollView>
             <AudioFooter
                 audioEntries={[]}

@@ -1,4 +1,4 @@
-import { MetaObj } from "./apicalls"
+import { MetaObj } from './apicalls'
 
 class AudioEntry {
     category: string
@@ -25,7 +25,7 @@ class AudioEntry {
             `ID: ${this.id}`,
             `Language: ${this.language}`,
             `Text: ${this.text}`,
-        ].join("\n")
+        ].join('\n')
     }
 }
 
@@ -36,12 +36,59 @@ class AudioEntryPair {
     id: string
     category: string
     creationdate: number
+    user: string
     englishKey: string
     chineseKey: string
     english: string
     chinese: string
 
     paused: boolean = false
+}
+
+// interface MetaObj {
+//     category: string
+//     creationdate: number
+//     filename: string
+//     id: string
+//     language: 'english' | 'chinese'
+//     text: string
+// }
+
+function getAudioEntryPair(
+    id,
+    user,
+    creationdate,
+    chinese,
+    chineseFile,
+    english,
+    englishFile,
+    category
+): AudioEntryPair {
+    const audioEntryPair = new AudioEntryPair()
+    audioEntryPair.id = id
+    audioEntryPair.user = user
+    audioEntryPair.creationdate = creationdate
+    audioEntryPair.category = category
+
+    audioEntryPair.english = english
+    audioEntryPair.chinese = chinese
+    audioEntryPair.chineseEntry = new AudioEntry({
+        category,
+        creationdate,
+        filename: chineseFile,
+        id,
+        language: 'chinese',
+        text: chinese,
+    })
+    audioEntryPair.englishEntry = new AudioEntry({
+        category,
+        creationdate,
+        filename: englishFile,
+        id,
+        language: 'english',
+        text: english,
+    })
+    return audioEntryPair
 }
 
 function copyEntry(entry: AudioEntryPair): AudioEntryPair {
@@ -82,11 +129,13 @@ function addEnglishEntry(entry: AudioEntryPair, englishEntry: AudioEntry) {
     entry.english = englishEntry.text
 }
 
-function isComplete(entry: AudioEntryPair,): boolean {
+function isComplete(entry: AudioEntryPair): boolean {
     return entry.chineseEntry != null && entry.englishEntry != null
 }
 
-function getListFormat(entry: AudioEntryPair): [string, string, string, string, boolean] {
+function getListFormat(
+    entry: AudioEntryPair
+): [string, string, string, string, boolean] {
     return [
         entry.english,
         entry.englishKey,
@@ -106,10 +155,18 @@ function toString(entry: AudioEntryPair): string {
         `Chinese file name: ${entry.chineseKey}`,
         `English text: ${entry.english}`,
         `Chinese text: ${entry.chinese}`,
-    ].join("\n")
+    ].join('\n')
 }
 
 export {
-    AudioEntry, AudioEntryPair, copyEntry, assignEntry, addChineseEntry,
-    addEnglishEntry, isComplete, getListFormat, toString
+    AudioEntry,
+    AudioEntryPair,
+    copyEntry,
+    assignEntry,
+    addChineseEntry,
+    addEnglishEntry,
+    isComplete,
+    getListFormat,
+    toString,
+    getAudioEntryPair,
 }
