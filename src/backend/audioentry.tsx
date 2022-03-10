@@ -80,6 +80,7 @@ function getAudioEntryPair(
         language: 'chinese',
         text: chinese,
     })
+    audioEntryPair.chineseKey = chineseFile
     audioEntryPair.englishEntry = new AudioEntry({
         category,
         creationdate,
@@ -88,6 +89,7 @@ function getAudioEntryPair(
         language: 'english',
         text: english,
     })
+    audioEntryPair.englishKey = englishFile
     return audioEntryPair
 }
 
