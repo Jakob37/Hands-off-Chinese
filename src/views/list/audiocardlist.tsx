@@ -17,7 +17,7 @@ const AudioCardList = (param: Param) => {
         console.log('--- Testing responding pausedIds change ---')
     }, [pausedIds])
 
-    console.log('Obtaining param', param)
+    // console.log('Obtaining param', param)
 
     return (
         <View>

@@ -6,6 +6,7 @@ import { HocDb } from '../backend/database'
 import CategoryFooter from '../views/footers/categoryfooter'
 import CategoryCardList from '../views/list/categorycardlist'
 import { ShownIdsContext } from '../../store/contexts/mytestcontext'
+import { AudioEntryPair } from 'src/backend/audioentry'
 
 let db: HocDb = new HocDb()
 
@@ -29,16 +30,16 @@ const MainScreen = ({ navigation }) => {
     }
     useEffect(loadDatabaseInMainScreen, [])
 
-    const retrieveCategoryEntriesList = (category: string) => {
+    const retrieveCategoryEntriesList = (category: string): AudioEntryPair[] => {
         const audioEntries = db.getAudioEntries(category)
         const shownIds = audioEntries.map((entry) => entry.id)
         setShownIds(shownIds)
         setAudioEntries(audioEntries)
+        return audioEntries
     }
 
     const setUserData = () => {
         Auth.currentAuthenticatedUser().then((currUser) => {
-            console.log('Setting current user')
             setCurrentUser(currUser.attributes.email)
             console.log(currUser.attributes)
         })
@@ -62,10 +63,10 @@ const MainScreen = ({ navigation }) => {
                     categories={currentCategories}
                     currentCategories={currentCategories}
                     selectCategoryAction={(category) => {
+                        const newAudioEntries = retrieveCategoryEntriesList(category)
                         navigation.navigate('Test', {
-                            audioEntries,
+                            audioEntries: newAudioEntries,
                         })
-                        retrieveCategoryEntriesList(category)
                     }}
                 />
             </ScrollView>

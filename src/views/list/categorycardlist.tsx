@@ -1,11 +1,11 @@
-const React = require("react")
-const { View } = require("react-native")
-const { CategoryCard } = require("../card/categorycard")
+import React from 'react'
+import { View } from 'react-native'
+import { CategoryCard } from '../card/categorycard'
 
 interface Param {
-    currentCategories: string[],
-    categories: string[],
-    selectCategoryAction: (category:string) => void
+    currentCategories: string[]
+    categories: string[]
+    selectCategoryAction: (category: string) => void
 }
 
 const CategoryCardList = (param: Param) => {
@@ -16,9 +16,9 @@ const CategoryCardList = (param: Param) => {
                     <CategoryCard
                         key={i}
                         category={displayCategory}
-                        selectAction={() => { 
-                            const category = param.categories[i];
-                            param.selectCategoryAction(category) 
+                        selectAction={() => {
+                            const category = param.categories[i]
+                            param.selectCategoryAction(category)
                         }}
                     />
                 )
