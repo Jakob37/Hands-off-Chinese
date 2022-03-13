@@ -6,9 +6,8 @@ import { SIGNEDURL_URL } from '../../backend/api'
 
 const getSignedUrl = (key): Promise<string> => {
     return axios
-        .post(SIGNEDURL_URL, { filename: `public/${key}` })
+        .post(SIGNEDURL_URL, { filename: key })
         .then(function (response) {
-            console.log(Object.keys(response))
             return response.data
         })
         .catch(function (error) {
@@ -22,16 +21,13 @@ const getSignedUrl = (key): Promise<string> => {
 
 // FIXME: Clearly move this to util location
 const playAudio = async (
-    key: string,
+    id: string,
+    user: string,
     callback: ((track: Sound) => void) | null = null
 ) => {
+    const key = `${user}/${id}`
     console.log('Attempting to play audio for key', key)
     const signedUrl = await getSignedUrl(key)
-
-    // console.log('Config', awsmobile)
-    // const config = awsmobile;
-    // const signedUrl = await Storage.get(key, awsmobile)
-    // console.log('Signed URL', signedUrl)
 
     console.log(signedUrl)
     const track = new Sound(signedUrl, null, (e) => {

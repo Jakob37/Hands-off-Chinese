@@ -7,6 +7,7 @@ import { AudioCard } from '../card/audiocard'
 
 interface Param {
     listEntries: AudioEntryPair[]
+    user: string
 }
 
 const AudioCardList = (param: Param) => {
@@ -24,6 +25,7 @@ const AudioCardList = (param: Param) => {
                 return (
                     <AudioCard
                         key={i}
+                        user={param.user}
                         audioEntryPair={audioEntry}
                         togglePaused={() => {
                             if (!pausedIds.includes(audioEntry.id)) {

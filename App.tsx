@@ -14,18 +14,14 @@ import { CardScreen } from './src/scratch/cardscreen'
 Amplify.configure(awsconfig)
 
 import { withAuthenticator } from 'aws-amplify-react-native/dist/Auth'
-// import { Authenticator } from '@aws-amplify/ui-react'
-// import '@aws-amplify/ui-react/styles.css'
 
 const Stack = createNativeStackNavigator()
 
-const App: React.FunctionComponent = () => {
+const App = ({ signOut, user }) => {
     const [pausedIds, setPausedIds] = useState([])
     const [shownIds, setShownIds] = useState([])
 
     return (
-        // <Authenticator>
-        //     {({ signOut, user }) => (
         <PausedIdsContext.Provider
             value={{
                 pausedIds,
@@ -35,7 +31,6 @@ const App: React.FunctionComponent = () => {
             <ShownIdsContext.Provider value={{ shownIds, setShownIds }}>
                 <NavigationContainer>
                     <Stack.Navigator>
-                        {/* <MainScreen /> */}
                         <Stack.Screen
                             name="Home"
                             component={MainScreen}
@@ -50,10 +45,7 @@ const App: React.FunctionComponent = () => {
                 </NavigationContainer>
             </ShownIdsContext.Provider>
         </PausedIdsContext.Provider>
-        // )}
-        // </Authenticator>
     )
 }
 
 export default withAuthenticator(App)
-// export default App

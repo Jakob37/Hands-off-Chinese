@@ -1,35 +1,30 @@
-import React, { Component } from 'react'
+import { Auth } from 'aws-amplify'
+import React, { Component, useEffect, useState } from 'react'
 import { Button, View, Text, ScrollView } from 'react-native'
 import AudioFooter from '../views/footers/audiofooter'
 import { AudioCardList } from '../views/list/audiocardlist'
-// import { createStackNavigator, createAppContainer } from 'react-navigation'
 
 function CardScreen({ route, navigation }) {
+    const [currentUser, setCurrentUser] = useState('[Refresh to show email]')
+
+    const setUserData = () => {
+        Auth.currentAuthenticatedUser().then((currUser) => {
+            console.log('Setting current user')
+            setCurrentUser(currUser.attributes.email)
+            console.log(currUser.attributes)
+        })
+    }
+    useEffect(setUserData, [])
 
     return (
         <View style={{ flex: 1 }}>
-            {/* <Text>Navigation end-point</Text>
-            <Text>
-                Params: {JSON.stringify(Object.keys(route.params), null, 2)}
-            </Text>
-            <Text>
-                Audio entries:{' '}
-                {JSON.stringify(
-                    route.params.audioEntries.map((entry) => entry.id),
-                    null,
-                    2
-                )}
-            </Text>
-            <Text>Navigation: {JSON.stringify(navigation, null, 2)}</Text> */}
             <ScrollView>
-                <AudioCardList listEntries={route.params.audioEntries} />
+                <AudioCardList
+                    user={currentUser}
+                    listEntries={route.params.audioEntries}
+                />
             </ScrollView>
-            <AudioFooter
-                audioEntries={[]}
-                // audioEntries={audioEntries}
-                db={null}
-                // db={db}
-            />
+            <AudioFooter audioEntries={[]} db={null} />
         </View>
     )
 }

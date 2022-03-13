@@ -5,7 +5,6 @@ import {
     PausedIdsContext,
     ShownIdsContext,
 } from '../../../store/contexts/mytestcontext'
-import { addCategory } from '../../../store/actions/testcategories'
 import {
     makeMultipleAudioEntries,
     makeNewAudioEntry,
@@ -160,7 +159,7 @@ const CategoryFooter = (param: CategoryFooterParam) => {
 
                             if (parsedCsv != null) {
                                 // FIXME:
-                                makeMultipleAudioEntries(parsedCsv)
+                                makeMultipleAudioEntries(user, parsedCsv)
                             }
                         }}
                     >

@@ -10,6 +10,7 @@ import { playAudio } from './util'
 interface AudioCardActiveParam {
     audioEntryPair: AudioEntryPair
     cardTextColor: string
+    user: string
     togglePaused: () => void
     setSettingMode: () => void
 }
@@ -22,7 +23,7 @@ const AudioCardActive = (param: AudioCardActiveParam) => {
                 <TouchableOpacity
                     onPress={() => {
                         console.log('Playing key', param.audioEntryPair.chineseKey)
-                        playAudio(param.audioEntryPair.chineseKey)
+                        playAudio(param.audioEntryPair.chineseKey, param.user)
                     }}
                 >
                     <Text
@@ -36,7 +37,7 @@ const AudioCardActive = (param: AudioCardActiveParam) => {
                 </TouchableOpacity>
                 <TouchableOpacity
                     onPress={() => {
-                        playAudio(param.audioEntryPair.englishKey)
+                        playAudio(param.audioEntryPair.englishKey, param.user)
                     }}
                 >
                     <Text

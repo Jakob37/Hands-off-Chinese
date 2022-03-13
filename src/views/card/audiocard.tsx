@@ -4,7 +4,6 @@ import { View } from 'react-native'
 import { AudioEntryPair } from '../../backend/audioentry'
 import { removeFromArray } from '../../util/util'
 import { PausedIdsContext } from '../../../store/contexts/mytestcontext'
-import { removeEntry } from '../../backend/apicalls'
 import { styles } from '../../style/Stylesheet'
 import AudioCardActive from './audiocardactive'
 import AudioCardSettings from './audiocardsettings'
@@ -12,6 +11,7 @@ import AudioCardSettings from './audiocardsettings'
 interface AudioCardParam {
     audioEntryPair: AudioEntryPair
     isPaused: boolean
+    user: string
     togglePaused: () => void
 }
 const AudioCard = (param: AudioCardParam) => {
@@ -43,7 +43,8 @@ const AudioCard = (param: AudioCardParam) => {
                         englishFile: string,
                         chineseFile: string
                     ) => {
-                        removeEntry(englishFile, chineseFile)
+                        console.log('FIXME: Currently not implemented')
+                        // removeEntry(englishFile, chineseFile)
                     }}
                     backCallback={() => {
                         setSettingMode(false)
@@ -54,6 +55,7 @@ const AudioCard = (param: AudioCardParam) => {
                 />
             ) : (
                 <AudioCardActive
+                    user={param.user}
                     audioEntryPair={param.audioEntryPair}
                     cardTextColor={
                         pausedIds.includes(param.audioEntryPair.id)
