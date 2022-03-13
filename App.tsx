@@ -11,13 +11,20 @@ import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import CardScreen from './src/screens/cardscreen'
 
-Amplify.configure(awsconfig)
+// Analytics is explicitly disabled to prevent a warning according to following:
+// https://github.com/aws-amplify/amplify-js/issues/5918
+Amplify.configure({
+    ...awsconfig,
+    Analytics: {
+        disabled: true,
+    },
+})
 
 import { withAuthenticator } from 'aws-amplify-react-native/dist/Auth'
 
 const Stack = createNativeStackNavigator()
 
-const App = ({ signOut, user }) => {
+const App = ({ _signOut, _user }) => {
     const [pausedIds, setPausedIds] = useState([])
     const [shownIds, setShownIds] = useState([])
 
@@ -48,4 +55,5 @@ const App = ({ signOut, user }) => {
     )
 }
 
+// export default App
 export default withAuthenticator(App)
