@@ -14,7 +14,7 @@ let db: HocDb = new HocDb()
 // https://blog.logrocket.com/navigating-react-native-apps-using-react-navigation/
 
 const MainScreen = ({ navigation }) => {
-    const [audioEntries, setAudioEntries] = useState([])
+    // const [audioEntries, setAudioEntries] = useState([])
     const [currentCategories, setCurrentCategories] = useState([
         'Loading from AWS...',
     ])
@@ -23,18 +23,22 @@ const MainScreen = ({ navigation }) => {
 
     const [currentUser, setCurrentUser] = useState('[Refresh to show email]')
 
-    const loadDatabaseInMainScreen = () => {
+    const refreshDatabase = () => {
+        console.log('---> Loading database')
         db.initDatabase(() => {
+            console.log('---> Processing finished')
             setCurrentCategories(db.getCategories())
         })
     }
-    useEffect(loadDatabaseInMainScreen, [])
+    useEffect(refreshDatabase, [])
 
-    const retrieveCategoryEntriesList = (category: string): AudioEntryPair[] => {
+    const retrieveCategoryEntriesList = (
+        category: string
+    ): AudioEntryPair[] => {
         const audioEntries = db.getAudioEntries(category)
         const shownIds = audioEntries.map((entry) => entry.id)
         setShownIds(shownIds)
-        setAudioEntries(audioEntries)
+        // setAudioEntries(audioEntries)
         return audioEntries
     }
 
@@ -51,19 +55,20 @@ const MainScreen = ({ navigation }) => {
             <View>
                 <Text>Current email: {currentUser}</Text>
             </View>
-            <Button
+            {/* <Button
                 onPress={async () => {
                     const currUser = await Auth.currentAuthenticatedUser()
                     setCurrentUser(currUser.attributes.email)
                 }}
                 title="Force current user update"
-            ></Button>
+            ></Button> */}
             <ScrollView>
                 <CategoryCardList
                     categories={currentCategories}
                     currentCategories={currentCategories}
                     selectCategoryAction={(category) => {
-                        const newAudioEntries = retrieveCategoryEntriesList(category)
+                        const newAudioEntries =
+                            retrieveCategoryEntriesList(category)
                         navigation.navigate('Test', {
                             audioEntries: newAudioEntries,
                         })
@@ -72,21 +77,25 @@ const MainScreen = ({ navigation }) => {
             </ScrollView>
 
             <CategoryFooter
-                refreshCategories={loadDatabaseInMainScreen}
+                refreshCategories={refreshDatabase}
                 addEntry={(englishText, chineseText, categoryText) => {
                     makeNewAudioEntry(
                         englishText,
                         chineseText,
                         categoryText,
                         currentUser,
-                        () => {}
+                        () => {},
+                        () => {
+                            console.log('Totally completed!')
+                            refreshDatabase()
+                        }
                     )
                 }}
                 startCategory={enterCategory}
                 updateCategory={(category) => {
                     setEnterCategory(category)
                 }}
-                loadDb={loadDatabaseInMainScreen}
+                loadDb={refreshDatabase}
             />
         </View>
     )

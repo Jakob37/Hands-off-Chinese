@@ -71,7 +71,8 @@ const makeNewAudioEntry = async (
     chinese: string,
     category: string,
     user: string,
-    onReadyCall: () => void
+    onAudioFileReadyCall: () => void,
+    onAllCompletedCall: () => void
 ) => {
     if (category == '') {
         throw new Error('Category must be non-empty')
@@ -81,7 +82,7 @@ const makeNewAudioEntry = async (
         english,
         chinese,
         user,
-        onReadyCall
+        onAudioFileReadyCall
     )
     const id = `id-${english}-${chinese}`
 
@@ -93,7 +94,8 @@ const makeNewAudioEntry = async (
         englishFilename,
         chineseFilename,
         new Date().getTime().toString(),
-        category
+        category,
+        onAllCompletedCall
     )
 
     // await submitMetadata(id, english, englishFilename, category, 'english')
@@ -109,7 +111,8 @@ const submitMetaDataNew = async (
     filenameenglish: string,
     filenamechinese: string,
     creationdate: string,
-    category: string
+    category: string,
+    onCompletedCall: () => void
 ) => {
     const params = {
         id,
@@ -128,6 +131,7 @@ const submitMetaDataNew = async (
             console.log('Response!')
             console.log(response.data)
             console.log(Object.keys(response))
+            onCompletedCall()
         })
         .catch(function (error) {
             console.log('error')
@@ -195,7 +199,11 @@ const generateAudio = (
     return `${prefix}_${text}`
 }
 
-const makeMultipleAudioEntries = async (user: string, entries: string[]) => {
+const makeMultipleAudioEntries = async (
+    user: string,
+    entries: string[],
+    onCompletedCall: () => void
+) => {
     for (const row of entries) {
         if (row.length == 1 && row[0] == '') {
             console.log('Skipping empty row')
@@ -213,7 +221,14 @@ const makeMultipleAudioEntries = async (user: string, entries: string[]) => {
         const category = entry[0]
         const chinese = entry[1]
         const english = entry[2]
-        await makeNewAudioEntry(english, chinese, category, user, () => {})
+        await makeNewAudioEntry(
+            english,
+            chinese,
+            category,
+            user,
+            () => {},
+            onCompletedCall
+        )
     }
 }
 
