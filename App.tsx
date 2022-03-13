@@ -1,6 +1,6 @@
 import Amplify from 'aws-amplify'
 import React, { useState } from 'react'
-import MainScreen from './mainscreen'
+import MainScreen from './src/screens/mainscreen'
 import awsconfig from './src/custom-aws-exports'
 import {
     PausedIdsContext,
@@ -9,7 +9,7 @@ import {
 
 import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import { CardScreen } from './src/scratch/cardscreen'
+import CardScreen from './src/screens/cardscreen'
 
 Amplify.configure(awsconfig)
 

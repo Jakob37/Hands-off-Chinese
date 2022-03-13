@@ -29,4 +29,4 @@ function CardScreen({ route, navigation }) {
     )
 }
 
-export { CardScreen }
+export default CardScreen

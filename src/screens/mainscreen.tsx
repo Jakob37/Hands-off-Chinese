@@ -1,11 +1,11 @@
 import { Auth } from 'aws-amplify'
 import React, { useContext, useEffect, useState } from 'react'
 import { Button, ScrollView, Text, View } from 'react-native'
-import { makeNewAudioEntry } from './src/backend/apicalls'
-import { HocDb } from './src/backend/database'
-import CategoryFooter from './src/views/footers/categoryfooter'
-import CategoryCardList from './src/views/list/categorycardlist'
-import { ShownIdsContext } from './store/contexts/mytestcontext'
+import { makeNewAudioEntry } from '../backend/apicalls'
+import { HocDb } from '../backend/database'
+import CategoryFooter from '../views/footers/categoryfooter'
+import CategoryCardList from '../views/list/categorycardlist'
+import { ShownIdsContext } from '../../store/contexts/mytestcontext'
 
 let db: HocDb = new HocDb()
 
