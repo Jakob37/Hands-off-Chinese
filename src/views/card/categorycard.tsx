@@ -3,7 +3,12 @@ import { styles } from "../../style/Stylesheet";
 const React = require("react")
 const { View, Text, TouchableOpacity } = require("react-native")
 
-const CategoryCard = (param) => {
+interface CategoryCardParam {
+    displayCategory: string
+    selectAction: () => void
+}
+
+const CategoryCard = (param: CategoryCardParam) => {
     return (
         <View style = {
             [
@@ -19,7 +24,7 @@ const CategoryCard = (param) => {
             <View>
                 <TouchableOpacity onPress={param.selectAction}>
                     <Text style={[styles.cardText, {fontSize: 30}]}>
-                        {param.category}
+                        {param.displayCategory}
                     </Text>
                 </TouchableOpacity>
             </View>

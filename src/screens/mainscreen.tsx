@@ -22,8 +22,6 @@ const MainScreen = ({ navigation }) => {
 
     const { db } = useContext(DbContext)
 
-    // const [currentUser, setCurrentUser] = useState('[Refresh to show email]')
-
     const refreshDatabase = () => {
         console.log('---> Loading database')
         db.initDatabase(() => {
@@ -45,7 +43,6 @@ const MainScreen = ({ navigation }) => {
 
     const setUserData = () => {
         Auth.currentAuthenticatedUser().then((currUser) => {
-            // setCurrentUser(currUser.attributes.email)
             db.setUser(currUser.attributes.email)
             console.log(currUser.attributes)
         })
@@ -75,6 +72,7 @@ const MainScreen = ({ navigation }) => {
                             audioEntries: newAudioEntries,
                         })
                     }}
+                    db={db}
                 />
             </ScrollView>
 

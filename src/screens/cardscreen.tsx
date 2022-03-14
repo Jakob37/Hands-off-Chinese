@@ -1,21 +1,10 @@
-import { Auth } from 'aws-amplify'
-import React, { Component, useContext, useEffect, useState } from 'react'
-import { Button, View, Text, ScrollView } from 'react-native'
+import React, { useContext } from 'react'
+import { ScrollView, View } from 'react-native'
 import { DbContext } from '../../store/contexts/mytestcontext'
 import AudioFooter from '../views/footers/audiofooter'
 import { AudioCardList } from '../views/list/audiocardlist'
 
 function CardScreen({ route, navigation }) {
-    // const [currentUser, setCurrentUser] = useState('[Refresh to show email]')
-
-    // const setUserData = () => {
-    //     Auth.currentAuthenticatedUser().then((currUser) => {
-    //         console.log('Setting current user')
-    //         setCurrentUser(currUser.attributes.email)
-    //         console.log(currUser.attributes)
-    //     })
-    // }
-    // useEffect(setUserData, [])
 
     const { db } = useContext(DbContext)
 

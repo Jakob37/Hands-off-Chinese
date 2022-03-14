@@ -1,11 +1,13 @@
 import React from 'react'
 import { View } from 'react-native'
+import { HocDb } from '../../backend/database'
 import { CategoryCard } from '../card/categorycard'
 
 interface Param {
     currentCategories: string[]
     categories: string[]
     selectCategoryAction: (category: string) => void
+    db: HocDb
 }
 
 const CategoryCardList = (param: Param) => {
@@ -15,7 +17,12 @@ const CategoryCardList = (param: Param) => {
                 return (
                     <CategoryCard
                         key={i}
-                        category={displayCategory}
+                        displayCategory={
+                            displayCategory +
+                            ' (' +
+                            param.db.getAudioEntries(displayCategory).length +
+                            ')'
+                        }
                         selectAction={() => {
                             const category = param.categories[i]
                             param.selectCategoryAction(category)
