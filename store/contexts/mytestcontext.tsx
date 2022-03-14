@@ -1,4 +1,5 @@
 import React from 'react'
+import { HocDb } from '../../src/backend/database'
 
 // const pausedIds: string[] = []
 const PausedIdsContext = React.createContext({
@@ -11,4 +12,9 @@ const ShownIdsContext = React.createContext({
     setShownIds: (ids: string[]) => {},
 })
 
-export { PausedIdsContext, ShownIdsContext }
+const DbContext = React.createContext({
+    db: new HocDb(),
+    setDb: (db: HocDb) => {}
+})
+
+export { PausedIdsContext, ShownIdsContext, DbContext }

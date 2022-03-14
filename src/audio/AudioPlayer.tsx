@@ -1,11 +1,12 @@
-import { default as Sound } from "react-native-sound"
-import { playAudio } from "../views/card/audiocard"
+import { default as Sound } from 'react-native-sound'
+// import { playAudio } from "../views/card/audiocard"
 // import { audioLibraries } from "./Database";
-import { getRandomFromArray } from "../util/util"
-import { AudioEntryPair } from "src/backend/audioentry"
-import { HocDb } from "src/backend/database"
+import { getRandomFromArray } from '../util/util'
+import { AudioEntryPair } from '../backend/audioentry'
+import { HocDb } from '../backend/database'
+import { playAudio } from '../views/card/util'
 
-Sound.setCategory("Playback")
+Sound.setCategory('Playback')
 
 const AudioState = Object.freeze({
     stopped: 0,
@@ -18,13 +19,17 @@ const AudioState = Object.freeze({
 class AudioPlayer {
     allAudioPairs: AudioEntryPair[] = []
     db: HocDb
+    user: string
 
     getActiveAudioPairs(): AudioEntryPair[] {
         const activeAudioPairs = []
+        // console.log('All audio pairs', this.allAudioPairs)
         for (const audioPair of this.allAudioPairs) {
-            if (this.db.getIsActive(audioPair.id)) {
-                activeAudioPairs.push(audioPair)
-            }
+            // console.log('FIXME: All active for now')
+            // console.log(audioPair)
+            // if (this.db.getIsActive(audioPair.id)) {
+            activeAudioPairs.push(audioPair)
+            // }
         }
         return activeAudioPairs
     }
@@ -51,17 +56,18 @@ class AudioPlayer {
         return Object.keys(AudioState)[this.audioState]
     }
 
-    load(audioEntries: AudioEntryPair[], db: HocDb) {
+    load(user: string, audioEntries: AudioEntryPair[], db: HocDb) {
+        this.user = user
         this.allAudioPairs = audioEntries
         this.db = db
     }
 
     incrementDelay() {
-        this.delay += 1000;
+        this.delay += 1000
     }
 
     reduceDelay() {
-        this.delay -= 1000;
+        this.delay -= 1000
     }
 
     setDelay(delay: number) {
@@ -71,7 +77,7 @@ class AudioPlayer {
     playRandom() {
         const audioEntry = getRandomFromArray(this.getActiveAudioPairs())
         this.currentlyPlayingPair = audioEntry
-        playAudio(audioEntry.englishKey, () => {
+        playAudio(audioEntry.englishKey, this.user, () => {
             this.playEvent()
         })
     }
@@ -106,6 +112,8 @@ class AudioPlayer {
             return
         }
 
+        console.log('Playing with state', this.audioState)
+
         if (this.audioState == AudioState.playing_english) {
             this.playRandom()
             this.audioState = AudioState.english_pause
@@ -114,7 +122,7 @@ class AudioPlayer {
             this.audioState = AudioState.playing_chinese
         } else if (this.audioState == AudioState.playing_chinese) {
             const currAudio = this.currentlyPlayingPair
-            playAudio(currAudio.chineseKey, (sound: Sound) => {
+            playAudio(currAudio.chineseKey, this.user, (sound: Sound) => {
                 this.playEvent()
                 this.durationHook(Math.round(sound.getDuration()))
             })
@@ -123,7 +131,7 @@ class AudioPlayer {
             this.playPause(this.delay)
             this.audioState = AudioState.playing_english
         } else {
-            console.warn("Unknown situation for audio state:", this.audioState)
+            console.warn('Unknown situation for audio state:', this.audioState)
         }
     }
 
@@ -161,9 +169,9 @@ async function playSound(
         (error) => {
             if (error) {
                 console.warn(
-                    "failed to load the sound",
+                    'failed to load the sound',
                     error,
-                    "from path",
+                    'from path',
                     soundPath
                 )
                 return
@@ -175,7 +183,7 @@ async function playSound(
                 if (success) {
                     // playSound(soundPath);
                 } else {
-                    console.warn("Playback failed due to audio decoding errors")
+                    console.warn('Playback failed due to audio decoding errors')
                 }
             })
         }

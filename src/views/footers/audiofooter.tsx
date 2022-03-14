@@ -1,14 +1,12 @@
-import React, { useEffect, useState } from 'react'
-import { useContext } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Text, TouchableOpacity, View } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome'
-Icon.loadFont()
-import { HocDb } from 'src/backend/database'
-import { PausedIdsContext, ShownIdsContext } from '../../../store/contexts/mytestcontext'
+import { DbContext, PausedIdsContext, ShownIdsContext } from '../../../store/contexts/mytestcontext'
 import { AudioPlayer } from '../../audio/AudioPlayer'
 import { AudioEntryPair } from '../../backend/audioentry'
 import { styles } from '../../style/Stylesheet'
 import { FooterButton } from './util'
+Icon.loadFont()
 
 const audioPlayer = new AudioPlayer()
 
@@ -88,11 +86,14 @@ const AudioPlayerRow = (param: AudioPlayerRowParam) => {
 
 interface AudioFooterParam {
     audioEntries: AudioEntryPair[]
-    db: HocDb
+    user: string
 }
 const AudioFooter = (param: AudioFooterParam) => {
+
+    const { db } = useContext(DbContext)
+
     useEffect(() => {
-        audioPlayer.load(param.audioEntries, param.db)
+        audioPlayer.load(param.user, param.audioEntries, db)
     }, [param.audioEntries])
 
     const { pausedIds, setPausedIds } = useContext(PausedIdsContext);

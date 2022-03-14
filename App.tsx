@@ -5,6 +5,7 @@ import awsconfig from './src/custom-aws-exports'
 import {
     PausedIdsContext,
     ShownIdsContext,
+    DbContext,
 } from './store/contexts/mytestcontext'
 
 import { NavigationContainer } from '@react-navigation/native'
@@ -21,12 +22,16 @@ Amplify.configure({
 })
 
 import { withAuthenticator } from 'aws-amplify-react-native/dist/Auth'
+import { HocDb } from './src/backend/database'
 
 const Stack = createNativeStackNavigator()
+
+// let db: HocDb = new HocDb()
 
 const App = ({ _signOut, _user }) => {
     const [pausedIds, setPausedIds] = useState([])
     const [shownIds, setShownIds] = useState([])
+    const [db, setDb] = useState(new HocDb())
 
     return (
         <PausedIdsContext.Provider
@@ -36,20 +41,22 @@ const App = ({ _signOut, _user }) => {
             }}
         >
             <ShownIdsContext.Provider value={{ shownIds, setShownIds }}>
-                <NavigationContainer>
-                    <Stack.Navigator>
-                        <Stack.Screen
-                            name="Home"
-                            component={MainScreen}
-                            options={{ title: 'Hands-off Chinese' }}
-                        />
-                        <Stack.Screen
-                            name="Test"
-                            options={{ title: 'Audio entries ' }}
-                            component={CardScreen}
-                        />
-                    </Stack.Navigator>
-                </NavigationContainer>
+                <DbContext.Provider value={{ db, setDb }}>
+                    <NavigationContainer>
+                        <Stack.Navigator>
+                            <Stack.Screen
+                                name="Home"
+                                component={MainScreen}
+                                options={{ title: 'Hands-off Chinese' }}
+                            />
+                            <Stack.Screen
+                                name="Test"
+                                options={{ title: 'Audio entries ' }}
+                                component={CardScreen}
+                            />
+                        </Stack.Navigator>
+                    </NavigationContainer>
+                </DbContext.Provider>
             </ShownIdsContext.Provider>
         </PausedIdsContext.Provider>
     )

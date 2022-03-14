@@ -1,14 +1,13 @@
 import { Auth } from 'aws-amplify'
 import React, { useContext, useEffect, useState } from 'react'
-import { Button, ScrollView, Text, View } from 'react-native'
+import { ScrollView, Text, View } from 'react-native'
+import { AudioEntryPair } from 'src/backend/audioentry'
+import { DbContext, ShownIdsContext } from '../../store/contexts/mytestcontext'
 import { makeNewAudioEntry } from '../backend/apicalls'
-import { HocDb } from '../backend/database'
 import CategoryFooter from '../views/footers/categoryfooter'
 import CategoryCardList from '../views/list/categorycardlist'
-import { ShownIdsContext } from '../../store/contexts/mytestcontext'
-import { AudioEntryPair } from 'src/backend/audioentry'
 
-let db: HocDb = new HocDb()
+// let db: HocDb = new HocDb()
 
 // To think about: React Navigation?
 // https://blog.logrocket.com/navigating-react-native-apps-using-react-navigation/
@@ -21,7 +20,9 @@ const MainScreen = ({ navigation }) => {
     const [enterCategory, setEnterCategory] = useState('')
     const { setShownIds } = useContext(ShownIdsContext)
 
-    const [currentUser, setCurrentUser] = useState('[Refresh to show email]')
+    const { db } = useContext(DbContext)
+
+    // const [currentUser, setCurrentUser] = useState('[Refresh to show email]')
 
     const refreshDatabase = () => {
         console.log('---> Loading database')
@@ -44,7 +45,8 @@ const MainScreen = ({ navigation }) => {
 
     const setUserData = () => {
         Auth.currentAuthenticatedUser().then((currUser) => {
-            setCurrentUser(currUser.attributes.email)
+            // setCurrentUser(currUser.attributes.email)
+            db.setUser(currUser.attributes.email)
             console.log(currUser.attributes)
         })
     }
@@ -53,7 +55,7 @@ const MainScreen = ({ navigation }) => {
     return (
         <View style={{ flex: 1 }}>
             <View>
-                <Text>Current email: {currentUser}</Text>
+                <Text>Current email: {db.getUser()}</Text>
             </View>
             {/* <Button
                 onPress={async () => {
@@ -83,7 +85,7 @@ const MainScreen = ({ navigation }) => {
                         englishText,
                         chineseText,
                         categoryText,
-                        currentUser,
+                        db.getUser(),
                         () => {},
                         () => {
                             console.log('Totally completed!')

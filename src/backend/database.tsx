@@ -4,10 +4,18 @@ import { AudioEntryPair } from './audioentry'
 class HocDb {
     _idToEntry: Map<string, AudioEntryPair>
     _idToActive: Map<string, boolean>
+    _user: string
+
+    setUser(user: string): void {
+        this._user = user
+    }
+
+    getUser(): string {
+        return this._user
+    }
 
     async initDatabase(doneCallback: (db: HocDb) => void = (db: HocDb) => {}) {
         this._idToEntry = await getMetaAsAudioEntries()
-        // console.log('Obtained idToEntry', this._idToEntry)
         this._idToActive = new Map()
         for (const id of Array.from(this._idToEntry.keys())) {
             this._idToActive.set(id, true)
