@@ -1,7 +1,14 @@
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import React, { useContext, useEffect, useState } from 'react'
 import { Text, TouchableOpacity, View } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome'
-import { DbContext, PausedIdsContext, ShownIdsContext } from '../../../store/contexts/mytestcontext'
+import { RootStackParamList } from 'src/screens/navigationutils'
+import ClickableIcon from '../../util/clickableicon'
+import {
+    DbContext,
+    PausedIdsContext,
+    ShownIdsContext,
+} from '../../../store/contexts/mytestcontext'
 import { AudioPlayer } from '../../audio/AudioPlayer'
 import { AudioEntryPair } from '../../backend/audioentry'
 import { styles } from '../../style/Stylesheet'
@@ -87,76 +94,66 @@ const AudioPlayerRow = (param: AudioPlayerRowParam) => {
 interface AudioFooterParam {
     audioEntries: AudioEntryPair[]
     user: string
+    navigation: NativeStackNavigationProp<RootStackParamList, 'Audio entries'>
 }
 const AudioFooter = (param: AudioFooterParam) => {
-
     const { db } = useContext(DbContext)
 
     useEffect(() => {
         audioPlayer.load(param.user, param.audioEntries, db)
     }, [param.audioEntries])
 
-    const { pausedIds, setPausedIds } = useContext(PausedIdsContext);
-    const { shownIds } = useContext(ShownIdsContext);
+    const { pausedIds, setPausedIds } = useContext(PausedIdsContext)
+    const { shownIds } = useContext(ShownIdsContext)
 
     return (
         <>
-            <AudioPlayerRow
+            {/* <AudioPlayerRow
                 label="test"
                 placeholder="test2"
                 setUpdatedText={(text) => console.log(text)}
-            />
+            /> */}
             <View
                 style={[
                     styles.footerCard,
                     {
                         display: 'flex',
                         flexDirection: 'row',
-                        justifyContent: 'space-between',
+                        justifyContent: 'space-around',
                     },
                 ]}
             >
-                <FooterButton
-                    onPress={() => {
-                        console.log('Hello testing')
+                <ClickableIcon
+                    icon="play"
+                    size={30}
+                    color="black"
+                    clickCallback={() => {
+                        param.navigation.navigate('Audio player', {
+                            audioEntries: param.audioEntries,
+                        })
                     }}
-                >
-                    Test
-                </FooterButton>
-                <FooterButton
-                    onPress={() => {
-                        audioPlayer.play()
-                    }}
-                >
-                    Play
-                </FooterButton>
-                <FooterButton
-                    onPress={() => {
+                ></ClickableIcon>
+                <ClickableIcon
+                    icon="random"
+                    size={30}
+                    color="black"
+                    clickCallback={() => {
                         audioPlayer.playRandom()
                     }}
-                >
-                    Random
-                </FooterButton>
-                <FooterButton
-                    onPress={() => {
-                        audioPlayer.stop()
-                    }}
-                >
-                    Stop
-                </FooterButton>
-                <FooterButton
-                    onPress={() => {
+                ></ClickableIcon>
+                <ClickableIcon
+                    icon="pause"
+                    size={30}
+                    color="black"
+                    clickCallback={() => {
                         const finalPausedIds = Array.from(pausedIds)
                         for (const currentId of shownIds) {
                             if (!pausedIds.includes(currentId)) {
                                 finalPausedIds.push(currentId)
                             }
                         }
-                        setPausedIds(finalPausedIds)
-                    }}
-                >
-                    Pause all
-                </FooterButton>
+                        setPausedIds(finalPausedIds)                    }}
+                ></ClickableIcon>
             </View>
         </>
     )

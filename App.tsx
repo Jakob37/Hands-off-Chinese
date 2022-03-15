@@ -11,6 +11,7 @@ import {
 import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import CardScreen from './src/screens/cardscreen'
+import PlayerScreen from './src/screens/playerscreen'
 
 // Analytics is explicitly disabled to prevent a warning according to following:
 // https://github.com/aws-amplify/amplify-js/issues/5918
@@ -21,12 +22,13 @@ Amplify.configure({
     },
 })
 
+// FIXME: Why is this order needed? Does the db has excess dependencies here?
 import { withAuthenticator } from 'aws-amplify-react-native/dist/Auth'
 import { HocDb } from './src/backend/database'
+import { NAVIGATION } from './src/screens/navigationutils'
+
 
 const Stack = createNativeStackNavigator()
-
-// let db: HocDb = new HocDb()
 
 const App = ({ _signOut, _user }) => {
     const [pausedIds, setPausedIds] = useState([])
@@ -45,14 +47,19 @@ const App = ({ _signOut, _user }) => {
                     <NavigationContainer>
                         <Stack.Navigator>
                             <Stack.Screen
-                                name="Home"
+                                name={NAVIGATION.main}
                                 component={MainScreen}
                                 options={{ title: 'Hands-off Chinese' }}
                             />
                             <Stack.Screen
-                                name="Test"
-                                options={{ title: 'Audio entries ' }}
+                                name={NAVIGATION.audioList}
+                                options={{ title: 'Audio entries' }}
                                 component={CardScreen}
+                            />
+                            <Stack.Screen
+                                name={NAVIGATION.audioPlayer}
+                                options={{ title: 'Audio player' }}
+                                component={PlayerScreen}
                             />
                         </Stack.Navigator>
                     </NavigationContainer>

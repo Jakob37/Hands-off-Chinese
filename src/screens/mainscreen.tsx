@@ -1,3 +1,4 @@
+import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import { Auth } from 'aws-amplify'
 import React, { useContext, useEffect, useState } from 'react'
 import { ScrollView, Text, View } from 'react-native'
@@ -6,13 +7,16 @@ import { DbContext, ShownIdsContext } from '../../store/contexts/mytestcontext'
 import { makeNewAudioEntry } from '../backend/apicalls'
 import CategoryFooter from '../views/footers/categoryfooter'
 import CategoryCardList from '../views/list/categorycardlist'
+import { HomeProps } from './navigationutils'
 
 // let db: HocDb = new HocDb()
 
 // To think about: React Navigation?
 // https://blog.logrocket.com/navigating-react-native-apps-using-react-navigation/
 
-const MainScreen = ({ navigation }) => {
+
+
+const MainScreen = ({ navigation }: HomeProps) => {
     // const [audioEntries, setAudioEntries] = useState([])
     const [currentCategories, setCurrentCategories] = useState([
         'Loading from AWS...',
@@ -68,7 +72,7 @@ const MainScreen = ({ navigation }) => {
                     selectCategoryAction={(category) => {
                         const newAudioEntries =
                             retrieveCategoryEntriesList(category)
-                        navigation.navigate('Test', {
+                        navigation.navigate('Audio entries', {
                             audioEntries: newAudioEntries,
                         })
                     }}

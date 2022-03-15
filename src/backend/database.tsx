@@ -33,7 +33,11 @@ class HocDb {
     }
 
     _getAllEntries(): AudioEntryPair[] {
-        return Array.from(this._idToEntry.values())
+        if (this._idToEntry == null) {
+            return [];
+        } else {
+            return Array.from(this._idToEntry.values())
+        }
     }
 
     pauseAll() {
@@ -53,6 +57,9 @@ class HocDb {
 
     _getCategoryToEntryPairs(): Map<string, AudioEntryPair[]> {
         const allCategories = this.getCategories()
+        if (allCategories.length == 0) {
+            return new Map()
+        }
         const categoryToEntryPairs = new Map()
         for (const category of allCategories) {
             categoryToEntryPairs.set(category, [])
@@ -65,7 +72,7 @@ class HocDb {
     }
 
     getAudioEntries(category: string): AudioEntryPair[] {
-        return this._getCategoryToEntryPairs().get(category)
+        return this._getCategoryToEntryPairs().get(category) || []
     }
 }
 
