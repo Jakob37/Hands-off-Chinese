@@ -1,8 +1,8 @@
 import React, { useContext } from 'react'
 import { ScrollView, View, Text } from 'react-native'
+import PlayerFooter from '../views/footers/playerfooter'
 import { DbContext } from '../../store/contexts/mytestcontext'
-import AudioFooter from '../views/footers/audiofooter'
-import { AudioCardList } from '../views/list/audiocardlist'
+import { PlayerCardList } from '../views/list/playercardlist'
 
 function PlayerScreen({ route, navigation }) {
 
@@ -11,13 +11,12 @@ function PlayerScreen({ route, navigation }) {
     return (
         <View style={{ flex: 1 }}>
             <ScrollView>
-                <Text>Player cards goes here</Text>
-                {/* <AudioCardList
+                <PlayerCardList
                     user={db.getUser()}
                     listEntries={route.params.audioEntries}
-                /> */}
+                />
             </ScrollView>
-            <AudioFooter user={db.getUser()} audioEntries={route.params.audioEntries} />
+            <PlayerFooter user={db.getUser()} audioEntries={route.params.audioEntries} />
         </View>
     )
 }
