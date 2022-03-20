@@ -4,7 +4,7 @@ import { Text, TextInput, View } from 'react-native'
 import {
     PausedIdsContext,
     ShownIdsContext,
-} from '../../../store/contexts/mytestcontext'
+} from '../../../store/contexts/contexts'
 import {
     makeMultipleAudioEntries,
     makeNewAudioEntry,

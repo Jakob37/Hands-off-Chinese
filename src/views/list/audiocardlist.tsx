@@ -2,7 +2,7 @@ import React, { useContext } from 'react'
 import { useEffect } from 'react'
 import { View } from 'react-native'
 import { AudioEntryPair } from 'src/backend/audioentry'
-import { PausedIdsContext } from '../../../store/contexts/mytestcontext'
+import { PausedIdsContext } from '../../../store/contexts/contexts'
 import { AudioCard } from '../card/audiocard'
 
 interface Param {

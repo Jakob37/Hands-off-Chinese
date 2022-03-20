@@ -2,7 +2,10 @@ import React, { useContext } from 'react'
 import { useEffect } from 'react'
 import { View } from 'react-native'
 import { AudioEntryPair } from 'src/backend/audioentry'
-import { PausedIdsContext } from '../../../store/contexts/mytestcontext'
+import {
+    AudioPlayerContext,
+    PausedIdsContext,
+} from '../../../store/contexts/contexts'
 import { PlayerCard } from '../card/playercard'
 
 interface Param {
@@ -13,6 +16,7 @@ interface Param {
 const PlayerCardList = (param: Param) => {
     const { pausedIds, setPausedIds } = useContext(PausedIdsContext)
 
+    // FIXME: Should this be used, or removed?
     useEffect(() => {
         console.log('--- Testing responding pausedIds change ---')
     }, [pausedIds])

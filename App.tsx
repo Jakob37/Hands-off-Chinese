@@ -6,7 +6,8 @@ import {
     PausedIdsContext,
     ShownIdsContext,
     DbContext,
-} from './store/contexts/mytestcontext'
+    AudioPlayerContext,
+} from './store/contexts/contexts'
 
 import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
@@ -26,7 +27,7 @@ Amplify.configure({
 import { withAuthenticator } from 'aws-amplify-react-native/dist/Auth'
 import { HocDb } from './src/backend/database'
 import { NAVIGATION } from './src/screens/navigationutils'
-
+import { AudioPlayer } from './src/audio/AudioPlayer'
 
 const Stack = createNativeStackNavigator()
 
@@ -34,6 +35,7 @@ const App = ({ _signOut, _user }) => {
     const [pausedIds, setPausedIds] = useState([])
     const [shownIds, setShownIds] = useState([])
     const [db, setDb] = useState(new HocDb())
+    const [audioPlayer, setAudioPlayer] = useState(new AudioPlayer())
 
     return (
         <PausedIdsContext.Provider
@@ -44,25 +46,29 @@ const App = ({ _signOut, _user }) => {
         >
             <ShownIdsContext.Provider value={{ shownIds, setShownIds }}>
                 <DbContext.Provider value={{ db, setDb }}>
-                    <NavigationContainer>
-                        <Stack.Navigator>
-                            <Stack.Screen
-                                name={NAVIGATION.main}
-                                component={MainScreen}
-                                options={{ title: 'Hands-off Chinese' }}
-                            />
-                            <Stack.Screen
-                                name={NAVIGATION.audioList}
-                                options={{ title: 'Audio entries' }}
-                                component={CardScreen}
-                            />
-                            <Stack.Screen
-                                name={NAVIGATION.audioPlayer}
-                                options={{ title: 'Audio player' }}
-                                component={PlayerScreen}
-                            />
-                        </Stack.Navigator>
-                    </NavigationContainer>
+                    <AudioPlayerContext.Provider
+                        value={{ audioPlayer, setAudioPlayer }}
+                    >
+                        <NavigationContainer>
+                            <Stack.Navigator>
+                                <Stack.Screen
+                                    name={NAVIGATION.main}
+                                    component={MainScreen}
+                                    options={{ title: 'Hands-off Chinese' }}
+                                />
+                                <Stack.Screen
+                                    name={NAVIGATION.audioList}
+                                    options={{ title: 'Audio entries' }}
+                                    component={CardScreen}
+                                />
+                                <Stack.Screen
+                                    name={NAVIGATION.audioPlayer}
+                                    options={{ title: 'Audio player' }}
+                                    component={PlayerScreen}
+                                />
+                            </Stack.Navigator>
+                        </NavigationContainer>
+                    </AudioPlayerContext.Provider>
                 </DbContext.Provider>
             </ShownIdsContext.Provider>
         </PausedIdsContext.Provider>

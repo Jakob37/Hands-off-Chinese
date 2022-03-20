@@ -1,4 +1,5 @@
 import React from 'react'
+import { AudioPlayer } from '../../src/audio/AudioPlayer'
 import { HocDb } from '../../src/backend/database'
 
 // const pausedIds: string[] = []
@@ -17,4 +18,9 @@ const DbContext = React.createContext({
     setDb: (db: HocDb) => {}
 })
 
-export { PausedIdsContext, ShownIdsContext, DbContext }
+const AudioPlayerContext = React.createContext({
+    audioPlayer: new AudioPlayer(),
+    setAudioPlayer: (audioPlayer: AudioPlayer) => {}
+})
+
+export { PausedIdsContext, ShownIdsContext, DbContext, AudioPlayerContext }

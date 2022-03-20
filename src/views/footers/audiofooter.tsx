@@ -8,14 +8,14 @@ import {
     DbContext,
     PausedIdsContext,
     ShownIdsContext,
-} from '../../../store/contexts/mytestcontext'
+} from '../../../store/contexts/contexts'
 import { AudioPlayer } from '../../audio/AudioPlayer'
 import { AudioEntryPair } from '../../backend/audioentry'
 import { styles } from '../../style/Stylesheet'
 import { FooterButton } from './util'
 Icon.loadFont()
 
-const audioPlayer = new AudioPlayer()
+// const audioPlayer = new AudioPlayer()
 
 interface AudioPlayerRowParam {
     label: string
@@ -31,16 +31,16 @@ const AudioPlayerRow = (param: AudioPlayerRowParam) => {
 
     const [activeNbr, setActiveNbr] = useState(0)
 
-    const [delay, setDelay] = useState(audioPlayer.delay / 1000)
+    // const [delay, setDelay] = useState(audioPlayer.delay / 1000)
 
-    audioPlayer.addTimerHook((number) => {
-        setCounter(number)
-        setActiveNbr(audioPlayer.getNumberActiveClips())
-    })
+    // audioPlayer.addTimerHook((number) => {
+    //     setCounter(number)
+    //     setActiveNbr(audioPlayer.getNumberActiveClips())
+    // })
 
-    audioPlayer.addDurationHook((duration) => {
-        setLastDuration(duration)
-    })
+    // audioPlayer.addDurationHook((duration) => {
+    //     setLastDuration(duration)
+    // })
 
     return (
         <>
@@ -63,9 +63,9 @@ const AudioPlayerRow = (param: AudioPlayerRowParam) => {
                         alignItems: 'center',
                     }}
                 >
-                    <Text style={{ fontSize }}>{`${delay}s`}</Text>
+                    {/* <Text style={{ fontSize }}>{`${delay}s`}</Text> */}
 
-                    <TouchableOpacity
+                    {/* <TouchableOpacity
                         onPress={() => {
                             audioPlayer.incrementDelay()
                             setDelay(audioPlayer.delay / 1000)
@@ -81,7 +81,7 @@ const AudioPlayerRow = (param: AudioPlayerRowParam) => {
                         }}
                     >
                         <Icon name="minus" size={20} color="black"></Icon>
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                 </View>
 
                 <Text style={{ fontSize }}>{`Time: ${counter}s`}</Text>
@@ -99,9 +99,9 @@ interface AudioFooterParam {
 const AudioFooter = (param: AudioFooterParam) => {
     const { db } = useContext(DbContext)
 
-    useEffect(() => {
-        audioPlayer.load(param.user, param.audioEntries, db)
-    }, [param.audioEntries])
+    // useEffect(() => {
+    //     audioPlayer.load(param.user, param.audioEntries, db)
+    // }, [param.audioEntries])
 
     const { pausedIds, setPausedIds } = useContext(PausedIdsContext)
     const { shownIds } = useContext(ShownIdsContext)
@@ -134,14 +134,6 @@ const AudioFooter = (param: AudioFooterParam) => {
                     }}
                 ></ClickableIcon>
                 <ClickableIcon
-                    icon="random"
-                    size={30}
-                    color="black"
-                    clickCallback={() => {
-                        audioPlayer.playRandom()
-                    }}
-                ></ClickableIcon>
-                <ClickableIcon
                     icon="pause"
                     size={30}
                     color="black"
@@ -152,7 +144,8 @@ const AudioFooter = (param: AudioFooterParam) => {
                                 finalPausedIds.push(currentId)
                             }
                         }
-                        setPausedIds(finalPausedIds)                    }}
+                        setPausedIds(finalPausedIds)
+                    }}
                 ></ClickableIcon>
             </View>
         </>

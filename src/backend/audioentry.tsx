@@ -147,7 +147,7 @@ function getListFormat(
     ]
 }
 
-function toString(entry: AudioEntryPair): string {
+function entryToString(entry: AudioEntryPair): string {
     return [
         `ID: ${entry.id}`,
         `Is complete: ${isComplete(entry)}`,
@@ -169,6 +169,6 @@ export {
     addEnglishEntry,
     isComplete,
     getListFormat,
-    toString,
+    entryToString,
     getAudioEntryPair,
 }

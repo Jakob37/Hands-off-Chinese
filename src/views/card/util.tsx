@@ -1,6 +1,7 @@
 import Sound from 'react-native-sound'
 import axios from 'axios'
 import { SIGNEDURL_URL } from '../../backend/api'
+import { AudioEntryPair } from 'src/backend/audioentry'
 // import { Storage } from 'aws-amplify'
 // import awsmobile from "../../../src/aws-exports"
 

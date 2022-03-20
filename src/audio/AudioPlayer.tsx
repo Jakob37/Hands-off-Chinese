@@ -1,8 +1,6 @@
 import { default as Sound } from 'react-native-sound'
-// import { playAudio } from "../views/card/audiocard"
-// import { audioLibraries } from "./Database";
 import { getRandomFromArray } from '../util/util'
-import { AudioEntryPair } from '../backend/audioentry'
+import { AudioEntry, AudioEntryPair, copyEntry } from '../backend/audioentry'
 import { HocDb } from '../backend/database'
 import { playAudio } from '../views/card/util'
 
@@ -17,40 +15,39 @@ const AudioState = Object.freeze({
 })
 
 class AudioPlayer {
-    allAudioPairs: AudioEntryPair[] = []
     db: HocDb
+    allAudioPairs: AudioEntryPair[] = []
     user: string
+    audioState: number = AudioState.stopped
+    currentlyPlayingPair: AudioEntryPair | null = null
+    delay: number = 1000
+    startTime: number = 0
+    isPlaying: boolean = false
+    interval: NodeJS.Timer
+    counter: number = 0
+    timerHook: (value: number) => void
+
+    playHooks: Map<string, (entry: AudioEntryPair) => void> = new Map()
 
     getActiveAudioPairs(): AudioEntryPair[] {
         const activeAudioPairs = []
-        // console.log('All audio pairs', this.allAudioPairs)
         for (const audioPair of this.allAudioPairs) {
-            // console.log('FIXME: All active for now')
-            // console.log(audioPair)
-            // if (this.db.getIsActive(audioPair.id)) {
             activeAudioPairs.push(audioPair)
-            // }
         }
         return activeAudioPairs
     }
 
-    audioState: number = AudioState.stopped
-    currentlyPlayingPair: AudioEntryPair | null = null
-    delay: number = 4000
-
-    startTime: number = 0
     getTimeSinceStart(): number {
         return (new Date().getTime() - this.startTime) / 1000
     }
 
-    isPlaying: boolean = false
-
-    counter: number = 0
-    timerHook: (value: number) => void
     addTimerHook(timerHook: (value: number) => void) {
         this.timerHook = timerHook
     }
-    interval: NodeJS.Timer
+
+    addPlayHook(label: string, hook: (entry: AudioEntryPair) => void) {
+        this.playHooks.set(label, hook)
+    }
 
     getState(): string {
         return Object.keys(AudioState)[this.audioState]
@@ -74,12 +71,13 @@ class AudioPlayer {
         this.delay = delay
     }
 
-    playRandom() {
+    playRandom(): AudioEntryPair {
         const audioEntry = getRandomFromArray(this.getActiveAudioPairs())
         this.currentlyPlayingPair = audioEntry
         playAudio(audioEntry.englishKey, this.user, () => {
             this.playEvent()
         })
+        return audioEntry
     }
 
     playPause(duration: number) {
@@ -115,8 +113,13 @@ class AudioPlayer {
         console.log('Playing with state', this.audioState)
 
         if (this.audioState == AudioState.playing_english) {
-            this.playRandom()
+            const audioEntry = this.playRandom()
             this.audioState = AudioState.english_pause
+
+            for (const [name, hook] of Array.from(this.playHooks)) {
+                console.log('Hooking for label:', name)
+                hook(copyEntry(audioEntry))
+            }
         } else if (this.audioState == AudioState.english_pause) {
             this.playPause(this.delay)
             this.audioState = AudioState.playing_chinese
@@ -127,6 +130,7 @@ class AudioPlayer {
                 this.durationHook(Math.round(sound.getDuration()))
             })
             this.audioState = AudioState.chinese_pause
+            // this.playedEntries.push(currAudio)
         } else if (this.audioState == AudioState.chinese_pause) {
             this.playPause(this.delay)
             this.audioState = AudioState.playing_english
