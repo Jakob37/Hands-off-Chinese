@@ -7,6 +7,7 @@ import {
     ShownIdsContext,
     DbContext,
     AudioPlayerContext,
+    FlaggedIdsContext,
 } from './store/contexts/contexts'
 
 import { NavigationContainer } from '@react-navigation/native'
@@ -36,6 +37,7 @@ const App = ({ _signOut, _user }) => {
     const [shownIds, setShownIds] = useState([])
     const [db, setDb] = useState(new HocDb())
     const [audioPlayer, setAudioPlayer] = useState(new AudioPlayer())
+    const [flaggedIds, setFlaggedIds] = useState([])
 
     return (
         <PausedIdsContext.Provider
@@ -49,25 +51,29 @@ const App = ({ _signOut, _user }) => {
                     <AudioPlayerContext.Provider
                         value={{ audioPlayer, setAudioPlayer }}
                     >
-                        <NavigationContainer>
-                            <Stack.Navigator>
-                                <Stack.Screen
-                                    name={NAVIGATION.main}
-                                    component={MainScreen}
-                                    options={{ title: 'Hands-off Chinese' }}
-                                />
-                                <Stack.Screen
-                                    name={NAVIGATION.audioList}
-                                    options={{ title: 'Audio entries' }}
-                                    component={CardScreen}
-                                />
-                                <Stack.Screen
-                                    name={NAVIGATION.audioPlayer}
-                                    options={{ title: 'Audio player' }}
-                                    component={PlayerScreen}
-                                />
-                            </Stack.Navigator>
-                        </NavigationContainer>
+                        <FlaggedIdsContext.Provider
+                            value={{ flaggedIds, setFlaggedIds }}
+                        >
+                            <NavigationContainer>
+                                <Stack.Navigator>
+                                    <Stack.Screen
+                                        name={NAVIGATION.main}
+                                        component={MainScreen}
+                                        options={{ title: 'Hands-off Chinese' }}
+                                    />
+                                    <Stack.Screen
+                                        name={NAVIGATION.audioList}
+                                        options={{ title: 'Audio entries' }}
+                                        component={CardScreen}
+                                    />
+                                    <Stack.Screen
+                                        name={NAVIGATION.audioPlayer}
+                                        options={{ title: 'Audio player' }}
+                                        component={PlayerScreen}
+                                    />
+                                </Stack.Navigator>
+                            </NavigationContainer>
+                        </FlaggedIdsContext.Provider>
                     </AudioPlayerContext.Provider>
                 </DbContext.Provider>
             </ShownIdsContext.Provider>

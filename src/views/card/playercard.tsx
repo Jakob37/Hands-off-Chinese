@@ -1,9 +1,12 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useContext } from 'react'
 import { View, Text, TouchableOpacity } from 'react-native'
 import { AudioEntryPair } from '../../backend/audioentry'
 import { removeFromArray } from '../../util/util'
-import { PausedIdsContext } from '../../../store/contexts/contexts'
+import {
+    FlaggedIdsContext,
+    PausedIdsContext,
+} from '../../../store/contexts/contexts'
 import { styles } from '../../style/Stylesheet'
 import AudioCardActive from './audiocardactive'
 import AudioCardSettings from './audiocardsettings'
@@ -20,11 +23,19 @@ const PlayerCard = (param: PlayerCardParam) => {
     const [settingMode, setSettingMode] = useState(false)
     const [cardHeight, setCardHeight] = useState(0)
     const { pausedIds, setPausedIds } = useContext(PausedIdsContext)
+    const { flaggedIds, setFlaggedIds } = useContext(FlaggedIdsContext)
 
-    const [isFlagged, setIsFlagged] = useState(false)
+    // const [isFlagged, setIsFlagged] = useState(false)
     const [isOk, setIsOk] = useState(false)
     const [isWrong, setIsWrong] = useState(false)
 
+    // useEffect(() => {
+    //     setIsFlagged(flaggedIds.includes(param.audioEntryPair.id))
+    // }, [])
+
+    // function getIsFlagged(): boolean {
+    //     return flaggedIds.includes(param.audioEntryPair.id)
+    // }
 
     return (
         <View
@@ -54,12 +65,7 @@ const PlayerCard = (param: PlayerCardParam) => {
                         playAudio(param.audioEntryPair.chineseKey, param.user)
                     }}
                 >
-                    <Text
-                        style={[
-                            styles.cardText,
-                            { color: 'black' },
-                        ]}
-                    >
+                    <Text style={[styles.cardText, { color: 'black' }]}>
                         {param.audioEntryPair.chinese}
                     </Text>
                 </TouchableOpacity>
@@ -68,12 +74,7 @@ const PlayerCard = (param: PlayerCardParam) => {
                         playAudio(param.audioEntryPair.englishKey, param.user)
                     }}
                 >
-                    <Text
-                        style={[
-                            styles.cardText,
-                            { color: 'gray' },
-                        ]}
-                    >
+                    <Text style={[styles.cardText, { color: 'gray' }]}>
                         {param.audioEntryPair.english}
                     </Text>
                 </TouchableOpacity>
@@ -83,13 +84,33 @@ const PlayerCard = (param: PlayerCardParam) => {
                 <TouchableOpacity
                     onPress={() => {
                         // param.setSettingMode()
-                        setIsFlagged(!isFlagged)
+                        // setIsFlagged(!isFlagged)
+                        // const isFlagged = getIsFlagged()
+                        if (!flaggedIds.includes(param.audioEntryPair.id)) {
+                            const addArr = Array.from(flaggedIds)
+                            addArr.push(param.audioEntryPair.id)
+                            setFlaggedIds(addArr)
+                        } else {
+                            const trimmedArr = removeFromArray(
+                                Array.from(flaggedIds),
+                                param.audioEntryPair.id
+                            )
+                            setFlaggedIds(trimmedArr)
+                        }
                     }}
                 >
-                    <Icon name="flag" size={25} color={isFlagged ? 'blue' : 'gray'}></Icon>
+                    <Icon
+                        name="flag"
+                        size={20}
+                        color={
+                            flaggedIds.includes(param.audioEntryPair.id)
+                                ? 'blue'
+                                : 'gray'
+                        }
+                    ></Icon>
                 </TouchableOpacity>
             </View>
-            <View style={{ flex: 1 }}>
+            {/* <View style={{ flex: 1 }}>
                 <TouchableOpacity
                     onPress={() => {
                         // param.setSettingMode()
@@ -98,7 +119,7 @@ const PlayerCard = (param: PlayerCardParam) => {
                 >
                     <Icon name="check" size={25} color={isOk ? 'green' : 'gray'}></Icon>
                 </TouchableOpacity>
-            </View>
+            </View> */}
             <View style={{ flex: 1 }}>
                 <TouchableOpacity
                     onPress={() => {
@@ -106,7 +127,11 @@ const PlayerCard = (param: PlayerCardParam) => {
                         setIsWrong(!isWrong)
                     }}
                 >
-                    <Icon name="times" size={25} color={isWrong ? 'red' : 'gray'}></Icon>
+                    <Icon
+                        name="pause"
+                        size={20}
+                        color={isWrong ? 'green' : 'gray'}
+                    ></Icon>
                 </TouchableOpacity>
             </View>
 

@@ -15,12 +15,23 @@ const ShownIdsContext = React.createContext({
 
 const DbContext = React.createContext({
     db: new HocDb(),
-    setDb: (db: HocDb) => {}
+    setDb: (db: HocDb) => {},
 })
 
 const AudioPlayerContext = React.createContext({
     audioPlayer: new AudioPlayer(),
-    setAudioPlayer: (audioPlayer: AudioPlayer) => {}
+    setAudioPlayer: (audioPlayer: AudioPlayer) => {},
 })
 
-export { PausedIdsContext, ShownIdsContext, DbContext, AudioPlayerContext }
+const FlaggedIdsContext = React.createContext({
+    flaggedIds: [],
+    setFlaggedIds: (flaggedIds: string[]) => {},
+})
+
+export {
+    PausedIdsContext,
+    ShownIdsContext,
+    DbContext,
+    AudioPlayerContext,
+    FlaggedIdsContext,
+}

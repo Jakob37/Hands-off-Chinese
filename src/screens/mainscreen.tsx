@@ -3,7 +3,7 @@ import { Auth } from 'aws-amplify'
 import React, { useContext, useEffect, useState } from 'react'
 import { ScrollView, Text, View } from 'react-native'
 import { AudioEntryPair } from 'src/backend/audioentry'
-import { DbContext, ShownIdsContext } from '../../store/contexts/contexts'
+import { DbContext, FlaggedIdsContext, ShownIdsContext } from '../../store/contexts/contexts'
 import { makeNewAudioEntry } from '../backend/apicalls'
 import CategoryFooter from '../views/footers/categoryfooter'
 import CategoryCardList from '../views/list/categorycardlist'
@@ -25,6 +25,7 @@ const MainScreen = ({ navigation }: HomeProps) => {
     const { setShownIds } = useContext(ShownIdsContext)
 
     const { db } = useContext(DbContext)
+    const { flaggedIds } = useContext(FlaggedIdsContext)
 
     const refreshDatabase = () => {
         console.log('---> Loading database')
@@ -57,6 +58,7 @@ const MainScreen = ({ navigation }: HomeProps) => {
         <View style={{ flex: 1 }}>
             <View>
                 <Text>Current email: {db.getUser()}</Text>
+                <Text>Number flagged: {flaggedIds.length}</Text>
             </View>
             {/* <Button
                 onPress={async () => {

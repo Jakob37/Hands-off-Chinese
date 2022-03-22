@@ -15,7 +15,7 @@ function PlayerScreen({ route, navigation }) {
     // Is this needed? Or is there a better way?
     useEffect(() => {
         audioPlayer.addPlayHook('Played entries', (entry) => {
-            const updated = playedEntries.concat([entry])
+            const updated = [entry].concat(playedEntries)
             setPlayedEntries(updated)
         })
     }, [playedEntries])
