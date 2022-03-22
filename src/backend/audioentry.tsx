@@ -45,15 +45,6 @@ class AudioEntryPair {
     paused: boolean = false
 }
 
-// interface MetaObj {
-//     category: string
-//     creationdate: number
-//     filename: string
-//     id: string
-//     language: 'english' | 'chinese'
-//     text: string
-// }
-
 function getAudioEntryPair(
     id,
     user,

@@ -14,12 +14,10 @@ function removeFromArray<V>(arr: V[], removeValue: V): V[] {
             arrWithoutVal.push(currValue)
         }
     }
-
-    console.log('Start:', arr, 'End', arrWithoutVal, 'Remove val', removeValue)
     return arrWithoutVal
 }
 
-function toggleIdInStateArray(sourceIds: string[], id: string): string[] {
+function toggleEntryInArray<V>(sourceIds: V[], id: V): V[] {
     let updatedArr
     if (!sourceIds.includes(id)) {
         updatedArr = Array.from(sourceIds)
@@ -34,5 +32,5 @@ export {
     getTimestamp,
     getRandomFromArray,
     removeFromArray,
-    toggleIdInStateArray,
+    toggleEntryInArray,
 }

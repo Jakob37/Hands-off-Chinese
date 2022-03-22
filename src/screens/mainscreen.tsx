@@ -1,23 +1,19 @@
-import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import { Auth } from 'aws-amplify'
 import React, { useContext, useEffect, useState } from 'react'
 import { ScrollView, Text, View } from 'react-native'
-import { AudioEntryPair } from 'src/backend/audioentry'
-import { DbContext, FlaggedIdsContext, ShownIdsContext } from '../../store/contexts/contexts'
+import { AudioEntryPair } from '../../src/backend/audioentry'
+import { CategoryCard } from '../../src/views/card/categorycard'
+import {
+    DbContext,
+    FlaggedIdsContext,
+    ShownIdsContext,
+} from '../../store/contexts/contexts'
 import { makeNewAudioEntry } from '../backend/apicalls'
 import CategoryFooter from '../views/footers/categoryfooter'
 import CategoryCardList from '../views/list/categorycardlist'
 import { HomeProps } from './navigationutils'
 
-// let db: HocDb = new HocDb()
-
-// To think about: React Navigation?
-// https://blog.logrocket.com/navigating-react-native-apps-using-react-navigation/
-
-
-
 const MainScreen = ({ navigation }: HomeProps) => {
-    // const [audioEntries, setAudioEntries] = useState([])
     const [currentCategories, setCurrentCategories] = useState([
         'Loading from AWS...',
     ])
@@ -28,9 +24,7 @@ const MainScreen = ({ navigation }: HomeProps) => {
     const { flaggedIds } = useContext(FlaggedIdsContext)
 
     const refreshDatabase = () => {
-        console.log('---> Loading database')
         db.initDatabase(() => {
-            console.log('---> Processing finished')
             setCurrentCategories(db.getCategories())
         })
     }
@@ -42,8 +36,13 @@ const MainScreen = ({ navigation }: HomeProps) => {
         const audioEntries = db.getAudioEntries(category)
         const shownIds = audioEntries.map((entry) => entry.id)
         setShownIds(shownIds)
-        // setAudioEntries(audioEntries)
         return audioEntries
+    }
+
+    const retrieveFlaggedEntriesList = (): AudioEntryPair[] => {
+        const audioEntries = db._getAllEntries()
+        const flaggedEntries = audioEntries.filter((audioEntry) => flaggedIds.includes(audioEntry.id))
+        return flaggedEntries
     }
 
     const setUserData = () => {
@@ -58,15 +57,19 @@ const MainScreen = ({ navigation }: HomeProps) => {
         <View style={{ flex: 1 }}>
             <View>
                 <Text>Current email: {db.getUser()}</Text>
-                <Text>Number flagged: {flaggedIds.length}</Text>
             </View>
-            {/* <Button
-                onPress={async () => {
-                    const currUser = await Auth.currentAuthenticatedUser()
-                    setCurrentUser(currUser.attributes.email)
+
+            <CategoryCard
+                key="test"
+                displayCategory={`Play flagged: ${flaggedIds.length}`}
+                selectAction={() => {
+                    const flagged = retrieveFlaggedEntriesList()
+                    navigation.navigate('Audio entries', {
+                        audioEntries: flagged,
+                    })
                 }}
-                title="Force current user update"
-            ></Button> */}
+            ></CategoryCard>
+
             <ScrollView>
                 <CategoryCardList
                     categories={currentCategories}

@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { useContext } from 'react'
 import { View } from 'react-native'
 import { AudioEntryPair } from '../../backend/audioentry'
-import { removeFromArray, toggleIdInStateArray } from '../../util/util'
+import { removeFromArray, toggleEntryInArray } from '../../util/util'
 import {
     FlaggedIdsContext,
     PausedIdsContext,
@@ -67,14 +67,14 @@ const AudioCard = (param: AudioCardParam) => {
                             : 'black'
                     }
                     togglePaused={() => {
-                        const updatedArr = toggleIdInStateArray(
+                        const updatedArr = toggleEntryInArray(
                             pausedIds,
                             param.audioEntryPair.id
                         )
                         setPausedIds(updatedArr)
                     }}
                     toggleFlagged={() => {
-                        const updatedArr = toggleIdInStateArray(
+                        const updatedArr = toggleEntryInArray(
                             flaggedIds,
                             param.audioEntryPair.id
                         )
