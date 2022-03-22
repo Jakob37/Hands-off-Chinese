@@ -83,9 +83,6 @@ const PlayerCard = (param: PlayerCardParam) => {
             <View style={{ flex: 1 }}>
                 <TouchableOpacity
                     onPress={() => {
-                        // param.setSettingMode()
-                        // setIsFlagged(!isFlagged)
-                        // const isFlagged = getIsFlagged()
                         if (!flaggedIds.includes(param.audioEntryPair.id)) {
                             const addArr = Array.from(flaggedIds)
                             addArr.push(param.audioEntryPair.id)

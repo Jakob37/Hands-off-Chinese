@@ -19,4 +19,20 @@ function removeFromArray<V>(arr: V[], removeValue: V): V[] {
     return arrWithoutVal
 }
 
-export { getTimestamp, getRandomFromArray, removeFromArray }
+function toggleIdInStateArray(sourceIds: string[], id: string): string[] {
+    let updatedArr
+    if (!sourceIds.includes(id)) {
+        updatedArr = Array.from(sourceIds)
+        updatedArr.push(id)
+    } else {
+        updatedArr = removeFromArray(Array.from(sourceIds), id)
+    }
+    return updatedArr
+}
+
+export {
+    getTimestamp,
+    getRandomFromArray,
+    removeFromArray,
+    toggleIdInStateArray,
+}

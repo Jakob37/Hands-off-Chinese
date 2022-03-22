@@ -13,16 +13,20 @@ interface AudioCardActiveParam {
     user: string
     togglePaused: () => void
     setSettingMode: () => void
+    toggleFlagged: () => void
+    isFlagged: boolean
 }
 
 const AudioCardActive = (param: AudioCardActiveParam) => {
-
     return (
         <>
             <View style={{ flex: 10 }}>
                 <TouchableOpacity
                     onPress={() => {
-                        console.log('Playing key', param.audioEntryPair.chineseKey)
+                        console.log(
+                            'Playing key',
+                            param.audioEntryPair.chineseKey
+                        )
                         playAudio(param.audioEntryPair.chineseKey, param.user)
                     }}
                 >
@@ -48,6 +52,20 @@ const AudioCardActive = (param: AudioCardActiveParam) => {
                     >
                         {param.audioEntryPair.english}
                     </Text>
+                </TouchableOpacity>
+            </View>
+
+            <View style={{ flex: 1 }}>
+                <TouchableOpacity
+                    onPress={() => {
+                        param.toggleFlagged()
+                    }}
+                >
+                    <Icon
+                        name="flag"
+                        size={20}
+                        color={param.isFlagged ? 'blue' : 'gray'}
+                    ></Icon>
                 </TouchableOpacity>
             </View>
 

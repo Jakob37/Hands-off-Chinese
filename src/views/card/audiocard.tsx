@@ -2,8 +2,11 @@ import React, { useState } from 'react'
 import { useContext } from 'react'
 import { View } from 'react-native'
 import { AudioEntryPair } from '../../backend/audioentry'
-import { removeFromArray } from '../../util/util'
-import { PausedIdsContext } from '../../../store/contexts/contexts'
+import { removeFromArray, toggleIdInStateArray } from '../../util/util'
+import {
+    FlaggedIdsContext,
+    PausedIdsContext,
+} from '../../../store/contexts/contexts'
 import { styles } from '../../style/Stylesheet'
 import AudioCardActive from './audiocardactive'
 import AudioCardSettings from './audiocardsettings'
@@ -18,6 +21,7 @@ const AudioCard = (param: AudioCardParam) => {
     const [settingMode, setSettingMode] = useState(false)
     const [cardHeight, setCardHeight] = useState(0)
     const { pausedIds, setPausedIds } = useContext(PausedIdsContext)
+    const { flaggedIds, setFlaggedIds } = useContext(FlaggedIdsContext)
 
     return (
         <View
@@ -63,22 +67,23 @@ const AudioCard = (param: AudioCardParam) => {
                             : 'black'
                     }
                     togglePaused={() => {
-
-                        if (!pausedIds.includes(param.audioEntryPair.id)) {
-                            const addArr = Array.from(pausedIds)
-                            addArr.push(param.audioEntryPair.id)
-                            setPausedIds(addArr)
-                        } else {
-                            const trimmedArr = removeFromArray(
-                                Array.from(pausedIds),
-                                param.audioEntryPair.id
-                            )
-                            setPausedIds(trimmedArr)
-                        }
+                        const updatedArr = toggleIdInStateArray(
+                            pausedIds,
+                            param.audioEntryPair.id
+                        )
+                        setPausedIds(updatedArr)
+                    }}
+                    toggleFlagged={() => {
+                        const updatedArr = toggleIdInStateArray(
+                            flaggedIds,
+                            param.audioEntryPair.id
+                        )
+                        setFlaggedIds(updatedArr)
                     }}
                     setSettingMode={() => {
                         setSettingMode(true)
                     }}
+                    isFlagged={flaggedIds.includes(param.audioEntryPair.id)}
                 ></AudioCardActive>
             )}
         </View>
