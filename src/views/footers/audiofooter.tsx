@@ -124,7 +124,7 @@ const AudioFooter = (param: AudioFooterParam) => {
                 <ClickableIcon
                     icon="play"
                     size={30}
-                    color="black"
+                    iconColor="black"
                     clickCallback={() => {
                         param.navigation.navigate('Audio player', {
                             audioEntries: param.audioEntries,
@@ -134,7 +134,7 @@ const AudioFooter = (param: AudioFooterParam) => {
                 <ClickableIcon
                     icon="pause"
                     size={30}
-                    color="black"
+                    iconColor="black"
                     clickCallback={() => {
                         const finalPausedIds = Array.from(pausedIds)
                         for (const currentId of shownIds) {

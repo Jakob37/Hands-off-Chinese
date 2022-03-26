@@ -1,15 +1,15 @@
 import React from 'react'
-import { TouchableOpacity, View } from 'react-native'
+import { TouchableOpacity } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome'
+import { sc } from '../uicomponents/style'
 Icon.loadFont()
 
 interface ClickableIconInterface {
     icon: string
     size: number
-    color: string
+    iconColor: string
+    backgroundColor: string
     clickCallback: () => void
-    iconStyle: Record<string, string | number>
-    containerStyle: Record<string, string | number>
 }
 
 const ClickableIcon = (param: ClickableIconInterface) => {
@@ -17,17 +17,29 @@ const ClickableIcon = (param: ClickableIconInterface) => {
         <>
             <TouchableOpacity
                 onPress={param.clickCallback}
-                style={param.containerStyle}
             >
                 <Icon
+                    style={{
+                        backgroundColor: param.backgroundColor,
+                        borderRadius: param.size,
+                        width: param.size + sc.iconPaddings.medium,
+                        height: param.size + sc.iconPaddings.medium,
+                        textAlign: 'center',
+                        textAlignVertical: 'center',
+                    }}
                     name={param.icon}
                     size={param.size}
-                    color={param.color}
-                    style={param.iconStyle}
+                    color={param.iconColor}
                 ></Icon>
             </TouchableOpacity>
         </>
     )
+}
+
+ClickableIcon.defaultProps = {
+    size: sc.iconSizes.medium,
+    iconColor: sc.colors.black,
+    backgroundColor: sc.colors.white,
 }
 
 export default ClickableIcon

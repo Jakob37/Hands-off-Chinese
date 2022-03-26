@@ -63,7 +63,7 @@ const PlayerFooter = (param: PlayerFooterParam) => {
                 <ClickableIcon
                     icon="play"
                     size={30}
-                    color="black"
+                    iconColor="black"
                     clickCallback={() => {
                         audioPlayer.play()
                     }}
@@ -71,7 +71,7 @@ const PlayerFooter = (param: PlayerFooterParam) => {
                 <ClickableIcon
                     icon="plus"
                     size={30}
-                    color="black"
+                    iconColor="black"
                     clickCallback={() => {
                         audioPlayer.incrementDelay()
                     }}
@@ -79,7 +79,7 @@ const PlayerFooter = (param: PlayerFooterParam) => {
                 <ClickableIcon
                     icon="minus"
                     size={30}
-                    color="black"
+                    iconColor="black"
                     clickCallback={() => {
                         audioPlayer.reduceDelay()
                     }}
@@ -87,7 +87,7 @@ const PlayerFooter = (param: PlayerFooterParam) => {
                 <ClickableIcon
                     icon="pause"
                     size={30}
-                    color="black"
+                    iconColor="black"
                     clickCallback={() => {
                         audioPlayer.stop()
                     }}

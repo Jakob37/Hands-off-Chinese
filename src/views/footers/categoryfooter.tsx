@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { useContext } from 'react'
 import { Text, TextInput, View } from 'react-native'
 import { Button } from 'react-native-elements'
+import { FoldableMenuButton } from '../../uicomponents/buttons'
 import {
     PausedIdsContext,
     ShownIdsContext,
@@ -16,6 +17,7 @@ import {
     writeCsvToDownloads,
 } from '../../backend/parsing'
 import { styles } from '../../style/Stylesheet'
+import { sc } from '../../uicomponents/style'
 
 interface AddAudioRowParam {
     label: string
@@ -62,12 +64,7 @@ const CategoryFooter = (param: CategoryFooterParam) => {
         <>
             {addEntryOpen ? (
                 <>
-                    <View
-                        style={{
-                            borderTopWidth: 1,
-                            borderTopColor: 'lightgray',
-                        }}
-                    >
+                    <View>
                         <AddAudioRow
                             label="Category"
                             placeholder="Category name"
@@ -122,16 +119,22 @@ const CategoryFooter = (param: CategoryFooterParam) => {
             ) : (
                 <View
                     style={[
-                        styles.footerCard,
+                        // styles.footerCard,
                         {
                             display: 'flex',
-                            flexDirection: 'row',
+                            flexDirection: 'column',
                             justifyContent: 'space-between',
+                            marginHorizontal: 0,
+                            marginBottom: sc.componentMargins.m,
                         },
                     ]}
                 >
-                    <Button onPress={() => setAddEntryOpen(true)} title={"New"}></Button>
-                    <Button
+                    <FoldableMenuButton
+                        onPress={() => setAddEntryOpen(true)}
+                        title={'New entry'}
+                        containerStyle={{marginBottom: 10}}
+                    ></FoldableMenuButton>
+                    <FoldableMenuButton
                         onPress={async () => {
                             const downloadData = [
                                 ['Fruits', '苹果', 'Apple'],
@@ -140,9 +143,9 @@ const CategoryFooter = (param: CategoryFooterParam) => {
                             ]
                             writeCsvToDownloads('fruits.csv', downloadData)
                         }}
-                        title={'Write(test)'}
-                    ></Button>
-                    <Button
+                        title={'Write (test)'}
+                    ></FoldableMenuButton>
+                    <FoldableMenuButton
                         onPress={async () => {
                             let resultFile = await pickFileFromDisk()
                             let parsedCsv = null
@@ -159,10 +162,10 @@ const CategoryFooter = (param: CategoryFooterParam) => {
                                 makeMultipleAudioEntries(user, parsedCsv)
                             }
                         }}
-                        title={'Bulk'}
-                    ></Button>
-                    <Button onPress={param.loadDb} title={"Load"}></Button>
-                    <Button
+                        title={'Bulk upload'}
+                    ></FoldableMenuButton>
+                    <FoldableMenuButton onPress={param.loadDb} title={'Load'}></FoldableMenuButton>
+                    <FoldableMenuButton
                         onPress={() => {
                             const updatedPausedIds = [
                                 ...pausedIds,
@@ -177,7 +180,7 @@ const CategoryFooter = (param: CategoryFooterParam) => {
                             param.refreshCategories()
                         }}
                         title={'Refresh'}
-                    ></Button>
+                    ></FoldableMenuButton>
                 </View>
             )}
         </>

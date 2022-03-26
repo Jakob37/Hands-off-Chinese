@@ -25,7 +25,7 @@ const AudioCardSettings = (param: AudioCardSettingsInterface) => {
             <ClickableIcon
                 icon="times"
                 size={30}
-                color="gray"
+                iconColor="gray"
                 clickCallback={() => {
                     param.removeCallback(param.englishFile, param.chineseFile)
                 }}
@@ -33,7 +33,7 @@ const AudioCardSettings = (param: AudioCardSettingsInterface) => {
             <ClickableIcon
                 icon="exchange"
                 size={30}
-                color="gray"
+                iconColor="gray"
                 clickCallback={param.backCallback}
             />
         </View>

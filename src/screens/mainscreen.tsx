@@ -93,60 +93,48 @@ const MainScreen = ({ navigation }: HomeProps) => {
                 />
             </ScrollView>
 
-            {menuOpen ? (
-                <CategoryFooter
-                    refreshCategories={refreshDatabase}
-                    addEntry={(englishText, chineseText, categoryText) => {
-                        makeNewAudioEntry(
-                            englishText,
-                            chineseText,
-                            categoryText,
-                            db.getUser(),
-                            () => {},
-                            () => {
-                                refreshDatabase()
-                            }
-                        )
-                    }}
-                    startCategory={enterCategory}
-                    updateCategory={(category) => {
-                        setEnterCategory(category)
-                    }}
-                    loadDb={refreshDatabase}
-                />
-            ) : null}
-
-            <ClickableIcon
-                iconStyle={{
-                    backgroundColor: sc.colors.green,
-                    padding: 20,
-                    borderRadius: 50,
-                    width: 60,
-                    height: 60,
-                    textAlign: 'center',
-                    right: 10,
-                    bottom: 10,
-                }}
-                containerStyle={{
+            <View
+                style={{
                     position: 'absolute',
-                    bottom: 0,
-                    right: 0,
+                    bottom: sc.componentMargins.medium,
+                    right: sc.componentMargins.medium,
+                    display: 'flex',
+                    flexDirection: 'column',
                 }}
-                icon={!menuOpen ? 'plus' : 'times'}
-                size={25}
-                color={sc.colors.white}
-                clickCallback={() => {
-                    setMenuOpen(!menuOpen)
-                }}
-            ></ClickableIcon>
-            {/* {!menuOpen ? (
-            ) : (
-                null
-            )} */}
-
-            {/* <Text style={{ position: 'absolute', bottom: 50, right: 10 }}>
-                Floating text
-            </Text> */}
+            >
+                {menuOpen ? (
+                    <CategoryFooter
+                        refreshCategories={refreshDatabase}
+                        addEntry={(englishText, chineseText, categoryText) => {
+                            makeNewAudioEntry(
+                                englishText,
+                                chineseText,
+                                categoryText,
+                                db.getUser(),
+                                () => {},
+                                () => {
+                                    refreshDatabase()
+                                }
+                            )
+                        }}
+                        startCategory={enterCategory}
+                        updateCategory={(category) => {
+                            setEnterCategory(category)
+                        }}
+                        loadDb={refreshDatabase}
+                    />
+                ) : null}
+                <View style={{ alignItems: 'flex-end' }}>
+                    <ClickableIcon
+                        iconColor={sc.colors.white}
+                        backgroundColor={sc.colors.green}
+                        icon={!menuOpen ? 'plus' : 'times'}
+                        clickCallback={() => {
+                            setMenuOpen(!menuOpen)
+                        }}
+                    ></ClickableIcon>
+                </View>
+            </View>
         </View>
     )
 }
