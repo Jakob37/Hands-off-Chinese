@@ -1,8 +1,10 @@
 import { Auth } from 'aws-amplify'
 import React, { useContext, useEffect, useState } from 'react'
-import { ScrollView, View, Text } from 'react-native'
-import { BasicCard } from '../../src/views/card/basiccard'
-import { AudioEntryPair } from '../../src/backend/audioentry'
+import { ScrollView, TouchableOpacityBase, View } from 'react-native'
+import { Text } from 'react-native-elements'
+
+import { BasicCard } from '../uicomponents/cards'
+import { AudioEntryPair } from '../backend/audioentry'
 import {
     DbContext,
     FlaggedIdsContext,
@@ -12,6 +14,8 @@ import { makeNewAudioEntry } from '../backend/apicalls'
 import CategoryFooter from '../views/footers/categoryfooter'
 import CategoryCardList from '../views/list/categorycardlist'
 import { HomeProps } from './navigationutils'
+import ClickableIcon from '../util/clickableicon'
+import { sc } from '../uicomponents/style'
 
 const MainScreen = ({ navigation }: HomeProps) => {
     const [currentCategories, setCurrentCategories] = useState([
@@ -19,6 +23,8 @@ const MainScreen = ({ navigation }: HomeProps) => {
     ])
     const [enterCategory, setEnterCategory] = useState('')
     const { setShownIds } = useContext(ShownIdsContext)
+
+    const [menuOpen, setMenuOpen] = useState(false)
 
     const { db } = useContext(DbContext)
     const { flaggedIds } = useContext(FlaggedIdsContext)
@@ -41,7 +47,9 @@ const MainScreen = ({ navigation }: HomeProps) => {
 
     const retrieveFlaggedEntriesList = (): AudioEntryPair[] => {
         const audioEntries = db._getAllEntries()
-        const flaggedEntries = audioEntries.filter((audioEntry) => flaggedIds.includes(audioEntry.id))
+        const flaggedEntries = audioEntries.filter((audioEntry) =>
+            flaggedIds.includes(audioEntry.id)
+        )
         return flaggedEntries
     }
 
@@ -55,9 +63,9 @@ const MainScreen = ({ navigation }: HomeProps) => {
 
     return (
         <View style={{ flex: 1 }}>
-            <View>
-                <Text>Current email: {db.getUser()}</Text>
-            </View>
+            {/* <View style={{paddingLeft: 15, paddingVertical: 5}}>
+                <Text style={{color: "gray"}}>Current email: {db.getUser()}</Text>
+            </View> */}
 
             <BasicCard
                 key="test"
@@ -85,27 +93,60 @@ const MainScreen = ({ navigation }: HomeProps) => {
                 />
             </ScrollView>
 
-            <CategoryFooter
-                refreshCategories={refreshDatabase}
-                addEntry={(englishText, chineseText, categoryText) => {
-                    makeNewAudioEntry(
-                        englishText,
-                        chineseText,
-                        categoryText,
-                        db.getUser(),
-                        () => {},
-                        () => {
-                            console.log('Totally completed!')
-                            refreshDatabase()
-                        }
-                    )
+            {menuOpen ? (
+                <CategoryFooter
+                    refreshCategories={refreshDatabase}
+                    addEntry={(englishText, chineseText, categoryText) => {
+                        makeNewAudioEntry(
+                            englishText,
+                            chineseText,
+                            categoryText,
+                            db.getUser(),
+                            () => {},
+                            () => {
+                                refreshDatabase()
+                            }
+                        )
+                    }}
+                    startCategory={enterCategory}
+                    updateCategory={(category) => {
+                        setEnterCategory(category)
+                    }}
+                    loadDb={refreshDatabase}
+                />
+            ) : null}
+
+            <ClickableIcon
+                iconStyle={{
+                    backgroundColor: sc.colors.green,
+                    padding: 20,
+                    borderRadius: 50,
+                    width: 60,
+                    height: 60,
+                    textAlign: 'center',
+                    right: 10,
+                    bottom: 10,
                 }}
-                startCategory={enterCategory}
-                updateCategory={(category) => {
-                    setEnterCategory(category)
+                containerStyle={{
+                    position: 'absolute',
+                    bottom: 0,
+                    right: 0,
                 }}
-                loadDb={refreshDatabase}
-            />
+                icon={!menuOpen ? 'plus' : 'times'}
+                size={25}
+                color={sc.colors.white}
+                clickCallback={() => {
+                    setMenuOpen(!menuOpen)
+                }}
+            ></ClickableIcon>
+            {/* {!menuOpen ? (
+            ) : (
+                null
+            )} */}
+
+            {/* <Text style={{ position: 'absolute', bottom: 50, right: 10 }}>
+                Floating text
+            </Text> */}
         </View>
     )
 }

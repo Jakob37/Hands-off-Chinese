@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useContext } from 'react'
 import { Text, TextInput, View } from 'react-native'
+import { Button } from 'react-native-elements'
 import {
     PausedIdsContext,
     ShownIdsContext,
@@ -15,7 +16,6 @@ import {
     writeCsvToDownloads,
 } from '../../backend/parsing'
 import { styles } from '../../style/Stylesheet'
-import { FooterButton } from './util'
 
 interface AddAudioRowParam {
     label: string
@@ -102,10 +102,11 @@ const CategoryFooter = (param: CategoryFooterParam) => {
                             },
                         ]}
                     >
-                        <FooterButton onPress={() => setAddEntryOpen(false)}>
-                            Close
-                        </FooterButton>
-                        <FooterButton
+                        <Button
+                            onPress={() => setAddEntryOpen(false)}
+                            title={'Close'}
+                        ></Button>
+                        <Button
                             onPress={() => {
                                 param.addEntry(
                                     englishText,
@@ -114,9 +115,8 @@ const CategoryFooter = (param: CategoryFooterParam) => {
                                 )
                                 setAddEntryOpen(false)
                             }}
-                        >
-                            Submit entry to AWS
-                        </FooterButton>
+                            title={'Submit entry to AWS'}
+                        ></Button>
                     </View>
                 </>
             ) : (
@@ -130,10 +130,8 @@ const CategoryFooter = (param: CategoryFooterParam) => {
                         },
                     ]}
                 >
-                    <FooterButton onPress={() => setAddEntryOpen(true)}>
-                        New
-                    </FooterButton>
-                    <FooterButton
+                    <Button onPress={() => setAddEntryOpen(true)} title={"New"}></Button>
+                    <Button
                         onPress={async () => {
                             const downloadData = [
                                 ['Fruits', '苹果', 'Apple'],
@@ -142,10 +140,9 @@ const CategoryFooter = (param: CategoryFooterParam) => {
                             ]
                             writeCsvToDownloads('fruits.csv', downloadData)
                         }}
-                    >
-                        Write(test)
-                    </FooterButton>
-                    <FooterButton
+                        title={'Write(test)'}
+                    ></Button>
+                    <Button
                         onPress={async () => {
                             let resultFile = await pickFileFromDisk()
                             let parsedCsv = null
@@ -162,20 +159,15 @@ const CategoryFooter = (param: CategoryFooterParam) => {
                                 makeMultipleAudioEntries(user, parsedCsv)
                             }
                         }}
-                    >
-                        Bulk
-                    </FooterButton>
-                    <FooterButton
-                        onPress={param.loadDb}
-                    >
-                        Load
-                    </FooterButton>
-                    <FooterButton
+                        title={'Bulk'}
+                    ></Button>
+                    <Button onPress={param.loadDb} title={"Load"}></Button>
+                    <Button
                         onPress={() => {
                             const updatedPausedIds = [
                                 ...pausedIds,
-                                ...shownIds.filter((shownId) =>
-                                    !pausedIds.includes(shownId)
+                                ...shownIds.filter(
+                                    (shownId) => !pausedIds.includes(shownId)
                                 ),
                             ]
 
@@ -184,9 +176,8 @@ const CategoryFooter = (param: CategoryFooterParam) => {
                             // setPausedIds(updatedPausedIds)
                             param.refreshCategories()
                         }}
-                    >
-                        Refresh
-                    </FooterButton>
+                        title={'Refresh'}
+                    ></Button>
                 </View>
             )}
         </>

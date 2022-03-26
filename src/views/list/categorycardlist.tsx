@@ -1,7 +1,7 @@
 import React from 'react'
 import { View } from 'react-native'
+import { BasicCard } from '../../uicomponents/cards'
 import { HocDb } from '../../backend/database'
-import { BasicCard } from '../card/basiccard'
 
 interface Param {
     currentCategories: string[]

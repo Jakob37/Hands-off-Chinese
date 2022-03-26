@@ -12,7 +12,6 @@ import {
 import { AudioPlayer } from '../../audio/AudioPlayer'
 import { AudioEntryPair } from '../../backend/audioentry'
 import { styles } from '../../style/Stylesheet'
-import { FooterButton } from './util'
 Icon.loadFont()
 
 // const audioPlayer = new AudioPlayer()
@@ -28,7 +27,6 @@ const fontSize = 16
 const AudioPlayerRow = (param: AudioPlayerRowParam) => {
     const [counter, setCounter] = useState(0)
     const [lastDuration, setLastDuration] = useState(0)
-
     const [activeNbr, setActiveNbr] = useState(0)
 
     // const [delay, setDelay] = useState(audioPlayer.delay / 1000)

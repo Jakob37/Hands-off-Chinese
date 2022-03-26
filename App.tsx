@@ -15,7 +15,11 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import CardScreen from './src/screens/cardscreen'
 import PlayerScreen from './src/screens/playerscreen'
 
-import { configureFonts, DefaultTheme, Provider as PaperProvider } from 'react-native-paper'
+import {
+    configureFonts,
+    DefaultTheme,
+    Provider as PaperProvider,
+} from 'react-native-paper'
 
 // Analytics is explicitly disabled to prevent a warning according to following:
 // https://github.com/aws-amplify/amplify-js/issues/5918
@@ -31,73 +35,20 @@ import { withAuthenticator } from 'aws-amplify-react-native/dist/Auth'
 import { HocDb } from './src/backend/database'
 import { NAVIGATION } from './src/screens/navigationutils'
 import { AudioPlayer } from './src/audio/AudioPlayer'
+import { ThemeProvider } from 'react-native-elements'
+import { sc } from './src/uicomponents/style'
 
 const Stack = createNativeStackNavigator()
 
-// Add custom properties and colors here
-declare global {
-    namespace ReactNativePaper {
-        interface ThemeColors {}
-    }
-    interface Theme {}
-}
-
-const fonts = {
-    regular: { fontFamily: 'sans-serif', fontWeight: 'normal' as 'normal', fontSize: 25 },
-    // regular: { fontFamily: 'LEMONMILK-Bold', fontSize: 20 },
-    medium: { fontFamily: 'Roboto', fontWeight: 'normal' as 'normal' },
-    thin: { fontFamily: 'Roboto', fontWeight: 'normal' as 'normal' },
-    light: { fontFamily: 'Roboto', fontWeight: 'normal' as 'normal' },
-}
-
-// const fontConfig = {
-//     default: {
-//         regular: { fontFamily: "NunitoRegular" },
-//     },
-//     web: fonts,
-//     ios: fonts,
-//     android: fonts,
-// }
-
-const fontConfig = {
-    default: {
-      regular: { fontFamily: "NunitoRegular" },
-      medium: { fontFamily: "NunitoSemiBold" },
-      light: { fontFamily: "NunitoLight" },
-      thin: { fontFamily: "NunitoExtraLight" },
-    },
-    android: {
-      regular: { fontFamily: "NunitoRegular" },
-      medium: { fontFamily: "NunitoSemiBold" },
-      light: { fontFamily: "NunitoLight" },
-      thin: { fontFamily: "NunitoExtraLight" },
-    },
-    ios: {
-      regular: { fontFamily: "NunitoRegular" },
-      medium: { fontFamily: "NunitoSemiBold" },
-      light: { fontFamily: "NunitoLight" },
-      thin: { fontFamily: "NunitoExtraLight" },
-    },
-  };
-
 const theme = {
-    ...DefaultTheme,
-    // roundness: 2,
-    colors: {
-        ...DefaultTheme.colors,
-        primary: 'black',
-        accent: 'red',
-        error: 'red',
-        surface: 'red',
-        onSurface: 'red',
-        placeholder: 'red',
-        disabled: 'gray',
-        backdrop: 'red',
+    Button: {
+        titleStyle: {
+            color: 'white',
+        },
+        buttonStyle: {
+            backgroundColor: sc.colors.green,
+        },
     },
-    fonts: configureFonts(fontConfig),
-    // animation: {
-    //     scale: 2
-    // },
 }
 
 const App = ({ _signOut, _user }) => {
@@ -122,14 +73,14 @@ const App = ({ _signOut, _user }) => {
                         <FlaggedIdsContext.Provider
                             value={{ flaggedIds, setFlaggedIds }}
                         >
-                            <PaperProvider theme={theme}>
+                            <ThemeProvider theme={theme}>
                                 <NavigationContainer>
                                     <Stack.Navigator>
                                         <Stack.Screen
                                             name={NAVIGATION.main}
                                             component={MainScreen}
                                             options={{
-                                                title: 'Hands-off Chinese',
+                                                title: 'Categories',
                                             }}
                                         />
                                         <Stack.Screen
@@ -144,7 +95,7 @@ const App = ({ _signOut, _user }) => {
                                         />
                                     </Stack.Navigator>
                                 </NavigationContainer>
-                            </PaperProvider>
+                            </ThemeProvider>
                         </FlaggedIdsContext.Provider>
                     </AudioPlayerContext.Provider>
                 </DbContext.Provider>
