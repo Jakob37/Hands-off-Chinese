@@ -1,7 +1,7 @@
 import { Auth } from 'aws-amplify'
 import React, { useContext, useEffect, useState } from 'react'
 import { ScrollView, TouchableOpacityBase, View } from 'react-native'
-import { Text } from 'react-native-elements'
+import { Button, Input, Overlay, Text } from 'react-native-elements'
 
 import { BasicCard } from '../uicomponents/cards'
 import { AudioEntryPair } from '../backend/audioentry'
@@ -16,17 +16,29 @@ import CategoryCardList from '../views/list/categorycardlist'
 import { HomeProps } from './navigationutils'
 import ClickableIcon from '../util/clickableicon'
 import { sc } from '../uicomponents/style'
+import { styles } from 'src/style/Stylesheet'
 
 const MainScreen = ({ navigation }: HomeProps) => {
-
     const [currentCategories, setCurrentCategories] = useState([
         'Loading from AWS...',
     ])
-    const [enterCategory, setEnterCategory] = useState('')
+
+    // FIXME: Continue the work here
+    // https://reactnativeelements.com/docs/components/input
+
+    // const categoryInput = React.createRef<TextInput>();
+    // const englishInput = React.createRef<String>();
+    // const chineseInput = React.createRef<String>();
+
+
     const { setShownIds } = useContext(ShownIdsContext)
     const [menuOpen, setMenuOpen] = useState(false)
     const { db } = useContext(DbContext)
     const { flaggedIds } = useContext(FlaggedIdsContext)
+
+
+
+
 
     const refreshDatabase = () => {
         db.initDatabase(() => {
@@ -76,7 +88,7 @@ const MainScreen = ({ navigation }: HomeProps) => {
                         audioEntries: flagged,
                     })
                 }}
-            ><Text>`Play flag: ${flaggedIds.length}`</Text></BasicCard>
+            ></BasicCard>
 
             <ScrollView>
                 <CategoryCardList
@@ -93,17 +105,29 @@ const MainScreen = ({ navigation }: HomeProps) => {
                 />
             </ScrollView>
 
-            <View
-                style={{
-                    position: 'absolute',
-                    bottom: sc.componentMargins.medium,
-                    right: sc.componentMargins.medium,
-                    display: 'flex',
-                    flexDirection: 'column',
+            <Overlay
+                isVisible={menuOpen}
+                onBackdropPress={() => {
+                    setMenuOpen(!menuOpen)
                 }}
             >
-                {menuOpen ? (
-                    <CategoryFooter
+                <View style={{width: 300}}>
+                    <Text style={{marginHorizontal: 10, fontSize: 20, paddingBottom: 20}}>Please enter a sentence</Text>
+                    <Input placeholder="Category" ref={categoryInput}></Input>
+                    <Input placeholder="Chinese"></Input>
+                    <Input placeholder="English"></Input>
+                    <Button
+                        onPress={() => {
+                            makeNewAudioEntry(
+                                englishText,
+                                chineseText,
+                                categoryText
+                            )
+                            setAddEntryOpen(false)
+                        }}
+                        title={'Submit'}
+                    ></Button>
+                    {/* <CategoryFooter
                         refreshCategories={refreshDatabase}
                         addEntry={(englishText, chineseText, categoryText) => {
                             makeNewAudioEntry(
@@ -122,8 +146,19 @@ const MainScreen = ({ navigation }: HomeProps) => {
                             setEnterCategory(category)
                         }}
                         loadDb={refreshDatabase}
-                    />
-                ) : null}
+                    /> */}
+                </View>
+            </Overlay>
+
+            <View
+                style={{
+                    position: 'absolute',
+                    bottom: sc.componentMargins.medium,
+                    right: sc.componentMargins.medium,
+                    display: 'flex',
+                    flexDirection: 'column',
+                }}
+            >
                 <View style={{ alignItems: 'flex-end' }}>
                     <ClickableIcon
                         iconColor={sc.colors.white}

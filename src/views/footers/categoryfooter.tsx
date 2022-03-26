@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useContext } from 'react'
 import { Text, TextInput, View } from 'react-native'
-import { Button } from 'react-native-elements'
+import { Button, Input } from 'react-native-elements'
 import { FoldableMenuButton } from '../../uicomponents/buttons'
 import {
     PausedIdsContext,
@@ -61,130 +61,128 @@ const CategoryFooter = (param: CategoryFooterParam) => {
     const { shownIds } = useContext(ShownIdsContext)
 
     return (
-        <>
-            {addEntryOpen ? (
-                <>
-                    <View>
-                        <AddAudioRow
-                            label="Category"
-                            placeholder="Category name"
-                            setUpdatedText={(text) => {
-                                setCategoryText(text)
-                                param.updateCategory(text)
-                            }}
-                            value={param.startCategory}
-                        ></AddAudioRow>
+        // <>
+        //     {addEntryOpen ? (
+        <View style={{ width: 300 }}>
+            <Input placeholder="Category"></Input>
+            <Input placeholder="Chinese"></Input>
+            <Input placeholder="English"></Input>
 
-                        <AddAudioRow
-                            label="Chinese"
-                            placeholder="Chinese text"
-                            setUpdatedText={(text) => setChineseText(text)}
-                            value={null}
-                        ></AddAudioRow>
+            {/* <AddAudioRow
+                    label="Category"
+                    placeholder="Category name"
+                    setUpdatedText={(text) => {
+                        setCategoryText(text)
+                        param.updateCategory(text)
+                    }}
+                    value={param.startCategory}
+                ></AddAudioRow>
 
-                        <AddAudioRow
-                            label="English"
-                            placeholder="English text"
-                            setUpdatedText={(text) => setEnglishText(text)}
-                            value={null}
-                        ></AddAudioRow>
-                    </View>
-                    <View
-                        style={[
-                            styles.footerCard,
-                            {
-                                display: 'flex',
-                                flexDirection: 'row',
-                                justifyContent: 'space-between',
-                            },
-                        ]}
-                    >
-                        <Button
-                            onPress={() => setAddEntryOpen(false)}
-                            title={'Close'}
-                        ></Button>
-                        <Button
-                            onPress={() => {
-                                param.addEntry(
-                                    englishText,
-                                    chineseText,
-                                    categoryText
-                                )
-                                setAddEntryOpen(false)
-                            }}
-                            title={'Submit entry to AWS'}
-                        ></Button>
-                    </View>
-                </>
-            ) : (
-                <View
-                    style={[
-                        // styles.footerCard,
-                        {
-                            display: 'flex',
-                            flexDirection: 'column',
-                            justifyContent: 'space-between',
-                            marginHorizontal: 0,
-                            marginBottom: sc.componentMargins.medium,
-                        },
-                    ]}
-                >
-                    <FoldableMenuButton
-                        onPress={() => setAddEntryOpen(true)}
-                        title={'New entry'}
-                        containerStyle={{marginBottom: 10}}
-                    ></FoldableMenuButton>
-                    {/* FIXME: Bulk upload/download should come back in some form */}
-                    {/* <FoldableMenuButton
-                        onPress={async () => {
-                            const downloadData = [
-                                ['Fruits', '苹果', 'Apple'],
-                                ['Fruits', '牛油果', 'Avocado'],
-                                ['Fruits', '柠檬', 'Lemon'],
-                            ]
-                            writeCsvToDownloads('fruits.csv', downloadData)
-                        }}
-                        title={'Write (test)'}
-                    ></FoldableMenuButton> */}
-                    {/* <FoldableMenuButton
-                        onPress={async () => {
-                            let resultFile = await pickFileFromDisk()
-                            let parsedCsv = null
-                            if (resultFile != null) {
-                                parsedCsv = await parseCsv(resultFile.uri)
-                            } else {
-                                console.log(
-                                    `No result file found for ${resultFile.uri}`
-                                )
-                            }
+                <AddAudioRow
+                    label="Chinese"
+                    placeholder="Chinese text"
+                    setUpdatedText={(text) => setChineseText(text)}
+                    value={null}
+                ></AddAudioRow>
 
-                            if (parsedCsv != null) {
-                                // FIXME:
-                                makeMultipleAudioEntries(user, parsedCsv)
-                            }
-                        }}
-                        title={'Bulk upload'}
-                    ></FoldableMenuButton>
-                    <FoldableMenuButton onPress={param.loadDb} title={'Load'}></FoldableMenuButton> */}
-                    <FoldableMenuButton
-                        onPress={() => {
-                            const updatedPausedIds = [
-                                ...pausedIds,
-                                ...shownIds.filter(
-                                    (shownId) => !pausedIds.includes(shownId)
-                                ),
-                            ]
+                <AddAudioRow
+                    label="English"
+                    placeholder="English text"
+                    setUpdatedText={(text) => setEnglishText(text)}
+                    value={null}
+                ></AddAudioRow> */}
+            {/* <View
+                // style={[
+                //     // styles.footerCard,
+                //     {
+                //         display: 'flex',
+                //         flexDirection: 'row',
+                //         justifyContent: 'space-between',
+                //     },
+                // ]}
+            > */}
+            {/* <Button
+                    onPress={() => setAddEntryOpen(false)}
+                    title={'Close'}
+                ></Button> */}
+            <Button
+                onPress={() => {
+                    param.addEntry(englishText, chineseText, categoryText)
+                    setAddEntryOpen(false)
+                }}
+                title={'Submit'}
+            ></Button>
+            {/* </View> */}
+        </View>
+        // ) : (
+        //         <View
+        //             style={[
+        //                 // styles.footerCard,
+        //                 {
+        //                     display: 'flex',
+        //                     flexDirection: 'column',
+        //                     justifyContent: 'space-between',
+        //                     marginHorizontal: 0,
+        //                     marginBottom: sc.componentMargins.medium,
+        //                 },
+        //             ]}
+        //         >
+        //             <FoldableMenuButton
+        //                 onPress={() => setAddEntryOpen(true)}
+        //                 title={'New entry'}
+        //                 containerStyle={{marginBottom: 10}}
+        //             ></FoldableMenuButton>
+        //             {/* FIXME: Bulk upload/download should come back in some form */}
+        //             {/* <FoldableMenuButton
+        //                 onPress={async () => {
+        //                     const downloadData = [
+        //                         ['Fruits', '苹果', 'Apple'],
+        //                         ['Fruits', '牛油果', 'Avocado'],
+        //                         ['Fruits', '柠檬', 'Lemon'],
+        //                     ]
+        //                     writeCsvToDownloads('fruits.csv', downloadData)
+        //                 }}
+        //                 title={'Write (test)'}
+        //             ></FoldableMenuButton> */}
+        //             {/* <FoldableMenuButton
+        //                 onPress={async () => {
+        //                     let resultFile = await pickFileFromDisk()
+        //                     let parsedCsv = null
+        //                     if (resultFile != null) {
+        //                         parsedCsv = await parseCsv(resultFile.uri)
+        //                     } else {
+        //                         console.log(
+        //                             `No result file found for ${resultFile.uri}`
+        //                         )
+        //                     }
 
-                            // [...indices, Math.round(Math.random] * 10)
-                            setPausedIds([])
-                            // setPausedIds(updatedPausedIds)
-                            param.refreshCategories()
-                        }}
-                        title={'Refresh'}
-                    ></FoldableMenuButton>
-                </View>
-            )}
-        </>
+        //                     if (parsedCsv != null) {
+        //                         // FIXME:
+        //                         makeMultipleAudioEntries(user, parsedCsv)
+        //                     }
+        //                 }}
+        //                 title={'Bulk upload'}
+        //             ></FoldableMenuButton>
+        //             <FoldableMenuButton onPress={param.loadDb} title={'Load'}></FoldableMenuButton> */}
+        //             {/* <FoldableMenuButton
+        //                 onPress={() => {
+        //                     const updatedPausedIds = [
+        //                         ...pausedIds,
+        //                         ...shownIds.filter(
+        //                             (shownId) => !pausedIds.includes(shownId)
+        //                         ),
+        //                     ]
+
+        //                     // [...indices, Math.round(Math.random] * 10)
+        //                     setPausedIds([])
+        //                     // setPausedIds(updatedPausedIds)
+        //                     param.refreshCategories()
+        //                 }}
+        //                 title={'Refresh'}
+        //             ></FoldableMenuButton> */}
+        //         </View>
+        //     )}
+        // </>
     )
 }
 

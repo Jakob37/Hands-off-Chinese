@@ -8,7 +8,6 @@ interface BasicCardProps {
     text: string
     action: () => void
     icon: string | null
-    children
 }
 
 const BasicCard = (props: BasicCardProps) => {
