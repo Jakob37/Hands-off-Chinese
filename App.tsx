@@ -10,12 +10,12 @@ import {
     FlaggedIdsContext,
 } from './store/contexts/contexts'
 
-import { DefaultTheme, NavigationContainer } from '@react-navigation/native'
+import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import CardScreen from './src/screens/cardscreen'
 import PlayerScreen from './src/screens/playerscreen'
 
-import { Provider as PaperProvider } from 'react-native-paper'
+import { configureFonts, DefaultTheme, Provider as PaperProvider } from 'react-native-paper'
 
 // Analytics is explicitly disabled to prevent a warning according to following:
 // https://github.com/aws-amplify/amplify-js/issues/5918
@@ -42,29 +42,62 @@ declare global {
     interface Theme {}
 }
 
+const fonts = {
+    regular: { fontFamily: 'sans-serif', fontWeight: 'normal' as 'normal', fontSize: 25 },
+    // regular: { fontFamily: 'LEMONMILK-Bold', fontSize: 20 },
+    medium: { fontFamily: 'Roboto', fontWeight: 'normal' as 'normal' },
+    thin: { fontFamily: 'Roboto', fontWeight: 'normal' as 'normal' },
+    light: { fontFamily: 'Roboto', fontWeight: 'normal' as 'normal' },
+}
+
+// const fontConfig = {
+//     default: {
+//         regular: { fontFamily: "NunitoRegular" },
+//     },
+//     web: fonts,
+//     ios: fonts,
+//     android: fonts,
+// }
+
+const fontConfig = {
+    default: {
+      regular: { fontFamily: "NunitoRegular" },
+      medium: { fontFamily: "NunitoSemiBold" },
+      light: { fontFamily: "NunitoLight" },
+      thin: { fontFamily: "NunitoExtraLight" },
+    },
+    android: {
+      regular: { fontFamily: "NunitoRegular" },
+      medium: { fontFamily: "NunitoSemiBold" },
+      light: { fontFamily: "NunitoLight" },
+      thin: { fontFamily: "NunitoExtraLight" },
+    },
+    ios: {
+      regular: { fontFamily: "NunitoRegular" },
+      medium: { fontFamily: "NunitoSemiBold" },
+      light: { fontFamily: "NunitoLight" },
+      thin: { fontFamily: "NunitoExtraLight" },
+    },
+  };
+
 const theme = {
     ...DefaultTheme,
-    roundness: 2,
+    // roundness: 2,
     colors: {
         ...DefaultTheme.colors,
-        primary: 'green',
+        primary: 'black',
         accent: 'red',
         error: 'red',
         surface: 'red',
         onSurface: 'red',
         placeholder: 'red',
-        disabled: 'red',
+        disabled: 'gray',
         backdrop: 'red',
     },
-    fonts: {
-        regular: { fontFamily: 'Open Sans', fontWeight: 'normal' as 'normal' },
-        medium: { fontFamily: 'Open Sans', fontWeight: 'normal' as 'normal' },
-        thin: { fontFamily: 'Open Sans', fontWeight: 'normal' as 'normal' },
-        light: { fontFamily: 'Open Sans', fontWeight: 'normal' as 'normal' },
-    },
-    animation: {
-        scale: 2
-    },
+    fonts: configureFonts(fontConfig),
+    // animation: {
+    //     scale: 2
+    // },
 }
 
 const App = ({ _signOut, _user }) => {

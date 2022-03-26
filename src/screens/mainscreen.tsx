@@ -1,8 +1,8 @@
 import { Auth } from 'aws-amplify'
 import React, { useContext, useEffect, useState } from 'react'
-import { ScrollView, Text, View } from 'react-native'
+import { ScrollView, View, Text } from 'react-native'
+import { BasicCard } from '../../src/views/card/basiccard'
 import { AudioEntryPair } from '../../src/backend/audioentry'
-import { CategoryCard } from '../../src/views/card/categorycard'
 import {
     DbContext,
     FlaggedIdsContext,
@@ -59,16 +59,16 @@ const MainScreen = ({ navigation }: HomeProps) => {
                 <Text>Current email: {db.getUser()}</Text>
             </View>
 
-            <CategoryCard
+            <BasicCard
                 key="test"
-                displayCategory={`Play flagged: ${flaggedIds.length}`}
-                selectAction={() => {
+                text={`Play flag: ${flaggedIds.length}`}
+                action={() => {
                     const flagged = retrieveFlaggedEntriesList()
                     navigation.navigate('Audio entries', {
                         audioEntries: flagged,
                     })
                 }}
-            ></CategoryCard>
+            ></BasicCard>
 
             <ScrollView>
                 <CategoryCardList
