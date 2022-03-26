@@ -12,7 +12,8 @@ const styleConstants = {
         cardLarge: 20,
     },
     iconSizes: {
-        medium: 25,
+        medium: 20,
+        large: 25,
     },
     iconPaddings: {
         medium: 20

@@ -18,14 +18,13 @@ import ClickableIcon from '../util/clickableicon'
 import { sc } from '../uicomponents/style'
 
 const MainScreen = ({ navigation }: HomeProps) => {
+
     const [currentCategories, setCurrentCategories] = useState([
         'Loading from AWS...',
     ])
     const [enterCategory, setEnterCategory] = useState('')
     const { setShownIds } = useContext(ShownIdsContext)
-
     const [menuOpen, setMenuOpen] = useState(false)
-
     const { db } = useContext(DbContext)
     const { flaggedIds } = useContext(FlaggedIdsContext)
 
@@ -69,14 +68,15 @@ const MainScreen = ({ navigation }: HomeProps) => {
 
             <BasicCard
                 key="test"
-                text={`Play flag: ${flaggedIds.length}`}
+                text={`${flaggedIds.length}`}
+                icon="flag"
                 action={() => {
                     const flagged = retrieveFlaggedEntriesList()
                     navigation.navigate('Audio entries', {
                         audioEntries: flagged,
                     })
                 }}
-            ></BasicCard>
+            ><Text>`Play flag: ${flaggedIds.length}`</Text></BasicCard>
 
             <ScrollView>
                 <CategoryCardList

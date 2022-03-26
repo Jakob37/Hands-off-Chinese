@@ -7,15 +7,15 @@ import {
     PausedIdsContext,
     ShownIdsContext,
 } from '../../../store/contexts/contexts'
-import {
-    makeMultipleAudioEntries,
-    makeNewAudioEntry,
-} from '../../backend/apicalls'
-import {
-    parseCsv,
-    pickFileFromDisk,
-    writeCsvToDownloads,
-} from '../../backend/parsing'
+// import {
+//     makeMultipleAudioEntries,
+//     makeNewAudioEntry,
+// } from '../../backend/apicalls'
+// import {
+//     parseCsv,
+//     pickFileFromDisk,
+//     writeCsvToDownloads,
+// } from '../../backend/parsing'
 import { styles } from '../../style/Stylesheet'
 import { sc } from '../../uicomponents/style'
 
@@ -125,7 +125,7 @@ const CategoryFooter = (param: CategoryFooterParam) => {
                             flexDirection: 'column',
                             justifyContent: 'space-between',
                             marginHorizontal: 0,
-                            marginBottom: sc.componentMargins.m,
+                            marginBottom: sc.componentMargins.medium,
                         },
                     ]}
                 >
@@ -134,7 +134,8 @@ const CategoryFooter = (param: CategoryFooterParam) => {
                         title={'New entry'}
                         containerStyle={{marginBottom: 10}}
                     ></FoldableMenuButton>
-                    <FoldableMenuButton
+                    {/* FIXME: Bulk upload/download should come back in some form */}
+                    {/* <FoldableMenuButton
                         onPress={async () => {
                             const downloadData = [
                                 ['Fruits', '苹果', 'Apple'],
@@ -144,8 +145,8 @@ const CategoryFooter = (param: CategoryFooterParam) => {
                             writeCsvToDownloads('fruits.csv', downloadData)
                         }}
                         title={'Write (test)'}
-                    ></FoldableMenuButton>
-                    <FoldableMenuButton
+                    ></FoldableMenuButton> */}
+                    {/* <FoldableMenuButton
                         onPress={async () => {
                             let resultFile = await pickFileFromDisk()
                             let parsedCsv = null
@@ -164,7 +165,7 @@ const CategoryFooter = (param: CategoryFooterParam) => {
                         }}
                         title={'Bulk upload'}
                     ></FoldableMenuButton>
-                    <FoldableMenuButton onPress={param.loadDb} title={'Load'}></FoldableMenuButton>
+                    <FoldableMenuButton onPress={param.loadDb} title={'Load'}></FoldableMenuButton> */}
                     <FoldableMenuButton
                         onPress={() => {
                             const updatedPausedIds = [
