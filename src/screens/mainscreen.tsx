@@ -1,44 +1,34 @@
 import { Auth } from 'aws-amplify'
 import React, { useContext, useEffect, useState } from 'react'
-import { ScrollView, TouchableOpacityBase, View } from 'react-native'
+import { ScrollView, View } from 'react-native'
 import { Button, Input, Overlay, Text } from 'react-native-elements'
-
-import { BasicCard } from '../uicomponents/cards'
-import { AudioEntryPair } from '../backend/audioentry'
 import {
     DbContext,
     FlaggedIdsContext,
-    ShownIdsContext,
+    ShownIdsContext
 } from '../../store/contexts/contexts'
 import { makeNewAudioEntry } from '../backend/apicalls'
-import CategoryFooter from '../views/footers/categoryfooter'
+import { AudioEntryPair } from '../backend/audioentry'
+import { BasicCard } from '../uicomponents/cards'
+import { sc } from '../uicomponents/style'
+import ClickableIcon from '../util/clickableicon'
 import CategoryCardList from '../views/list/categorycardlist'
 import { HomeProps } from './navigationutils'
-import ClickableIcon from '../util/clickableicon'
-import { sc } from '../uicomponents/style'
-import { styles } from 'src/style/Stylesheet'
+
 
 const MainScreen = ({ navigation }: HomeProps) => {
     const [currentCategories, setCurrentCategories] = useState([
         'Loading from AWS...',
     ])
 
-    // FIXME: Continue the work here
-    // https://reactnativeelements.com/docs/components/input
-
-    // const categoryInput = React.createRef<TextInput>();
-    // const englishInput = React.createRef<String>();
-    // const chineseInput = React.createRef<String>();
-
+    const [categoryInput, setCategoryInput] = useState('')
+    const [englishInput, setEnglishInput] = useState('')
+    const [chineseInput, setChineseInput] = useState('')
 
     const { setShownIds } = useContext(ShownIdsContext)
     const [menuOpen, setMenuOpen] = useState(false)
     const { db } = useContext(DbContext)
     const { flaggedIds } = useContext(FlaggedIdsContext)
-
-
-
-
 
     const refreshDatabase = () => {
         db.initDatabase(() => {
@@ -111,42 +101,44 @@ const MainScreen = ({ navigation }: HomeProps) => {
                     setMenuOpen(!menuOpen)
                 }}
             >
-                <View style={{width: 300}}>
-                    <Text style={{marginHorizontal: 10, fontSize: 20, paddingBottom: 20}}>Please enter a sentence</Text>
-                    <Input placeholder="Category" ref={categoryInput}></Input>
-                    <Input placeholder="Chinese"></Input>
-                    <Input placeholder="English"></Input>
+                <View>
+                    <Text
+                        style={{
+                            marginHorizontal: sc.componentMargins.medium,
+                            fontSize: sc.fontSizes.cardLarge,
+                            paddingBottom: sc.componentMargins.medium,
+                        }}
+                    >
+                        Please enter a sentence
+                    </Text>
+                    <Input
+                        placeholder="Category"
+                        onChangeText={(text) => setCategoryInput(text)}
+                    ></Input>
+                    <Input
+                        placeholder="Chinese"
+                        onChangeText={(text) => setChineseInput(text)}
+                    ></Input>
+                    <Input
+                        placeholder="English"
+                        onChangeText={(text) => setEnglishInput(text)}
+                    ></Input>
                     <Button
                         onPress={() => {
                             makeNewAudioEntry(
-                                englishText,
-                                chineseText,
-                                categoryText
-                            )
-                            setAddEntryOpen(false)
-                        }}
-                        title={'Submit'}
-                    ></Button>
-                    {/* <CategoryFooter
-                        refreshCategories={refreshDatabase}
-                        addEntry={(englishText, chineseText, categoryText) => {
-                            makeNewAudioEntry(
-                                englishText,
-                                chineseText,
-                                categoryText,
+                                englishInput,
+                                chineseInput,
+                                categoryInput,
                                 db.getUser(),
                                 () => {},
                                 () => {
                                     refreshDatabase()
                                 }
                             )
+                            setMenuOpen(false)
                         }}
-                        startCategory={enterCategory}
-                        updateCategory={(category) => {
-                            setEnterCategory(category)
-                        }}
-                        loadDb={refreshDatabase}
-                    /> */}
+                        title={'Submit'}
+                    ></Button>
                 </View>
             </Overlay>
 

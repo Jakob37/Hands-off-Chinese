@@ -2,11 +2,11 @@ import React, { useState } from 'react'
 import { useContext } from 'react'
 import { Text, TextInput, View } from 'react-native'
 import { Button, Input } from 'react-native-elements'
-import { FoldableMenuButton } from '../../uicomponents/buttons'
+import { FoldableMenuButton } from '../uicomponents/buttons'
 import {
     PausedIdsContext,
     ShownIdsContext,
-} from '../../../store/contexts/contexts'
+} from '../../store/contexts/contexts'
 // import {
 //     makeMultipleAudioEntries,
 //     makeNewAudioEntry,
@@ -16,8 +16,8 @@ import {
 //     pickFileFromDisk,
 //     writeCsvToDownloads,
 // } from '../../backend/parsing'
-import { styles } from '../../style/Stylesheet'
-import { sc } from '../../uicomponents/style'
+import { styles } from '../style/Stylesheet'
+import { sc } from '../uicomponents/style'
 
 interface AddAudioRowParam {
     label: string
