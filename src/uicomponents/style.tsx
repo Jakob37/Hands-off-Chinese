@@ -1,15 +1,16 @@
 const styleConstants = {
     colors: {
         red: '#E27D60',
-        blue: '#85DCB',
+        blue: '#85CDCA',
         yellow: '#E8A87C',
         purple: '#C38D9E',
         green: '#41B3A3',
         white: '#FFFFFF',
-        black: '#000000',
+        black: '#3A3B3C',
     },
     fontSizes: {
         cardLarge: 20,
+        cardMedium: 16,
     },
     iconSizes: {
         medium: 20,

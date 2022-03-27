@@ -1,6 +1,6 @@
 import React from "react"
 import { View, Text } from "react-native"
-import ClickableIcon from "../../util/clickableicon"
+import ClickableIcon from "../../uicomponents/clickableicon"
 
 interface AudioCardSettingsInterface {
     removeCallback: (englishFile: string, chineseFile: string) => void

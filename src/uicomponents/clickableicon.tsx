@@ -1,7 +1,7 @@
 import React from 'react'
 import { TouchableOpacity } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome'
-import { sc } from '../uicomponents/style'
+import { sc } from './style'
 Icon.loadFont()
 
 interface ClickableIconInterface {

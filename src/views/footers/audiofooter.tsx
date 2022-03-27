@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { Text, TouchableOpacity, View } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome'
 import { RootStackParamList } from 'src/screens/navigationutils'
-import ClickableIcon from '../../util/clickableicon'
+import ClickableIcon from '../../uicomponents/clickableicon'
 import {
     DbContext,
     PausedIdsContext,

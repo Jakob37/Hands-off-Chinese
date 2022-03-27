@@ -5,16 +5,15 @@ import { Button, Input, Overlay, Text } from 'react-native-elements'
 import {
     DbContext,
     FlaggedIdsContext,
-    ShownIdsContext
+    ShownIdsContext,
 } from '../../store/contexts/contexts'
 import { makeNewAudioEntry } from '../backend/apicalls'
 import { AudioEntryPair } from '../backend/audioentry'
 import { BasicCard } from '../uicomponents/cards'
 import { sc } from '../uicomponents/style'
-import ClickableIcon from '../util/clickableicon'
+import ClickableIcon from '../uicomponents/clickableicon'
 import CategoryCardList from '../views/list/categorycardlist'
 import { HomeProps } from './navigationutils'
-
 
 const MainScreen = ({ navigation }: HomeProps) => {
     const [currentCategories, setCurrentCategories] = useState([
@@ -71,7 +70,13 @@ const MainScreen = ({ navigation }: HomeProps) => {
             <BasicCard
                 key="test"
                 text={`${flaggedIds.length}`}
-                icon="flag"
+                icon={{
+                    icon: 'flag',
+                    color:
+                        flaggedIds.length > 0
+                            ? sc.colors.blue
+                            : sc.colors.black,
+                }}
                 action={() => {
                     const flagged = retrieveFlaggedEntriesList()
                     navigation.navigate('Audio entries', {

@@ -8,7 +8,7 @@ import {
 } from '../../../store/contexts/contexts'
 import { AudioEntryPair } from '../../backend/audioentry'
 import { styles } from '../../style/Stylesheet'
-import ClickableIcon from '../../util/clickableicon'
+import ClickableIcon from '../../uicomponents/clickableicon'
 Icon.loadFont()
 
 interface PlayerRowParam {
