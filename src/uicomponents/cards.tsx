@@ -3,7 +3,7 @@ import { TouchableOpacity, View } from 'react-native'
 import { Card, Text } from 'react-native-elements'
 import Icon from 'react-native-vector-icons/FontAwesome'
 import ClickableIcon from './clickableicon'
-import { sc } from './style'
+import { sc, sl } from './style'
 
 // Valid font awesome icons can be found here:
 // https://oblador.github.io/react-native-vector-icons/
@@ -22,9 +22,7 @@ interface BasicCardProps {
 const BasicCard = (props: BasicCardProps) => {
     return (
         <TouchableOpacity onPress={props.action}>
-            <Card
-                containerStyle={{ marginVertical: sc.componentMargins.small }}
-            >
+            <Card containerStyle={sl.card}>
                 <View
                     style={{
                         display: 'flex',
@@ -61,7 +59,7 @@ interface TwoLineCard {
 }
 const TwoLineCard = (props: TwoLineCard) => {
     return (
-        <Card>
+        <Card containerStyle={sl.card}>
             <View
                 style={{
                     display: 'flex',
@@ -92,12 +90,13 @@ const TwoLineCard = (props: TwoLineCard) => {
                         flexDirection: 'row',
                     }}
                 >
-                    {props.icons.map(({ icon, action }, i) => {
+                    {props.icons.map(({ icon, action, color }, i) => {
                         return (
                             <ClickableIcon
                                 key={i}
                                 icon={icon}
                                 clickCallback={action}
+                                iconColor={color}
                             ></ClickableIcon>
                         )
                     })}
@@ -116,7 +115,7 @@ interface IconsCardProps {
 }
 const IconsCard = (param: IconsCardProps) => {
     return (
-        <Card>
+        <Card containerStyle={sl.card}>
             <View
                 style={{
                     display: 'flex',

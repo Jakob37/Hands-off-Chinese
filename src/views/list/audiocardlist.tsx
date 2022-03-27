@@ -44,6 +44,20 @@ const AudioCard = (props: AudioCardProps) => {
                                 setSettingsOpened(!settingsOpened)
                             },
                         },
+                        {
+                            icon: 'flag',
+                            action: () => {
+                                console.log('Responding to press')
+                                const updatedArr = toggleEntryInArray(
+                                    flaggedIds,
+                                    props.id
+                                )
+                                setFlaggedIds(updatedArr)
+                            },
+                            color: flaggedIds.includes(props.id)
+                                ? sc.colors.blue
+                                : sc.colors.black,
+                        },
                     ]}
                 ></TwoLineCard>
             ) : (

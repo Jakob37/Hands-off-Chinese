@@ -17,13 +17,19 @@ const styleConstants = {
         large: 30,
     },
     iconPaddings: {
-        medium: 20
+        medium: 20,
     },
     componentMargins: {
         small: 5,
         medium: 10,
         large: 20,
-    }
+    },
 }
 
-export { styleConstants, styleConstants as sc }
+const styleLibrary = {
+    card: {
+        marginVertical: styleConstants.componentMargins.small,
+    },
+}
+
+export { styleConstants, styleConstants as sc, styleLibrary, styleLibrary as sl }
