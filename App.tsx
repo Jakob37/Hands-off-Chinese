@@ -12,14 +12,8 @@ import {
 
 import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import CardScreen from './src/screens/cardscreen'
+import AudioCardScreen from './src/screens/audiocardscreen'
 import PlayerScreen from './src/screens/playerscreen'
-
-import {
-    configureFonts,
-    DefaultTheme,
-    Provider as PaperProvider,
-} from 'react-native-paper'
 
 // Analytics is explicitly disabled to prevent a warning according to following:
 // https://github.com/aws-amplify/amplify-js/issues/5918
@@ -86,7 +80,7 @@ const App = ({ _signOut, _user }) => {
                                         <Stack.Screen
                                             name={NAVIGATION.audioList}
                                             options={{ title: 'Audio entries' }}
-                                            component={CardScreen}
+                                            component={AudioCardScreen}
                                         />
                                         <Stack.Screen
                                             name={NAVIGATION.audioPlayer}

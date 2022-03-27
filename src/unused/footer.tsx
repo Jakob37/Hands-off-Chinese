@@ -1,7 +1,7 @@
 import { AudioEntryPair } from "src/backend/audioentry"
 import { HocDb } from "src/backend/database"
 import AudioFooter from "./audiofooter"
-import CategoryFooter from "../../unused/categoryfooter"
+import CategoryFooter from "./categoryfooter"
 
 const React = require("react")
 const { View, TouchableOpacity, Text, TextInput } = require("react-native")

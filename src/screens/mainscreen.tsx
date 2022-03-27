@@ -14,6 +14,7 @@ import { sc } from '../uicomponents/style'
 import ClickableIcon from '../uicomponents/clickableicon'
 import CategoryCardList from '../views/list/categorycardlist'
 import { HomeProps } from './navigationutils'
+import { FloatingActionButton } from '../uicomponents/buttons'
 
 const MainScreen = ({ navigation }: HomeProps) => {
     const [currentCategories, setCurrentCategories] = useState([
@@ -147,27 +148,14 @@ const MainScreen = ({ navigation }: HomeProps) => {
                 </View>
             </Overlay>
 
-            <View
-                style={{
-                    position: 'absolute',
-                    bottom: sc.componentMargins.large,
-                    right: sc.componentMargins.large,
-                    display: 'flex',
-                    flexDirection: 'column',
+            <FloatingActionButton
+                iconColor={sc.colors.white}
+                backgroundColor={sc.colors.green}
+                icon='plus'
+                onPress={() => {
+                    setMenuOpen(!menuOpen)
                 }}
-            >
-                <View style={{ alignItems: 'flex-end' }}>
-                    <ClickableIcon
-                        iconColor={sc.colors.white}
-                        backgroundColor={sc.colors.green}
-                        icon={!menuOpen ? 'plus' : 'times'}
-                        size={sc.iconSizes.large}
-                        clickCallback={() => {
-                            setMenuOpen(!menuOpen)
-                        }}
-                    ></ClickableIcon>
-                </View>
-            </View>
+            ></FloatingActionButton>
         </View>
     )
 }

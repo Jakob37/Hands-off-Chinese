@@ -11,7 +11,6 @@ interface ClickableIconInterface {
     backgroundColor: string
     clickCallback: () => void
 }
-
 const ClickableIcon = (param: ClickableIconInterface) => {
     return (
         <>
@@ -35,7 +34,6 @@ const ClickableIcon = (param: ClickableIconInterface) => {
         </>
     )
 }
-
 ClickableIcon.defaultProps = {
     size: sc.iconSizes.medium,
     iconColor: sc.colors.black,

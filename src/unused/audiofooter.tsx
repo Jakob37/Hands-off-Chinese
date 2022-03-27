@@ -3,15 +3,16 @@ import React, { useContext, useEffect, useState } from 'react'
 import { Text, TouchableOpacity, View } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome'
 import { RootStackParamList } from 'src/screens/navigationutils'
-import ClickableIcon from '../../uicomponents/clickableicon'
+import ClickableIcon from '../uicomponents/clickableicon'
 import {
     DbContext,
     PausedIdsContext,
     ShownIdsContext,
-} from '../../../store/contexts/contexts'
-import { AudioPlayer } from '../../audio/AudioPlayer'
-import { AudioEntryPair } from '../../backend/audioentry'
-import { styles } from '../../style/Stylesheet'
+} from '../../store/contexts/contexts'
+import { AudioPlayer } from '../audio/AudioPlayer'
+import { AudioEntryPair } from '../backend/audioentry'
+import { styles } from '../style/Stylesheet'
+import { icons } from 'src/uicomponents/style'
 Icon.loadFont()
 
 // const audioPlayer = new AudioPlayer()
@@ -122,7 +123,7 @@ const AudioFooter = (param: AudioFooterParam) => {
                 ]}
             >
                 <ClickableIcon
-                    icon="play"
+                    icon={icons.play}
                     size={30}
                     iconColor="black"
                     clickCallback={() => {
@@ -132,7 +133,7 @@ const AudioFooter = (param: AudioFooterParam) => {
                     }}
                 ></ClickableIcon>
                 <ClickableIcon
-                    icon="pause"
+                    icon={icons.pause}
                     size={30}
                     iconColor="black"
                     clickCallback={() => {

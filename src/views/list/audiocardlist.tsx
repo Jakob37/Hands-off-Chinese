@@ -1,5 +1,4 @@
 import React, { useContext, useState } from 'react'
-import { useEffect } from 'react'
 import { View } from 'react-native'
 import { AudioEntryPair } from '../../backend/audioentry'
 import { IconsCard, TwoLineCard } from '../../uicomponents/cards'
@@ -10,6 +9,30 @@ import {
 import { sc } from '../../uicomponents/style'
 import { toggleEntryInArray } from '../../util/util'
 import { playAudio } from '../card/util'
+
+interface AudioCardListProps {
+    listEntries: AudioEntryPair[]
+    user: string
+}
+const AudioCardList = (props: AudioCardListProps) => {
+    return (
+        <View>
+            {props.listEntries.map((audioEntry, i) => {
+                return (
+                    <AudioCard
+                        key={i}
+                        id={audioEntry.id}
+                        chinese={audioEntry.chinese}
+                        english={audioEntry.english}
+                        chineseKey={audioEntry.chineseKey}
+                        englishKey={audioEntry.englishKey}
+                        user={props.user}
+                    ></AudioCard>
+                )
+            })}
+        </View>
+    )
+}
 
 interface AudioCardProps {
     id: string
@@ -104,55 +127,6 @@ const AudioCard = (props: AudioCardProps) => {
                     ]}
                 ></IconsCard>
             )}
-        </View>
-    )
-}
-
-interface AudioCardListProps {
-    listEntries: AudioEntryPair[]
-    user: string
-}
-const AudioCardList = (props: AudioCardListProps) => {
-    const { pausedIds, setPausedIds } = useContext(PausedIdsContext)
-
-    useEffect(() => {
-        console.log('--- Testing responding pausedIds change ---')
-    }, [pausedIds])
-
-    return (
-        <View>
-            {props.listEntries.map((audioEntry, i) => {
-                return (
-                    <AudioCard
-                        key={i}
-                        id={audioEntry.id}
-                        chinese={audioEntry.chinese}
-                        english={audioEntry.english}
-                        chineseKey={audioEntry.chineseKey}
-                        englishKey={audioEntry.englishKey}
-                        user={props.user}
-                    ></AudioCard>
-                    // <AudioCard
-                    //     key={i}
-                    //     user={param.user}
-                    //     audioEntryPair={audioEntry}
-                    //     togglePaused={() => {
-                    //         if (!pausedIds.includes(audioEntry.id)) {
-                    //             console.log('adding')
-                    //             setPausedIds([...pausedIds, audioEntry.id])
-                    //         } else {
-                    //             // FIXME: Utility function
-                    //             const spliceIndex = pausedIds.indexOf(
-                    //                 audioEntry.id
-                    //             )
-                    //             pausedIds.splice(spliceIndex, 1)
-                    //             setPausedIds([...pausedIds])
-                    //         }
-                    //     }}
-                    //     isPaused={pausedIds.includes(audioEntry.id)}
-                    // />
-                )
-            })}
         </View>
     )
 }

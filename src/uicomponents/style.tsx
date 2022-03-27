@@ -32,4 +32,17 @@ const styleLibrary = {
     },
 }
 
-export { styleConstants, styleConstants as sc, styleLibrary, styleLibrary as sl }
+const icons = {
+    play: 'play',
+    plus: 'plus',
+    pause: 'pause',
+    gear: 'gear',
+}
+
+export {
+    styleConstants,
+    styleConstants as sc,
+    styleLibrary,
+    styleLibrary as sl,
+    icons,
+}

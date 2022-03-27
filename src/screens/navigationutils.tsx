@@ -2,9 +2,9 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack"
 import { AudioEntryPair } from "../backend/audioentry"
 
 const NAVIGATION = {
-    main: 'Home',
-    audioList: 'Audio entries',
-    audioPlayer: 'Audio player'
+    main: 'Home' as 'Home',
+    audioList: 'Audio entries' as 'Audio entries',
+    audioPlayer: 'Audio player' as 'Audio player'
 }
 
 type RootStackParamList = {
