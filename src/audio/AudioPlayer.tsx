@@ -152,6 +152,10 @@ class AudioPlayer {
         }, timerStep)
     }
 
+    getIsPlaying(): boolean {
+        return this.isPlaying
+    }
+
     stop() {
         this.audioState = AudioState.stopped
         this.isPlaying = false
