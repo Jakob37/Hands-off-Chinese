@@ -1,11 +1,9 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { ScrollView, View, Text } from 'react-native'
-import PlayerFooter from '../views/footers/playerfooter'
-import { PlayerCardList } from '../views/list/playercardlist'
+import { ScrollView, View } from 'react-native'
 import { AudioPlayerContext, DbContext } from '../../store/contexts/contexts'
-import { entryToString } from '../backend/audioentry'
 import { FloatingActionButton } from '../uicomponents/buttons'
 import { icons } from '../uicomponents/style'
+import { PlayerCardList } from '../views/list/playercardlist'
 
 function PlayerScreen({ route, navigation }) {
     const { db } = useContext(DbContext)

@@ -7,6 +7,7 @@ const styleConstants = {
         green: '#41B3A3',
         white: '#FFFFFF',
         black: '#3A3B3C',
+        gray: '#B6B6B4',
     },
     fontSizes: {
         cardLarge: 20,

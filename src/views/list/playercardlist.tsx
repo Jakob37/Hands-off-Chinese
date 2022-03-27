@@ -6,14 +6,14 @@ import {
     AudioPlayerContext,
     PausedIdsContext,
 } from '../../../store/contexts/contexts'
-import { PlayerCard } from '../card/playercard'
+// import { PlayerCard } from '../card/playercard'
+import { AudioCard } from './audiocardlist'
 
-interface Param {
+interface PlayerCardListProps {
     listEntries: AudioEntryPair[]
     user: string
 }
-
-const PlayerCardList = (param: Param) => {
+const PlayerCardList = (props: PlayerCardListProps) => {
     const { pausedIds, setPausedIds } = useContext(PausedIdsContext)
 
     // FIXME: Should this be used, or removed?
@@ -23,31 +23,24 @@ const PlayerCardList = (param: Param) => {
 
     return (
         <View>
-            {param.listEntries.map((audioEntry, i) => {
+            {props.listEntries.map((audioEntry, i) => {
                 return (
-                    <PlayerCard
+                    <AudioCard
                         key={i}
-                        user={param.user}
-                        audioEntryPair={audioEntry}
-                        togglePaused={() => {
-                            if (!pausedIds.includes(audioEntry.id)) {
-                                console.log('adding')
-                                setPausedIds([...pausedIds, audioEntry.id])
-                            } else {
-                                // FIXME: Utility function
-                                const spliceIndex = pausedIds.indexOf(
-                                    audioEntry.id
-                                )
-                                pausedIds.splice(spliceIndex, 1)
-                                setPausedIds([...pausedIds])
-                            }
-                        }}
-                        isPaused={pausedIds.includes(audioEntry.id)}
-                    />
+                        id={audioEntry.id}
+                        user={props.user}
+                        english={audioEntry.english}
+                        chinese={audioEntry.chinese}
+                        englishKey={audioEntry.englishKey}
+                        chineseKey={audioEntry.chineseKey}
+                    ></AudioCard>
                 )
             })}
         </View>
     )
 }
+
+interface PlayerCardProps {}
+const PlayerCard = (props: PlayerCardProps) => {}
 
 export { PlayerCardList }

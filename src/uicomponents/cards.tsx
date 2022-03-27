@@ -53,6 +53,7 @@ BasicCard.defaultProps = {
 interface TwoLineCard {
     firstText: string
     secondText: string
+    textStyle: Record<string, string | number>
     firstAction: () => void
     secondAction: () => void
     icons: IconDatum[]
@@ -70,7 +71,7 @@ const TwoLineCard = (props: TwoLineCard) => {
             >
                 <View>
                     <TouchableOpacity onPress={props.firstAction}>
-                        <Text style={{ fontSize: sc.fontSizes.cardLarge }}>
+                        <Text style={{ fontSize: sc.fontSizes.cardLarge, ...props.textStyle}}>
                             {props.firstText}
                         </Text>
                     </TouchableOpacity>
@@ -78,6 +79,7 @@ const TwoLineCard = (props: TwoLineCard) => {
                         <Text
                             style={{
                                 fontSize: sc.fontSizes.cardMedium,
+                                ...props.textStyle
                             }}
                         >
                             {props.secondText}
@@ -108,6 +110,7 @@ const TwoLineCard = (props: TwoLineCard) => {
 TwoLineCard.defaultProps = {
     firstText: null,
     secondText: null,
+    textStyle: undefined,
 }
 
 interface IconsCardProps {

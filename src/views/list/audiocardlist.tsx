@@ -34,6 +34,8 @@ const AudioCardList = (props: AudioCardListProps) => {
     )
 }
 
+//FIXME: Generalize the pausing / flagging code here
+
 interface AudioCardProps {
     id: string
     chinese: string
@@ -60,17 +62,24 @@ const AudioCard = (props: AudioCardProps) => {
                     secondAction={() => {
                         playAudio(props.englishKey, props.user)
                     }}
+                    textStyle={{
+                        color: pausedIds.includes(props.id)
+                            ? sc.colors.gray
+                            : sc.colors.black
+                    }}
                     icons={[
                         {
                             icon: 'gear',
                             action: () => {
                                 setSettingsOpened(!settingsOpened)
                             },
+                            color: pausedIds.includes(props.id)
+                            ? sc.colors.gray
+                            : sc.colors.black
                         },
                         {
                             icon: 'flag',
                             action: () => {
-                                console.log('Responding to press')
                                 const updatedArr = toggleEntryInArray(
                                     flaggedIds,
                                     props.id
@@ -79,6 +88,22 @@ const AudioCard = (props: AudioCardProps) => {
                             },
                             color: flaggedIds.includes(props.id)
                                 ? sc.colors.blue
+                                : pausedIds.includes(props.id)
+                                ? sc.colors.gray
+                                : sc.colors.black,
+                        },
+                        {
+                            icon: 'pause',
+                            action: () => {
+                                console.log('Triggering pause')
+                                const updatedArr = toggleEntryInArray(
+                                    pausedIds,
+                                    props.id
+                                )
+                                setPausedIds(updatedArr)
+                            },
+                            color: pausedIds.includes(props.id)
+                                ? sc.colors.gray
                                 : sc.colors.black,
                         },
                     ]}
@@ -115,7 +140,7 @@ const AudioCard = (props: AudioCardProps) => {
                                 setPausedIds(updatedArr)
                             },
                             color: pausedIds.includes(props.id)
-                                ? sc.colors.yellow
+                                ? sc.colors.gray
                                 : sc.colors.black,
                         },
                         {
@@ -131,4 +156,4 @@ const AudioCard = (props: AudioCardProps) => {
     )
 }
 
-export { AudioCardList }
+export { AudioCardList, AudioCard }

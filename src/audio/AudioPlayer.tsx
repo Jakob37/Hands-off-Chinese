@@ -20,7 +20,7 @@ class AudioPlayer {
     user: string
     audioState: number = AudioState.stopped
     currentlyPlayingPair: AudioEntryPair | null = null
-    delay: number = 1000
+    delay: number = 4000
     startTime: number = 0
     isPlaying: boolean = false
     interval: NodeJS.Timer
