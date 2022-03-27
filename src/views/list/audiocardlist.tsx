@@ -1,7 +1,8 @@
 import React, { useContext } from 'react'
 import { useEffect } from 'react'
 import { View } from 'react-native'
-import { AudioEntryPair } from 'src/backend/audioentry'
+import { AudioEntryPair } from '../../backend/audioentry'
+import { TwoLineCard } from '../../uicomponents/cards'
 import { PausedIdsContext } from '../../../store/contexts/contexts'
 import { AudioCard } from '../card/audiocard'
 
@@ -21,25 +22,33 @@ const AudioCardList = (param: Param) => {
         <View>
             {param.listEntries.map((audioEntry, i) => {
                 return (
-                    <AudioCard
-                        key={i}
-                        user={param.user}
-                        audioEntryPair={audioEntry}
-                        togglePaused={() => {
-                            if (!pausedIds.includes(audioEntry.id)) {
-                                console.log('adding')
-                                setPausedIds([...pausedIds, audioEntry.id])
-                            } else {
-                                // FIXME: Utility function
-                                const spliceIndex = pausedIds.indexOf(
-                                    audioEntry.id
-                                )
-                                pausedIds.splice(spliceIndex, 1)
-                                setPausedIds([...pausedIds])
-                            }
-                        }}
-                        isPaused={pausedIds.includes(audioEntry.id)}
-                    />
+                    <TwoLineCard
+                        firstText={audioEntry.chinese}
+                        secondText={audioEntry.english}
+                        firstAction={() => {}}
+                        secondAction={() => {}}
+                        icons={[]}
+                        iconActions={[]}
+                    ></TwoLineCard>
+                    // <AudioCard
+                    //     key={i}
+                    //     user={param.user}
+                    //     audioEntryPair={audioEntry}
+                    //     togglePaused={() => {
+                    //         if (!pausedIds.includes(audioEntry.id)) {
+                    //             console.log('adding')
+                    //             setPausedIds([...pausedIds, audioEntry.id])
+                    //         } else {
+                    //             // FIXME: Utility function
+                    //             const spliceIndex = pausedIds.indexOf(
+                    //                 audioEntry.id
+                    //             )
+                    //             pausedIds.splice(spliceIndex, 1)
+                    //             setPausedIds([...pausedIds])
+                    //         }
+                    //     }}
+                    //     isPaused={pausedIds.includes(audioEntry.id)}
+                    // />
                 )
             })}
         </View>

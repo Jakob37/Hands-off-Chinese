@@ -9,7 +9,6 @@ interface BasicCardProps {
     action: () => void
     icon: string | null
 }
-
 const BasicCard = (props: BasicCardProps) => {
     return (
         <TouchableOpacity onPress={props.action}>
@@ -38,9 +37,43 @@ const BasicCard = (props: BasicCardProps) => {
         </TouchableOpacity>
     )
 }
-
 BasicCard.defaultProps = {
-    icon: null
+    icon: null,
 }
 
-export { BasicCard }
+interface TwoLineCard {
+    firstText: string
+    secondText: string
+    firstAction: () => void
+    secondAction: () => void
+    icons: string[]
+    iconActions: (() => void)[]
+}
+const TwoLineCard = (props: TwoLineCard) => {
+    return (
+        <Card>
+            <View
+                style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    alignItems: 'center'
+                }}
+            >
+                <View>
+                    <TouchableOpacity>
+                        <Text>{props.firstText}</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity>
+                        <Text>{props.secondText}</Text>
+                    </TouchableOpacity>
+                </View>
+                <View>
+                    <Text>Icons</Text>
+                </View>
+            </View>
+        </Card>
+    )
+}
+
+export { BasicCard, TwoLineCard }

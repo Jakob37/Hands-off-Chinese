@@ -145,8 +145,8 @@ const MainScreen = ({ navigation }: HomeProps) => {
             <View
                 style={{
                     position: 'absolute',
-                    bottom: sc.componentMargins.medium,
-                    right: sc.componentMargins.medium,
+                    bottom: sc.componentMargins.large,
+                    right: sc.componentMargins.large,
                     display: 'flex',
                     flexDirection: 'column',
                 }}
@@ -156,6 +156,7 @@ const MainScreen = ({ navigation }: HomeProps) => {
                         iconColor={sc.colors.white}
                         backgroundColor={sc.colors.green}
                         icon={!menuOpen ? 'plus' : 'times'}
+                        size={sc.iconSizes.large}
                         clickCallback={() => {
                             setMenuOpen(!menuOpen)
                         }}

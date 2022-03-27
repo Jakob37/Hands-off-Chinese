@@ -13,7 +13,7 @@ const styleConstants = {
     },
     iconSizes: {
         medium: 20,
-        large: 25,
+        large: 30,
     },
     iconPaddings: {
         medium: 20
@@ -21,6 +21,7 @@ const styleConstants = {
     componentMargins: {
         small: 5,
         medium: 10,
+        large: 20,
     }
 }
 
