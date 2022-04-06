@@ -1,6 +1,11 @@
 import axios from 'axios'
 import { getTimestamp } from '../util/util'
-import { ALL_ENTRIES_URL, POLLY_URL, SINGLE_ENTRIES_URL } from './api'
+import {
+    ALL_ENTRIES_URL,
+    POLLY_URL,
+    SINGLE_ENTRIES_URL,
+    USER_DATA_URL,
+} from './api'
 import { AudioEntryPair, getAudioEntryPair } from './audioentry'
 
 interface MetaObj {
@@ -132,6 +137,63 @@ const submitMetaDataNew = async (
             console.log(response.data)
             console.log(Object.keys(response))
             onCompletedCall()
+        })
+        .catch(function (error) {
+            console.log('error')
+            if (error.response) {
+                console.log(error.response.data)
+            } else {
+                console.log('Unknown error type encountered')
+                console.log(error)
+            }
+        })
+}
+
+// axios2
+// .post("https://<URL>.execute-api.eu-west-1.amazonaws.com/prod/userdata",
+// {"id":"myid", "user":"myuser", "jsonString":"test"})
+// .then(function(response){ console.log('response', response) })
+// .catch(function(error) { if (error.response) {console.log(error.response.data)} else {console.log(error)} })
+
+const putUserDataRequest = async (
+    id: string,
+    user: string,
+    data: Record<string, any>
+) => {
+    const params = {
+        id,
+        user,
+        jsonString: JSON.stringify(data),
+    }
+
+    axios
+        .post(USER_DATA_URL, params)
+        .then(function (response) {
+            console.log('Response!')
+            console.log(response.data)
+            console.log(Object.keys(response))
+            // onCompletedCall()
+        })
+        .catch(function (error) {
+            console.log('error')
+            if (error.response) {
+                console.log(error.response.data)
+            } else {
+                console.log('Unknown error type encountered')
+                console.log(error)
+            }
+        })
+}
+
+const getUserDataRequest = async (id) => {
+    const params = {}
+    axios
+        .get(USER_DATA_URL, params)
+        .then(function (response) {
+            console.log('Response!')
+            console.log(response.data)
+            console.log(Object.keys(response))
+            // onCompletedCall()
         })
         .catch(function (error) {
             console.log('error')
@@ -281,4 +343,5 @@ export {
     getMetaAsAudioEntries,
     MetaObj,
     makeMultipleAudioEntries,
+    putUserDataRequest,
 }

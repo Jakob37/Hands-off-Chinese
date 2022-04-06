@@ -7,7 +7,7 @@ import {
     FlaggedIdsContext,
     ShownIdsContext,
 } from '../../store/contexts/contexts'
-import { makeNewAudioEntry } from '../backend/apicalls'
+import { makeNewAudioEntry, putUserDataRequest } from '../backend/apicalls'
 import { AudioEntryPair } from '../backend/audioentry'
 import { BasicCard } from '../uicomponents/cards'
 import { sc } from '../uicomponents/style'
@@ -67,6 +67,16 @@ const MainScreen = ({ navigation }: HomeProps) => {
             {/* <View style={{paddingLeft: 15, paddingVertical: 5}}>
                 <Text style={{color: "gray"}}>Current email: {db.getUser()}</Text>
             </View> */}
+
+            <Button
+                title="Test"
+                onPress={() => {
+                    const id = 'myid' + Math.random()
+                    putUserDataRequest(id, 'user', {content: 24})
+                }}
+            >
+                Test the new API
+            </Button>
 
             <BasicCard
                 key="test"
@@ -151,7 +161,7 @@ const MainScreen = ({ navigation }: HomeProps) => {
             <FloatingActionButton
                 iconColor={sc.colors.white}
                 backgroundColor={sc.colors.green}
-                icon='plus'
+                icon="plus"
                 onPress={() => {
                     setMenuOpen(!menuOpen)
                 }}
