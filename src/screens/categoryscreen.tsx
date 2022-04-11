@@ -5,6 +5,7 @@ import { Button, Input, Overlay, Text } from 'react-native-elements'
 import {
     DbContext,
     FlaggedIdsContext,
+    PausedIdsContext,
     ShownIdsContext,
 } from '../../store/contexts/contexts'
 import {
@@ -20,6 +21,7 @@ import CategoryCardList from '../views/list/categorycardlist'
 import { HomeProps } from './navigationutils'
 
 const FLAGS_ID = 'flags'
+const PAUSED_ID = 'paused'
 
 const MainScreen = ({ navigation }: HomeProps) => {
     const [currentCategories, setCurrentCategories] = useState([
@@ -34,6 +36,7 @@ const MainScreen = ({ navigation }: HomeProps) => {
     const [menuOpen, setMenuOpen] = useState(false)
     const { db } = useContext(DbContext)
     const { flaggedIds, setFlaggedIds } = useContext(FlaggedIdsContext)
+    const { pausedIds, setPausedIds } = useContext(PausedIdsContext)
 
     const refreshDatabase = () => {
         db.initDatabase(() => {
@@ -69,7 +72,13 @@ const MainScreen = ({ navigation }: HomeProps) => {
                     setFlaggedIds(retrievedFlaggedIds as string[])
                 }
             )
-            console.log(currUser.attributes)
+            getUserDataRequest(
+                PAUSED_ID,
+                db.getUser(),
+                (retrievedPausedIds) => {
+                    setFlaggedIds(retrievedPausedIds as string[])
+                }
+            )
         })
     }
     useEffect(setUserData, [])
@@ -171,12 +180,19 @@ const MainScreen = ({ navigation }: HomeProps) => {
                     icon="cloud-download"
                     yPosition={1}
                     onPress={() => {
-                        const id = FLAGS_ID
                         getUserDataRequest(
-                            id,
+                            FLAGS_ID,
                             db.getUser(),
                             (retrievedFlaggedIds) => {
                                 setFlaggedIds(retrievedFlaggedIds as string[])
+                            }
+                        )
+
+                        getUserDataRequest(
+                            PAUSED_ID,
+                            db.getUser(),
+                            (retrievedPausedIds) => {
+                                setPausedIds(retrievedPausedIds as string[])
                             }
                         )
                     }}
@@ -186,8 +202,8 @@ const MainScreen = ({ navigation }: HomeProps) => {
                     icon="cloud-upload"
                     yPosition={2}
                     onPress={() => {
-                        const id = FLAGS_ID
-                        putUserDataRequest(id, db.getUser(), flaggedIds)
+                        putUserDataRequest(FLAGS_ID, db.getUser(), flaggedIds)
+                        putUserDataRequest(PAUSED_ID, db.getUser(), pausedIds)
                     }}
                 ></FloatingActionButton>
             </View>

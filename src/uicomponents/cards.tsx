@@ -69,9 +69,14 @@ const TwoLineCard = (props: TwoLineCard) => {
                     alignItems: 'center',
                 }}
             >
-                <View>
+                <View style={{ width: '75%' }}>
                     <TouchableOpacity onPress={props.firstAction}>
-                        <Text style={{ fontSize: sc.fontSizes.cardLarge, ...props.textStyle}}>
+                        <Text
+                            style={{
+                                fontSize: sc.fontSizes.cardLarge,
+                                ...props.textStyle,
+                            }}
+                        >
                             {props.firstText}
                         </Text>
                     </TouchableOpacity>
@@ -79,29 +84,31 @@ const TwoLineCard = (props: TwoLineCard) => {
                         <Text
                             style={{
                                 fontSize: sc.fontSizes.cardMedium,
-                                ...props.textStyle
+                                ...props.textStyle,
                             }}
                         >
                             {props.secondText}
                         </Text>
                     </TouchableOpacity>
                 </View>
-                <View
-                    style={{
-                        display: 'flex',
-                        flexDirection: 'row',
-                    }}
-                >
-                    {props.icons.map(({ icon, action, color }, i) => {
-                        return (
-                            <ClickableIcon
-                                key={i}
-                                icon={icon}
-                                clickCallback={action}
-                                iconColor={color}
-                            ></ClickableIcon>
-                        )
-                    })}
+                <View>
+                    <View
+                        style={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                        }}
+                    >
+                        {props.icons.map(({ icon, action, color }, i) => {
+                            return (
+                                <ClickableIcon
+                                    key={i}
+                                    icon={icon}
+                                    clickCallback={action}
+                                    iconColor={color}
+                                ></ClickableIcon>
+                            )
+                        })}
+                    </View>
                 </View>
             </View>
         </Card>

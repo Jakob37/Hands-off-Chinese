@@ -92,20 +92,20 @@ const AudioCard = (props: AudioCardProps) => {
                                 ? sc.colors.gray
                                 : sc.colors.black,
                         },
-                        {
-                            icon: 'pause',
-                            action: () => {
-                                console.log('Triggering pause')
-                                const updatedArr = toggleEntryInArray(
-                                    pausedIds,
-                                    props.id
-                                )
-                                setPausedIds(updatedArr)
-                            },
-                            color: pausedIds.includes(props.id)
-                                ? sc.colors.gray
-                                : sc.colors.black,
-                        },
+                        // {
+                        //     icon: 'pause',
+                        //     action: () => {
+                        //         console.log('Triggering pause')
+                        //         const updatedArr = toggleEntryInArray(
+                        //             pausedIds,
+                        //             props.id
+                        //         )
+                        //         setPausedIds(updatedArr)
+                        //     },
+                        //     color: pausedIds.includes(props.id)
+                        //         ? sc.colors.gray
+                        //         : sc.colors.black,
+                        // },
                     ]}
                 ></TwoLineCard>
             ) : (
