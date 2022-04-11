@@ -23,13 +23,19 @@ interface FloatingActionButtonProps {
     backgroundColor?: string
     icon: string
     onPress: () => void
+    yPosition?: number
 }
 const FloatingActionButton = (props: FloatingActionButtonProps) => {
     return (
         <View
             style={{
                 position: 'absolute',
-                bottom: sc.componentMargins.large,
+                bottom:
+                    sc.componentMargins.large +
+                    props.yPosition *
+                        (sc.componentMargins.large +
+                            sc.iconSizes.large +
+                            sc.iconPaddings.small),
                 right: sc.componentMargins.large,
                 display: 'flex',
                 flexDirection: 'column',
@@ -49,7 +55,8 @@ const FloatingActionButton = (props: FloatingActionButtonProps) => {
 }
 FloatingActionButton.defaultProps = {
     iconColor: sc.colors.white,
-    backgroundColor: sc.colors.green
+    backgroundColor: sc.colors.green,
+    yPosition: 0,
 }
 
 export { FooterButton, FoldableMenuButton, FloatingActionButton }

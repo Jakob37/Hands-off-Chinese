@@ -185,22 +185,22 @@ const putUserDataRequest = async (
         })
 }
 
-const getUserDataRequest = async (id) => {
-    const params = {}
+const getUserDataRequest = async (
+    id: string,
+    user: string,
+    getCallback: (data: Record<string, any>) => void
+) => {
+    const params = { params: { id, user } }
     axios
         .get(USER_DATA_URL, params)
         .then(function (response) {
-            console.log('Response!')
             console.log(response.data)
-            console.log(Object.keys(response))
-            // onCompletedCall()
+            getCallback(JSON.parse(response.data.Item.jsonString.S))
         })
         .catch(function (error) {
-            console.log('error')
             if (error.response) {
                 console.log(error.response.data)
             } else {
-                console.log('Unknown error type encountered')
                 console.log(error)
             }
         })
@@ -344,4 +344,5 @@ export {
     MetaObj,
     makeMultipleAudioEntries,
     putUserDataRequest,
+    getUserDataRequest,
 }

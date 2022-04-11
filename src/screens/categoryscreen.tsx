@@ -7,14 +7,19 @@ import {
     FlaggedIdsContext,
     ShownIdsContext,
 } from '../../store/contexts/contexts'
-import { makeNewAudioEntry, putUserDataRequest } from '../backend/apicalls'
+import {
+    getUserDataRequest,
+    makeNewAudioEntry,
+    putUserDataRequest,
+} from '../backend/apicalls'
 import { AudioEntryPair } from '../backend/audioentry'
+import { FloatingActionButton } from '../uicomponents/buttons'
 import { BasicCard } from '../uicomponents/cards'
 import { sc } from '../uicomponents/style'
-import ClickableIcon from '../uicomponents/clickableicon'
 import CategoryCardList from '../views/list/categorycardlist'
 import { HomeProps } from './navigationutils'
-import { FloatingActionButton } from '../uicomponents/buttons'
+
+const FLAGS_ID = 'flags'
 
 const MainScreen = ({ navigation }: HomeProps) => {
     const [currentCategories, setCurrentCategories] = useState([
@@ -28,7 +33,7 @@ const MainScreen = ({ navigation }: HomeProps) => {
     const { setShownIds } = useContext(ShownIdsContext)
     const [menuOpen, setMenuOpen] = useState(false)
     const { db } = useContext(DbContext)
-    const { flaggedIds } = useContext(FlaggedIdsContext)
+    const { flaggedIds, setFlaggedIds } = useContext(FlaggedIdsContext)
 
     const refreshDatabase = () => {
         db.initDatabase(() => {
@@ -57,6 +62,13 @@ const MainScreen = ({ navigation }: HomeProps) => {
     const setUserData = () => {
         Auth.currentAuthenticatedUser().then((currUser) => {
             db.setUser(currUser.attributes.email)
+            getUserDataRequest(
+                FLAGS_ID,
+                db.getUser(),
+                (retrievedFlaggedIds) => {
+                    setFlaggedIds(retrievedFlaggedIds as string[])
+                }
+            )
             console.log(currUser.attributes)
         })
     }
@@ -64,20 +76,6 @@ const MainScreen = ({ navigation }: HomeProps) => {
 
     return (
         <View style={{ flex: 1 }}>
-            {/* <View style={{paddingLeft: 15, paddingVertical: 5}}>
-                <Text style={{color: "gray"}}>Current email: {db.getUser()}</Text>
-            </View> */}
-
-            <Button
-                title="Test"
-                onPress={() => {
-                    const id = 'myid' + Math.random()
-                    putUserDataRequest(id, 'user', {content: 24})
-                }}
-            >
-                Test the new API
-            </Button>
-
             <BasicCard
                 key="test"
                 text={`${flaggedIds.length}`}
@@ -158,14 +156,41 @@ const MainScreen = ({ navigation }: HomeProps) => {
                 </View>
             </Overlay>
 
-            <FloatingActionButton
-                iconColor={sc.colors.white}
-                backgroundColor={sc.colors.green}
-                icon="plus"
-                onPress={() => {
-                    setMenuOpen(!menuOpen)
-                }}
-            ></FloatingActionButton>
+            <View>
+                <FloatingActionButton
+                    iconColor={sc.colors.white}
+                    backgroundColor={sc.colors.green}
+                    icon="plus"
+                    yPosition={0}
+                    onPress={() => {
+                        setMenuOpen(!menuOpen)
+                    }}
+                ></FloatingActionButton>
+
+                <FloatingActionButton
+                    icon="cloud-download"
+                    yPosition={1}
+                    onPress={() => {
+                        const id = FLAGS_ID
+                        getUserDataRequest(
+                            id,
+                            db.getUser(),
+                            (retrievedFlaggedIds) => {
+                                setFlaggedIds(retrievedFlaggedIds as string[])
+                            }
+                        )
+                    }}
+                ></FloatingActionButton>
+
+                <FloatingActionButton
+                    icon="cloud-upload"
+                    yPosition={2}
+                    onPress={() => {
+                        const id = FLAGS_ID
+                        putUserDataRequest(id, db.getUser(), flaggedIds)
+                    }}
+                ></FloatingActionButton>
+            </View>
         </View>
     )
 }
