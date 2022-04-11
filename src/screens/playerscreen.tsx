@@ -1,15 +1,18 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { ScrollView, View } from 'react-native'
+import { ScrollView, View, Text } from 'react-native'
 import { AudioPlayerContext, DbContext } from '../../store/contexts/contexts'
 import { FloatingActionButton } from '../uicomponents/buttons'
-import { icons } from '../uicomponents/style'
+import { icons, sc } from '../uicomponents/style'
 import { PlayerCardList } from '../views/list/playercardlist'
+
+const delayDiff = 0.5
+const milliseconds = 1000
 
 function PlayerScreen({ route, navigation }) {
     const { db } = useContext(DbContext)
     const { audioPlayer } = useContext(AudioPlayerContext)
 
-    const [delay, setDelay] = useState(audioPlayer.delay / 1000)
+    const [delay, setDelay] = useState(audioPlayer.delay / milliseconds)
     const [counter, setCounter] = useState(0)
     const [lastDuration, setLastDuration] = useState(0)
     const [activeNbr, setActiveNbr] = useState(0)
@@ -41,6 +44,7 @@ function PlayerScreen({ route, navigation }) {
         setInitialized(true)
     }, [playedEntries])
 
+    // FIXME: Comment out for auto start when entering view
     useEffect(() => {
         if (!audioPlayer.getIsPlaying()) {
             audioPlayer.play()
@@ -49,31 +53,48 @@ function PlayerScreen({ route, navigation }) {
 
     return (
         <View style={{ flex: 1 }}>
+            <View style={{paddingLeft: sc.componentMargins.large}}>
+                <Text>Delay: {delay} seconds</Text>
+            </View>
             <ScrollView>
                 <PlayerCardList
                     user={db.getUser()}
                     listEntries={playedEntries}
                 />
             </ScrollView>
+
+            <FloatingActionButton
+                icon="angle-up"
+                yPosition={2}
+                onPress={() => {
+                    setDelay(delay + delayDiff)
+                    audioPlayer.setDelay(delay)
+                    console.log('New delay:', delay)
+                }}
+            ></FloatingActionButton>
+
+            <FloatingActionButton
+                icon="angle-down"
+                yPosition={1}
+                onPress={() => {
+                    setDelay(delay - delayDiff)
+                    audioPlayer.setDelay(delay)
+                    console.log('New delay:', delay)
+                }}
+            ></FloatingActionButton>
+
             <FloatingActionButton
                 icon={!isPlaying ? icons.play : icons.pause}
                 onPress={() => {
-                    console.log('Clicking with the playing state:', isPlaying)
                     if (!isPlaying) {
-                        console.log('Starting')
                         setIsPlaying(true)
                         audioPlayer.play()
                     } else {
-                        console.log('Stopping')
                         setIsPlaying(false)
                         audioPlayer.stop()
                     }
                 }}
             ></FloatingActionButton>
-            {/* <PlayerFooter
-                user={db.getUser()}
-                audioEntries={route.params.audioEntries}
-            /> */}
         </View>
     )
 }
