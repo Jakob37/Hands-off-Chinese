@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import { TouchableOpacity, View } from 'react-native'
 import { Card, Text } from 'react-native-elements'
 import Icon from 'react-native-vector-icons/FontAwesome'
@@ -21,29 +21,33 @@ interface BasicCardProps {
 }
 const BasicCard = (props: BasicCardProps) => {
     return (
-        <TouchableOpacity onPress={props.action}>
-            <Card containerStyle={sl.card}>
-                <View
-                    style={{
-                        display: 'flex',
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                    }}
-                >
-                    {props.icon != null && (
-                        <Icon
-                            name={props.icon.icon}
-                            size={sc.iconSizes.medium}
-                            style={{ paddingRight: sc.componentMargins.medium }}
-                            color={props.icon.color}
-                        ></Icon>
-                    )}
-                    <Text style={{ fontSize: sc.fontSizes.cardLarge }}>
-                        {props.text}
-                    </Text>
-                </View>
-            </Card>
-        </TouchableOpacity>
+        <Fragment>
+            <TouchableOpacity onPress={props.action}>
+                <Card containerStyle={sl.card}>
+                    <View
+                        style={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                        }}
+                    >
+                        {props.icon != null && (
+                            <Icon
+                                name={props.icon.icon}
+                                size={sc.iconSizes.medium}
+                                style={{
+                                    paddingRight: sc.componentMargins.medium,
+                                }}
+                                color={props.icon.color}
+                            ></Icon>
+                        )}
+                        <Text style={{ fontSize: sc.fontSizes.cardLarge }}>
+                            {props.text}
+                        </Text>
+                    </View>
+                </Card>
+            </TouchableOpacity>
+        </Fragment>
     )
 }
 BasicCard.defaultProps = {
@@ -95,7 +99,7 @@ const TwoLineCard = (props: TwoLineCard) => {
                     <View
                         style={{
                             display: 'flex',
-                            flexDirection: 'row',
+                            flexDirection: 'column',
                         }}
                     >
                         {props.icons.map(({ icon, action, color }, i) => {

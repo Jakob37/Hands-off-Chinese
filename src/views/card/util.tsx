@@ -2,8 +2,9 @@ import Sound from 'react-native-sound'
 import axios from 'axios'
 import { SIGNEDURL_URL } from '../../backend/api'
 import { AudioEntryPair } from 'src/backend/audioentry'
-// import { Storage } from 'aws-amplify'
-// import awsmobile from "../../../src/aws-exports"
+
+// React native sound
+// https://github.com/benevbright/react-native-sound-playerview
 
 const getSignedUrl = (key): Promise<string> => {
     return axios
@@ -30,7 +31,6 @@ const playAudio = async (
     console.log('Attempting to play audio for key', key)
     const signedUrl = await getSignedUrl(key)
 
-    console.log(signedUrl)
     const track = new Sound(signedUrl, null, (e) => {
         if (e) {
             console.warn('error loading track:', e)
