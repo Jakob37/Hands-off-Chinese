@@ -23,9 +23,12 @@ function AudioCardScreen({ route, navigation }: AudioEntriesProps) {
             <FloatingActionButton
                 icon={icons.play}
                 onPress={() => {
-                    navigation.navigate(NAVIGATION.audioPlayer, {
+                    navigation.navigate(NAVIGATION.testAudioPlayer, {
                         audioEntries: route.params.audioEntries,
                     })
+                    // navigation.navigate(NAVIGATION.audioPlayer, {
+                    //     audioEntries: route.params.audioEntries,
+                    // })
                 }}
             ></FloatingActionButton>
         </View>

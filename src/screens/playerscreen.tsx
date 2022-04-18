@@ -4,11 +4,12 @@ import { AudioPlayerContext, DbContext } from '../../store/contexts/contexts'
 import { FloatingActionButton } from '../uicomponents/buttons'
 import { icons, sc } from '../uicomponents/style'
 import { PlayerCardList } from '../views/list/playercardlist'
+import { TestAudioPlayerProps } from './navigationutils'
 
 const delayDiff = 0.5
 const milliseconds = 1000
 
-function PlayerScreen({ route, navigation }) {
+function PlayerScreen({ route, navigation }: TestAudioPlayerProps) {
     const { db } = useContext(DbContext)
     const { audioPlayer } = useContext(AudioPlayerContext)
 

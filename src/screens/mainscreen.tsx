@@ -18,7 +18,7 @@ import { FloatingActionButton } from '../uicomponents/buttons'
 import { BasicCard } from '../uicomponents/cards'
 import { sc } from '../uicomponents/style'
 import CategoryCardList from '../views/list/categorycardlist'
-import { HomeProps } from './navigationutils'
+import { HomeProps, NAVIGATION } from './navigationutils'
 
 const FLAGS_ID = 'flags'
 const PAUSED_ID = 'paused'
@@ -88,7 +88,7 @@ const MainScreen = ({ navigation }: HomeProps) => {
             <Button
                 onPress={() => {
                     console.log('Test press')
-                    navigation.navigate('testaudioplayer', {})
+                    navigation.navigate(NAVIGATION.testAudioPlayer, {title: 'Test'})
                 }}
                 title={'Test title'}
             ></Button>

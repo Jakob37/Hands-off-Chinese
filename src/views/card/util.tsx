@@ -47,4 +47,4 @@ const playAudio = async (
     })
 }
 
-export { playAudio }
+export { playAudio, getSignedUrl }

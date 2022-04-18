@@ -10,6 +10,8 @@ import {
 } from 'react-native'
 
 import Sound from 'react-native-sound'
+import { getSignedUrl } from '../views/card/util'
+import { TestAudioPlayerProps } from './navigationutils'
 
 const img_speaker = require('../../resources/ui_speaker.png')
 const img_pause = require('../../resources/ui_pause.png')
@@ -21,14 +23,10 @@ const test_mp3 = require('../../resources/file_example.mp3')
 const PLAYER_INTERVAL = 100
 const JUMP_SECONDS = 15
 const SMALL_BUTTON_SIZE = 30
+const SPEAKER_SIZE = 150
 const SMALL_BUTTON_TINT = 'gray'
 
-function PlayerScreen({ route, navigation }) {
-    // sound: Sound | null
-    // sliderEditing: boolean
-    // timeout: any
-    // playSeconds: number
-
+function PlayerScreen({ route, navigation }: TestAudioPlayerProps) {
     const [playState, setPlayState] = useState('paused')
     const [playSeconds, setPlaySeconds] = useState(0)
     const [duration, setDuration] = useState(0)
@@ -40,150 +38,78 @@ function PlayerScreen({ route, navigation }) {
     let timeout = null
 
     useEffect(() => {
-        // doPlay()
-        // doPause()
-        console.log('Play effect')
-
         timeout = setInterval(() => {
-            console.log(
-                '--- Sound:',
-                sound != null,
-                'Sound loaded',
-                sound != null ? sound.isLoaded() : null,
-                'Play state',
-                playState
-            )
             if (
                 sound != null &&
                 sound.isLoaded() &&
                 playState == 'playing' &&
                 !sliderEditing
             ) {
-                console.log('Updating current time')
-                sound.getCurrentTime((seconds, isPlaying) => {
-                    // setState({ playSeconds: seconds })
-                    console.log('Received seconds:', seconds)
+                sound.getCurrentTime((seconds, _isPlaying) => {
                     setPlaySeconds(seconds)
                 })
             }
-        }, PLAYER_INTERVAL * 20)
+        }, PLAYER_INTERVAL)
 
         return () => {
             if (timeout != null) {
                 clearInterval(timeout)
             }
         }
-
-        // Call on unmount?
-        // https://stackoverflow.com/questions/53464595/how-to-use-componentwillmount-in-react-hooks
     }, [sound, playState])
 
+    // Clear sound when unmounting component
     useEffect(() => {
+        // Used to pre-load? But doesn't start playing?
+        doPlay()
+
         return () => {
-            console.log('Unmounting component')
             if (sound != null) {
                 sound.release()
                 setSound(null)
                 setSoundName('')
             }
-            // if (timeout != null) {
-            //     clearInterval(timeout)
-            // }
         }
     }, [])
 
-    // static navigationOptions = (props) => ({
-    //     title: props.navigation.state.params.title,
-    // })
-
-    // constructor() {
-    //     super()
-    //     this.state = {
-    //         playState: 'paused', //playing, paused
-    //         playSeconds: 0,
-    //         duration: 0,
-    //     }
-    //     this.sliderEditing = false
-    // }
-
-    // componentDidMount() {
-    //     this.play()
-
-    //     this.timeout = setInterval(() => {
-    //         if (
-    //             this.sound &&
-    //             this.sound.isLoaded() &&
-    //             this.state.playState == 'playing' &&
-    //             !this.sliderEditing
-    //         ) {
-    //             this.sound.getCurrentTime((seconds, isPlaying) => {
-    //                 this.setState({ playSeconds: seconds })
-    //             })
-    //         }
-    //     }, 100)
-    // }
-    // componentWillUnmount() {
-    //     if (this.sound) {
-    //         this.sound.release()
-    //         this.sound = null
-    //     }
-    //     if (this.timeout) {
-    //         clearInterval(this.timeout)
-    //     }
-    // }
-
-    const onSliderEditStart = () => {
-        setSliderEditing(true)
-    }
-    const onSliderEditEnd = () => {
-        setSliderEditing(false)
-    }
     const onSliderEditing = (seconds: number) => {
         if (sound != null) {
             sound.setCurrentTime(seconds)
             setPlaySeconds(seconds)
-            // this.setState({ playSeconds: value })
         }
     }
 
     const doPlay = async () => {
-        console.log('Calling play with sound file', sound)
-
+        // console.log('Entering doPlay')
         if (sound != null) {
             sound.play(playComplete)
             setPlayState('playing')
         } else {
-            // const filepath = this.props.navigation.state.params.filepath
-            // var dirpath = ''
-            // if (this.props.navigation.state.params.dirpath) {
-            //     dirpath = this.props.navigation.state.params.dirpath
-            // }
-            const filepath = test_mp3
-            console.log('[Play]', filepath)
+            const user = route.params.audioEntries[0].user
+            const id = route.params.audioEntries[0].chineseKey
+            const key = `${user}/${id}`
+            const signedUrl = await getSignedUrl(key)
 
-            const newSound = new Sound(filepath, (error) => {
+            console.log('Obtained signed URL', signedUrl)
+
+            // const filepath = test_mp3
+            const newSound = new Sound(signedUrl, null, (error) => {
                 console.log('Sound callback called')
                 if (error) {
                     console.log('failed to load the sound', error)
                     Alert.alert('Notice', 'audio file error. (Error code : 1)')
                     setPlayState('paused')
-                    // this.setState({ playState: 'paused' })
                 } else {
-                    // this.setState({
-                    //     playState: 'playing',
-                    //     duration: this.sound.getDuration(),
-                    // })
                     console.log('------ Successful load')
                     setDuration(newSound.getDuration())
-                    // sound.play(playComplete)
                 }
             })
 
             setSound(newSound)
-            setSoundName(filepath)
+            setSoundName(key)
         }
     }
-    const playComplete = (success) => {
+    const playComplete = (success: boolean) => {
         if (sound) {
             if (success) {
                 console.log('successfully finished playing')
@@ -204,12 +130,6 @@ function PlayerScreen({ route, navigation }) {
         setPlayState('paused')
     }
 
-    // const jumpPrev15Seconds = () => {
-    //     this.jumpSeconds(-15)
-    // }
-    // const jumpNext15Seconds = () => {
-    //     this.jumpSeconds(15)
-    // }
     const jumpSeconds = (secsDelta: number) => {
         if (sound != null) {
             sound.getCurrentTime((secs: number, isPlaying: boolean) => {
@@ -222,41 +142,18 @@ function PlayerScreen({ route, navigation }) {
         }
     }
 
-    // const getAudioTimeString = (seconds: number): string => {
-    //     // const h = seconds / (60 * 60)
-    //     // const m = (seconds % (60 * 60)) / 60
-    //     const s = Math.round(seconds)
-
-    //     // const returnStr =
-    //     //     (h < 10 ? '0' + h : h) +
-    //     //     ':' +
-    //     //     (m < 10 ? '0' + m : m) +
-    //     //     ':' +
-    //     //     (s < 10 ? '0' + s : s)
-    //     return `${s} s`
-    // }
-
-    const currentTimeString = (): string => {
-        return `${Math.round(playSeconds).toString()} s`
-    }
-
-    const durationString = (): string => {
-        return `${Math.round(duration).toString()} s`
-    }
-
     return (
         <View
             style={{
                 flex: 1,
                 justifyContent: 'center',
-                // backgroundColor: 'black',
             }}
         >
             <Image
                 source={img_speaker}
                 style={{
-                    width: 150,
-                    height: 150,
+                    width: SPEAKER_SIZE,
+                    height: SPEAKER_SIZE,
                     marginBottom: 15,
                     alignSelf: 'center',
                 }}
@@ -364,12 +261,16 @@ function PlayerScreen({ route, navigation }) {
                 }}
             >
                 <Text style={{ alignSelf: 'center' }}>
-                    {currentTimeString()}
+                    {`${Math.round(playSeconds).toString()} s`}
                 </Text>
                 <Slider
-                    onTouchStart={onSliderEditStart}
+                    onTouchStart={() => {
+                        setSliderEditing(true)
+                    }}
                     onTouchMove={() => console.log('onTouchMove')}
-                    onTouchEnd={onSliderEditEnd}
+                    onTouchEnd={() => {
+                        setSliderEditing(false)
+                    }}
                     onTouchEndCapture={() => console.log('onTouchEndCapture')}
                     onTouchCancel={() => console.log('onTouchCancel')}
                     onValueChange={onSliderEditing}
@@ -384,7 +285,9 @@ function PlayerScreen({ route, navigation }) {
                         marginHorizontal: Platform.select({ ios: 5 }),
                     }}
                 />
-                <Text style={{ alignSelf: 'center' }}>{durationString()}</Text>
+                <Text style={{ alignSelf: 'center' }}>{`${Math.round(
+                    duration
+                ).toString()} s`}</Text>
             </View>
         </View>
     )
