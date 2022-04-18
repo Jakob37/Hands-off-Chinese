@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import {
     View,
     Image,
@@ -18,69 +18,140 @@ const img_playjumpleft = require('../../resources/ui_playjumpleft.png')
 const img_playjumpright = require('../../resources/ui_playjumpright.png')
 const test_mp3 = require('../../resources/file_example.mp3')
 
-class PlayerScreen extends React.Component {
-    sound: Sound | null
-    sliderEditing: boolean
-    timeout: any
-    playSeconds: number
+const PLAYER_INTERVAL = 100
+const JUMP_SECONDS = 15
+const SMALL_BUTTON_SIZE = 30
+const SMALL_BUTTON_TINT = 'gray'
 
-    static navigationOptions = (props) => ({
-        title: props.navigation.state.params.title,
-    })
+function PlayerScreen({ route, navigation }) {
+    // sound: Sound | null
+    // sliderEditing: boolean
+    // timeout: any
+    // playSeconds: number
 
-    constructor() {
-        super()
-        this.state = {
-            playState: 'paused', //playing, paused
-            playSeconds: 0,
-            duration: 0,
-        }
-        this.sliderEditing = false
-    }
+    const [playState, setPlayState] = useState('paused')
+    const [playSeconds, setPlaySeconds] = useState(0)
+    const [duration, setDuration] = useState(0)
+    const [sliderEditing, setSliderEditing] = useState(false)
+    const [sound, setSound] = useState(null)
+    const [soundName, setSoundName] = useState('')
+    // const [timeout, setTimeout] = useState(null)
 
-    componentDidMount() {
-        this.play()
+    let timeout = null
 
-        this.timeout = setInterval(() => {
+    useEffect(() => {
+        // doPlay()
+        // doPause()
+        console.log('Play effect')
+
+        timeout = setInterval(() => {
+            console.log(
+                '--- Sound:',
+                sound != null,
+                'Sound loaded',
+                sound != null ? sound.isLoaded() : null,
+                'Play state',
+                playState
+            )
             if (
-                this.sound &&
-                this.sound.isLoaded() &&
-                this.state.playState == 'playing' &&
-                !this.sliderEditing
+                sound != null &&
+                sound.isLoaded() &&
+                playState == 'playing' &&
+                !sliderEditing
             ) {
-                this.sound.getCurrentTime((seconds, isPlaying) => {
-                    this.setState({ playSeconds: seconds })
+                console.log('Updating current time')
+                sound.getCurrentTime((seconds, isPlaying) => {
+                    // setState({ playSeconds: seconds })
+                    console.log('Received seconds:', seconds)
+                    setPlaySeconds(seconds)
                 })
             }
-        }, 100)
-    }
-    componentWillUnmount() {
-        if (this.sound) {
-            this.sound.release()
-            this.sound = null
+        }, PLAYER_INTERVAL * 20)
+
+        return () => {
+            if (timeout != null) {
+                clearInterval(timeout)
+            }
         }
-        if (this.timeout) {
-            clearInterval(this.timeout)
+
+        // Call on unmount?
+        // https://stackoverflow.com/questions/53464595/how-to-use-componentwillmount-in-react-hooks
+    }, [sound, playState])
+
+    useEffect(() => {
+        return () => {
+            console.log('Unmounting component')
+            if (sound != null) {
+                sound.release()
+                setSound(null)
+                setSoundName('')
+            }
+            // if (timeout != null) {
+            //     clearInterval(timeout)
+            // }
+        }
+    }, [])
+
+    // static navigationOptions = (props) => ({
+    //     title: props.navigation.state.params.title,
+    // })
+
+    // constructor() {
+    //     super()
+    //     this.state = {
+    //         playState: 'paused', //playing, paused
+    //         playSeconds: 0,
+    //         duration: 0,
+    //     }
+    //     this.sliderEditing = false
+    // }
+
+    // componentDidMount() {
+    //     this.play()
+
+    //     this.timeout = setInterval(() => {
+    //         if (
+    //             this.sound &&
+    //             this.sound.isLoaded() &&
+    //             this.state.playState == 'playing' &&
+    //             !this.sliderEditing
+    //         ) {
+    //             this.sound.getCurrentTime((seconds, isPlaying) => {
+    //                 this.setState({ playSeconds: seconds })
+    //             })
+    //         }
+    //     }, 100)
+    // }
+    // componentWillUnmount() {
+    //     if (this.sound) {
+    //         this.sound.release()
+    //         this.sound = null
+    //     }
+    //     if (this.timeout) {
+    //         clearInterval(this.timeout)
+    //     }
+    // }
+
+    const onSliderEditStart = () => {
+        setSliderEditing(true)
+    }
+    const onSliderEditEnd = () => {
+        setSliderEditing(false)
+    }
+    const onSliderEditing = (seconds: number) => {
+        if (sound != null) {
+            sound.setCurrentTime(seconds)
+            setPlaySeconds(seconds)
+            // this.setState({ playSeconds: value })
         }
     }
 
-    onSliderEditStart = () => {
-        this.sliderEditing = true
-    }
-    onSliderEditEnd = () => {
-        this.sliderEditing = false
-    }
-    onSliderEditing = (value) => {
-        if (this.sound) {
-            this.sound.setCurrentTime(value)
-            this.setState({ playSeconds: value })
-        }
-    }
+    const doPlay = async () => {
+        console.log('Calling play with sound file', sound)
 
-    play = async () => {
-        if (this.sound) {
-            this.sound.play(this.playComplete)
-            this.setState({ playState: 'playing' })
+        if (sound != null) {
+            sound.play(playComplete)
+            setPlayState('playing')
         } else {
             // const filepath = this.props.navigation.state.params.filepath
             // var dirpath = ''
@@ -88,227 +159,235 @@ class PlayerScreen extends React.Component {
             //     dirpath = this.props.navigation.state.params.dirpath
             // }
             const filepath = test_mp3
-            const dirpath = ''
             console.log('[Play]', filepath)
 
-            this.sound = new Sound(filepath, dirpath, (error) => {
+            const newSound = new Sound(filepath, (error) => {
+                console.log('Sound callback called')
                 if (error) {
                     console.log('failed to load the sound', error)
                     Alert.alert('Notice', 'audio file error. (Error code : 1)')
-                    this.setState({ playState: 'paused' })
+                    setPlayState('paused')
+                    // this.setState({ playState: 'paused' })
                 } else {
-                    this.setState({
-                        playState: 'playing',
-                        duration: this.sound.getDuration(),
-                    })
-                    this.sound.play(this.playComplete)
+                    // this.setState({
+                    //     playState: 'playing',
+                    //     duration: this.sound.getDuration(),
+                    // })
+                    console.log('------ Successful load')
+                    setDuration(newSound.getDuration())
+                    // sound.play(playComplete)
                 }
             })
+
+            setSound(newSound)
+            setSoundName(filepath)
         }
     }
-    playComplete = (success) => {
-        if (this.sound) {
+    const playComplete = (success) => {
+        if (sound) {
             if (success) {
                 console.log('successfully finished playing')
             } else {
                 console.log('playback failed due to audio decoding errors')
                 Alert.alert('Notice', 'audio file error. (Error code : 2)')
             }
-            this.setState({ playState: 'paused', playSeconds: 0 })
-            this.sound.setCurrentTime(0)
+            setPlayState('paused')
+            setPlaySeconds(0)
+            sound.setCurrentTime(0)
         }
     }
 
-    pause = () => {
-        if (this.sound) {
-            this.sound.pause()
+    const doPause = () => {
+        if (sound != null) {
+            sound.pause()
         }
-
-        this.setState({ playState: 'paused' })
+        setPlayState('paused')
     }
 
-    jumpPrev15Seconds = () => {
-        this.jumpSeconds(-15)
-    }
-    jumpNext15Seconds = () => {
-        this.jumpSeconds(15)
-    }
-    jumpSeconds = (secsDelta) => {
-        if (this.sound) {
-            this.sound.getCurrentTime((secs, isPlaying) => {
+    // const jumpPrev15Seconds = () => {
+    //     this.jumpSeconds(-15)
+    // }
+    // const jumpNext15Seconds = () => {
+    //     this.jumpSeconds(15)
+    // }
+    const jumpSeconds = (secsDelta: number) => {
+        if (sound != null) {
+            sound.getCurrentTime((secs: number, isPlaying: boolean) => {
                 let nextSecs = secs + secsDelta
                 if (nextSecs < 0) nextSecs = 0
-                else if (nextSecs > this.state.duration)
-                    nextSecs = this.state.duration
-                this.sound.setCurrentTime(nextSecs)
-                this.setState({ playSeconds: nextSecs })
+                else if (nextSecs > duration) nextSecs = duration
+                sound.setCurrentTime(nextSecs)
+                setPlaySeconds(nextSecs)
             })
         }
     }
 
-    getAudioTimeString(seconds: string) {
-        const h = parseInt(seconds) / (60 * 60)
-        const m = (parseInt(seconds) % (60 * 60)) / 60
-        const s = parseInt(seconds) % 60
+    // const getAudioTimeString = (seconds: number): string => {
+    //     // const h = seconds / (60 * 60)
+    //     // const m = (seconds % (60 * 60)) / 60
+    //     const s = Math.round(seconds)
 
-        return (
-            (h < 10 ? '0' + h : h) +
-            ':' +
-            (m < 10 ? '0' + m : m) +
-            ':' +
-            (s < 10 ? '0' + s : s)
-        )
+    //     // const returnStr =
+    //     //     (h < 10 ? '0' + h : h) +
+    //     //     ':' +
+    //     //     (m < 10 ? '0' + m : m) +
+    //     //     ':' +
+    //     //     (s < 10 ? '0' + s : s)
+    //     return `${s} s`
+    // }
+
+    const currentTimeString = (): string => {
+        return `${Math.round(playSeconds).toString()} s`
     }
 
-    render() {
-        console.log('--- Starting render ---')
+    const durationString = (): string => {
+        return `${Math.round(duration).toString()} s`
+    }
 
-        const currentTimeString = this.getAudioTimeString(
-            this.state.playSeconds
-        )
-        const durationString = this.getAudioTimeString(this.state.duration)
-
-        console.log('Duration string', durationString)
-
-        console.log('IMG speaker', img_speaker)
-
-        return (
+    return (
+        <View
+            style={{
+                flex: 1,
+                justifyContent: 'center',
+                // backgroundColor: 'black',
+            }}
+        >
+            <Image
+                source={img_speaker}
+                style={{
+                    width: 150,
+                    height: 150,
+                    marginBottom: 15,
+                    alignSelf: 'center',
+                }}
+            />
+            <Text style={{ alignSelf: 'center' }}>Loaded: {soundName}</Text>
+            <Text style={{ alignSelf: 'center' }}>Play state: {playState}</Text>
             <View
                 style={{
-                    flex: 1,
+                    flexDirection: 'row',
                     justifyContent: 'center',
-                    // backgroundColor: 'black',
+                    marginVertical: 15,
                 }}
             >
-                <View>
-                    <Text>Test text</Text>
-                </View>
-                <View>
+                <TouchableOpacity
+                    onPress={() => {
+                        jumpSeconds(-JUMP_SECONDS)
+                    }}
+                    style={{ justifyContent: 'center' }}
+                >
                     <Image
-                        source={img_speaker}
+                        source={img_playjumpleft}
                         style={{
-                            width: 300,
-                            height: 300,
-                            tintColor: 'green',
-                            // marginBottom: 15,
-                            // alignSelf: 'center',
+                            width: SMALL_BUTTON_SIZE,
+                            height: SMALL_BUTTON_SIZE,
+                            tintColor: 'gray',
                         }}
                     />
+                    <Text
+                        style={{
+                            position: 'absolute',
+                            alignSelf: 'center',
+                            marginTop: 1,
+                            fontSize: 12,
+                        }}
+                    >
+                        15
+                    </Text>
+                </TouchableOpacity>
 
-                </View>
-                <Image
-                    source={{
-                        uri: 'https://upload.wikimedia.org/wikipedia/commons/f/f0/Everest_North_Face_toward_Base_Camp_Tibet_Luca_Galuzzi_2006_edit_1.jpg',
+                {playState == 'playing' && (
+                    <TouchableOpacity
+                        onPress={doPause}
+                        style={{ marginHorizontal: 20 }}
+                    >
+                        <Image
+                            source={img_pause}
+                            style={{
+                                width: SMALL_BUTTON_SIZE,
+                                height: SMALL_BUTTON_SIZE,
+                                tintColor: SMALL_BUTTON_TINT,
+                            }}
+                        />
+                    </TouchableOpacity>
+                )}
+                {playState == 'paused' && (
+                    <TouchableOpacity
+                        onPress={doPlay}
+                        style={{ marginHorizontal: 20 }}
+                    >
+                        <Image
+                            source={img_play}
+                            style={{
+                                width: SMALL_BUTTON_SIZE,
+                                height: SMALL_BUTTON_SIZE,
+                                tintColor: SMALL_BUTTON_TINT,
+                            }}
+                        />
+                    </TouchableOpacity>
+                )}
+                <TouchableOpacity
+                    onPress={() => {
+                        jumpSeconds(JUMP_SECONDS)
+                    }}
+                    style={{ justifyContent: 'center' }}
+                >
+                    <Image
+                        source={img_playjumpright}
+                        style={{
+                            width: SMALL_BUTTON_SIZE,
+                            height: SMALL_BUTTON_SIZE,
+                            tintColor: SMALL_BUTTON_TINT,
+                        }}
+                    />
+                    <Text
+                        style={{
+                            position: 'absolute',
+                            alignSelf: 'center',
+                            marginTop: 1,
+                            // color: 'white',
+                            fontSize: 12,
+                        }}
+                    >
+                        15
+                    </Text>
+                </TouchableOpacity>
+            </View>
+
+            {/* Slider */}
+
+            <View
+                style={{
+                    marginVertical: 15,
+                    marginHorizontal: 15,
+                    flexDirection: 'row',
+                }}
+            >
+                <Text style={{ alignSelf: 'center' }}>
+                    {currentTimeString()}
+                </Text>
+                <Slider
+                    onTouchStart={onSliderEditStart}
+                    onTouchMove={() => console.log('onTouchMove')}
+                    onTouchEnd={onSliderEditEnd}
+                    onTouchEndCapture={() => console.log('onTouchEndCapture')}
+                    onTouchCancel={() => console.log('onTouchCancel')}
+                    onValueChange={onSliderEditing}
+                    value={playSeconds}
+                    maximumValue={duration}
+                    maximumTrackTintColor="gray"
+                    minimumTrackTintColor="white"
+                    thumbTintColor="white"
+                    style={{
+                        flex: 1,
+                        alignSelf: 'center',
+                        marginHorizontal: Platform.select({ ios: 5 }),
                     }}
                 />
-                <View>
-                    <Text>Test after</Text>
-                </View>
-                {/* <View
-                    style={{
-                        flexDirection: 'row',
-                        justifyContent: 'center',
-                        marginVertical: 15,
-                    }}
-                >
-                    <TouchableOpacity
-                        onPress={this.jumpPrev15Seconds}
-                        style={{ justifyContent: 'center' }}
-                    >
-                        <Image
-                            source={img_playjumpleft}
-                            style={{ width: 30, height: 30 }}
-                        />
-                        <Text
-                            style={{
-                                position: 'absolute',
-                                alignSelf: 'center',
-                                marginTop: 1,
-                                color: 'white',
-                                fontSize: 12,
-                            }}
-                        >
-                            15
-                        </Text>
-                    </TouchableOpacity>
-                    {this.state.playState == 'playing' && (
-                        <TouchableOpacity
-                            onPress={this.pause}
-                            style={{ marginHorizontal: 20 }}
-                        >
-                            <Image
-                                source={img_pause}
-                                style={{ width: 30, height: 30 }}
-                            />
-                        </TouchableOpacity>
-                    )}
-                    {this.state.playState == 'paused' && (
-                        <TouchableOpacity
-                            onPress={this.play}
-                            style={{ marginHorizontal: 20 }}
-                        >
-                            <Image
-                                source={img_play}
-                                style={{ width: 30, height: 30 }}
-                            />
-                        </TouchableOpacity>
-                    )}
-                    <TouchableOpacity
-                        onPress={this.jumpNext15Seconds}
-                        style={{ justifyContent: 'center' }}
-                    >
-                        <Image
-                            source={img_playjumpright}
-                            style={{ width: 30, height: 30 }}
-                        />
-                        <Text
-                            style={{
-                                position: 'absolute',
-                                alignSelf: 'center',
-                                marginTop: 1,
-                                color: 'white',
-                                fontSize: 12,
-                            }}
-                        >
-                            15
-                        </Text>
-                    </TouchableOpacity>
-                </View>
-                <View
-                    style={{
-                        marginVertical: 15,
-                        marginHorizontal: 15,
-                        flexDirection: 'row',
-                    }}
-                >
-                    <Text style={{ color: 'white', alignSelf: 'center' }}>
-                        {currentTimeString}
-                    </Text>
-                    <Slider
-                        onTouchStart={this.onSliderEditStart}
-                        // onTouchMove={() => console.log('onTouchMove')}
-                        onTouchEnd={this.onSliderEditEnd}
-                        // onTouchEndCapture={() => console.log('onTouchEndCapture')}
-                        // onTouchCancel={() => console.log('onTouchCancel')}
-                        onValueChange={this.onSliderEditing}
-                        value={this.state.playSeconds}
-                        maximumValue={this.state.duration}
-                        maximumTrackTintColor="gray"
-                        minimumTrackTintColor="white"
-                        thumbTintColor="white"
-                        style={{
-                            flex: 1,
-                            alignSelf: 'center',
-                            marginHorizontal: Platform.select({ ios: 5 }),
-                        }}
-                    />
-                    <Text style={{ color: 'white', alignSelf: 'center' }}>
-                        {durationString}
-                    </Text> */}
-                {/* </View> */}
+                <Text style={{ alignSelf: 'center' }}>{durationString()}</Text>
             </View>
-        )
-    }
+        </View>
+    )
 }
 
 export default PlayerScreen
