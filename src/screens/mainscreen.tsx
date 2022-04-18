@@ -88,7 +88,7 @@ const MainScreen = ({ navigation }: HomeProps) => {
             <Button
                 onPress={() => {
                     console.log('Test press')
-                    navigation.navigate(NAVIGATION.testAudioPlayer, {title: 'Test'})
+                    // navigation.navigate(NAVIGATION.testAudioPlayer, {title: 'Test'})
                 }}
                 title={'Test title'}
             ></Button>

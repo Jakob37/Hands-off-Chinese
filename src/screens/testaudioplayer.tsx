@@ -10,8 +10,8 @@ import {
 } from 'react-native'
 
 import Sound from 'react-native-sound'
+import { AudioEntryPair } from '../backend/audioentry'
 import { getSignedUrl } from '../views/card/util'
-import { TestAudioPlayerProps } from './navigationutils'
 
 const img_speaker = require('../../resources/ui_speaker.png')
 const img_pause = require('../../resources/ui_pause.png')
@@ -26,14 +26,16 @@ const SMALL_BUTTON_SIZE = 30
 const SPEAKER_SIZE = 150
 const SMALL_BUTTON_TINT = 'gray'
 
-function PlayerScreen({ route, navigation }: TestAudioPlayerProps) {
+interface NewAudioPlayerProps {
+    audioEntry: AudioEntryPair
+}
+function NewAudioPlayer(props: NewAudioPlayerProps) {
     const [playState, setPlayState] = useState('paused')
     const [playSeconds, setPlaySeconds] = useState(0)
     const [duration, setDuration] = useState(0)
     const [sliderEditing, setSliderEditing] = useState(false)
-    const [sound, setSound] = useState(null)
+    const [sound, setSound] = useState<Sound|null>(null)
     const [soundName, setSoundName] = useState('')
-    // const [timeout, setTimeout] = useState(null)
 
     let timeout = null
 
@@ -56,7 +58,7 @@ function PlayerScreen({ route, navigation }: TestAudioPlayerProps) {
                 clearInterval(timeout)
             }
         }
-    }, [sound, playState])
+    }, [sound, playState, props.audioEntry])
 
     // Clear sound when unmounting component
     useEffect(() => {
@@ -70,7 +72,7 @@ function PlayerScreen({ route, navigation }: TestAudioPlayerProps) {
                 setSoundName('')
             }
         }
-    }, [])
+    }, [props.audioEntry])
 
     const onSliderEditing = (seconds: number) => {
         if (sound != null) {
@@ -80,20 +82,26 @@ function PlayerScreen({ route, navigation }: TestAudioPlayerProps) {
     }
 
     const doPlay = async () => {
-        // console.log('Entering doPlay')
         if (sound != null) {
             sound.play(playComplete)
             setPlayState('playing')
         } else {
-            const user = route.params.audioEntries[0].user
-            const id = route.params.audioEntries[0].chineseKey
-            const key = `${user}/${id}`
-            const signedUrl = await getSignedUrl(key)
+            let url
+            let name
+            if (props.audioEntry != null) {
+                const user = props.audioEntry.user
+                const id = props.audioEntry.chineseKey
+                const key = `${user}/${id}`
+                url = await getSignedUrl(key)
+                name = key
+            } else {
+                url = test_mp3
+                name = test_mp3
+            }
 
-            console.log('Obtained signed URL', signedUrl)
-
-            // const filepath = test_mp3
-            const newSound = new Sound(signedUrl, null, (error) => {
+            // For the duration to work correctly for a local file, the 'null' should be omitted
+            // as this one is running from a 'require' file.
+            const newSound = new Sound(url, null, (error) => {
                 console.log('Sound callback called')
                 if (error) {
                     console.log('failed to load the sound', error)
@@ -106,11 +114,11 @@ function PlayerScreen({ route, navigation }: TestAudioPlayerProps) {
             })
 
             setSound(newSound)
-            setSoundName(key)
+            setSoundName(name)
         }
     }
     const playComplete = (success: boolean) => {
-        if (sound) {
+        if (sound != null) {
             if (success) {
                 console.log('successfully finished playing')
             } else {
@@ -149,17 +157,6 @@ function PlayerScreen({ route, navigation }: TestAudioPlayerProps) {
                 justifyContent: 'center',
             }}
         >
-            <Image
-                source={img_speaker}
-                style={{
-                    width: SPEAKER_SIZE,
-                    height: SPEAKER_SIZE,
-                    marginBottom: 15,
-                    alignSelf: 'center',
-                }}
-            />
-            <Text style={{ alignSelf: 'center' }}>Loaded: {soundName}</Text>
-            <Text style={{ alignSelf: 'center' }}>Play state: {playState}</Text>
             <View
                 style={{
                     flexDirection: 'row',
@@ -289,8 +286,10 @@ function PlayerScreen({ route, navigation }: TestAudioPlayerProps) {
                     duration
                 ).toString()} s`}</Text>
             </View>
+            <Text style={{ alignSelf: 'flex-start' }}>Loaded: {soundName}</Text>
+            <Text style={{ alignSelf: 'flex-start' }}>Play state: {playState}</Text>
         </View>
     )
 }
 
-export default PlayerScreen
+export default NewAudioPlayer

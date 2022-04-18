@@ -88,11 +88,6 @@ const App = ({ _signOut, _user }) => {
                                             options={{ title: 'Audio player' }}
                                             component={PlayerScreen}
                                         />
-                                        <Stack.Screen
-                                            name={NAVIGATION.testAudioPlayer}
-                                            options={{ title: 'Test audio player' }}
-                                            component={TestAudioPlayer}
-                                        ></Stack.Screen>
                                     </Stack.Navigator>
                                 </NavigationContainer>
                             </ThemeProvider>
