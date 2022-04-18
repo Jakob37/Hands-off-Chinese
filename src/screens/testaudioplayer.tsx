@@ -16,10 +16,10 @@ const img_pause = require('../../resources/ui_pause.png')
 const img_play = require('../../resources/ui_play.png')
 const img_playjumpleft = require('../../resources/ui_playjumpleft.png')
 const img_playjumpright = require('../../resources/ui_playjumpright.png')
+const test_mp3 = require('../../resources/file_example.mp3')
 
 class PlayerScreen extends React.Component {
-
-    sound: Sound|null
+    sound: Sound | null
     sliderEditing: boolean
     timeout: any
     playSeconds: number
@@ -82,11 +82,13 @@ class PlayerScreen extends React.Component {
             this.sound.play(this.playComplete)
             this.setState({ playState: 'playing' })
         } else {
-            const filepath = this.props.navigation.state.params.filepath
-            var dirpath = ''
-            if (this.props.navigation.state.params.dirpath) {
-                dirpath = this.props.navigation.state.params.dirpath
-            }
+            // const filepath = this.props.navigation.state.params.filepath
+            // var dirpath = ''
+            // if (this.props.navigation.state.params.dirpath) {
+            //     dirpath = this.props.navigation.state.params.dirpath
+            // }
+            const filepath = test_mp3
+            const dirpath = ''
             console.log('[Play]', filepath)
 
             this.sound = new Sound(filepath, dirpath, (error) => {
@@ -159,29 +161,50 @@ class PlayerScreen extends React.Component {
     }
 
     render() {
+        console.log('--- Starting render ---')
+
         const currentTimeString = this.getAudioTimeString(
             this.state.playSeconds
         )
         const durationString = this.getAudioTimeString(this.state.duration)
+
+        console.log('Duration string', durationString)
+
+        console.log('IMG speaker', img_speaker)
 
         return (
             <View
                 style={{
                     flex: 1,
                     justifyContent: 'center',
-                    backgroundColor: 'black',
+                    // backgroundColor: 'black',
                 }}
             >
+                <View>
+                    <Text>Test text</Text>
+                </View>
+                <View>
+                    <Image
+                        source={img_speaker}
+                        style={{
+                            width: 300,
+                            height: 300,
+                            tintColor: 'green',
+                            // marginBottom: 15,
+                            // alignSelf: 'center',
+                        }}
+                    />
+
+                </View>
                 <Image
-                    source={img_speaker}
-                    style={{
-                        width: 150,
-                        height: 150,
-                        marginBottom: 15,
-                        alignSelf: 'center',
+                    source={{
+                        uri: 'https://upload.wikimedia.org/wikipedia/commons/f/f0/Everest_North_Face_toward_Base_Camp_Tibet_Luca_Galuzzi_2006_edit_1.jpg',
                     }}
                 />
-                <View
+                <View>
+                    <Text>Test after</Text>
+                </View>
+                {/* <View
                     style={{
                         flexDirection: 'row',
                         justifyContent: 'center',
@@ -281,8 +304,8 @@ class PlayerScreen extends React.Component {
                     />
                     <Text style={{ color: 'white', alignSelf: 'center' }}>
                         {durationString}
-                    </Text>
-                </View>
+                    </Text> */}
+                {/* </View> */}
             </View>
         )
     }
