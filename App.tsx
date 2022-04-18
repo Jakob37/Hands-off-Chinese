@@ -1,6 +1,6 @@
 import Amplify from 'aws-amplify'
 import React, { useState } from 'react'
-import MainScreen from './src/screens/categoryscreen'
+import MainScreen from './src/screens/mainscreen'
 import awsconfig from './src/custom-aws-exports'
 import {
     PausedIdsContext,

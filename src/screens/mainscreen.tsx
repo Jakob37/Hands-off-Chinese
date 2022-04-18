@@ -85,6 +85,14 @@ const MainScreen = ({ navigation }: HomeProps) => {
 
     return (
         <View style={{ flex: 1 }}>
+            <Button
+                onPress={() => {
+                    console.log('Test press')
+                    navigation.navigate('testaudioplayer', {})
+                }}
+                title={'Test title'}
+            ></Button>
+
             <BasicCard
                 key="test"
                 text={`${flaggedIds.length}`}

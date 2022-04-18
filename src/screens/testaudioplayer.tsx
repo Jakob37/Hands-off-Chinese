@@ -11,11 +11,11 @@ import {
 
 import Sound from 'react-native-sound'
 
-const img_speaker = require('./resources/ui_speaker.png')
-const img_pause = require('./resources/ui_pause.png')
-const img_play = require('./resources/ui_play.png')
-const img_playjumpleft = require('./resources/ui_playjumpleft.png')
-const img_playjumpright = require('./resources/ui_playjumpright.png')
+const img_speaker = require('../../resources/ui_speaker.png')
+const img_pause = require('../../resources/ui_pause.png')
+const img_play = require('../../resources/ui_play.png')
+const img_playjumpleft = require('../../resources/ui_playjumpleft.png')
+const img_playjumpright = require('../../resources/ui_playjumpright.png')
 
 class PlayerScreen extends React.Component {
 

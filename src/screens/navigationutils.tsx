@@ -4,7 +4,7 @@ import { AudioEntryPair } from "../backend/audioentry"
 const NAVIGATION = {
     main: 'Home' as 'Home',
     audioList: 'Audio entries' as 'Audio entries',
-    audioPlayer: 'Audio player' as 'Audio player'
+    audioPlayer: 'Audio player' as 'Audio player',
 }
 
 type RootStackParamList = {
