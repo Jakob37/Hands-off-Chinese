@@ -30,11 +30,13 @@ interface NewAudioPlayerProps {
     audioEntry: AudioEntryPair
 }
 function NewAudioPlayer(props: NewAudioPlayerProps) {
-    const [playState, setPlayState] = useState('paused')
+    const [playingLanguage, setPlayingLanguage] =
+        useState<'english' | 'chinese'>('english')
+    const [playState, setPlayState] = useState<'paused' | 'playing'>('paused')
     const [playSeconds, setPlaySeconds] = useState(0)
     const [duration, setDuration] = useState(0)
     const [sliderEditing, setSliderEditing] = useState(false)
-    const [sound, setSound] = useState<Sound|null>(null)
+    const [sound, setSound] = useState<Sound | null>(null)
     const [soundName, setSoundName] = useState('')
 
     let timeout = null
@@ -63,7 +65,7 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
     // Clear sound when unmounting component
     useEffect(() => {
         // Used to pre-load? But doesn't start playing?
-        doPlay()
+        loadSound()
 
         return () => {
             if (sound != null) {
@@ -81,54 +83,71 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
         }
     }
 
+    const loadSound = async () => {
+        let url
+        let name
+        if (props.audioEntry != null) {
+            const user = props.audioEntry.user
+            const id =
+                playingLanguage == 'chinese'
+                    ? props.audioEntry.chineseKey
+                    : props.audioEntry.englishKey
+            const key = `${user}/${id}`
+            url = await getSignedUrl(key)
+            name = key
+        } else {
+            url = test_mp3
+            name = test_mp3
+        }
+
+        // For the duration to work correctly for a local file, the 'null' should be omitted
+        // as this one is running from a 'require' file.
+        const newSound = new Sound(url, null, (error) => {
+            console.log('Sound callback called')
+            if (error) {
+                console.log('failed to load the sound', error)
+                Alert.alert('Notice', 'audio file error. (Error code : 1)')
+                setPlayState('paused')
+            } else {
+                console.log('------ Successful load')
+                setDuration(newSound.getDuration())
+            }
+        })
+
+        setSound(newSound)
+        setSoundName(name)
+    }
+
     const doPlay = async () => {
         if (sound != null) {
             sound.play(playComplete)
             setPlayState('playing')
         } else {
-            let url
-            let name
-            if (props.audioEntry != null) {
-                const user = props.audioEntry.user
-                const id = props.audioEntry.chineseKey
-                const key = `${user}/${id}`
-                url = await getSignedUrl(key)
-                name = key
-            } else {
-                url = test_mp3
-                name = test_mp3
-            }
-
-            // For the duration to work correctly for a local file, the 'null' should be omitted
-            // as this one is running from a 'require' file.
-            const newSound = new Sound(url, null, (error) => {
-                console.log('Sound callback called')
-                if (error) {
-                    console.log('failed to load the sound', error)
-                    Alert.alert('Notice', 'audio file error. (Error code : 1)')
-                    setPlayState('paused')
-                } else {
-                    console.log('------ Successful load')
-                    setDuration(newSound.getDuration())
-                }
-            })
-
-            setSound(newSound)
-            setSoundName(name)
+            loadSound()
         }
     }
+
     const playComplete = (success: boolean) => {
-        if (sound != null) {
-            if (success) {
-                console.log('successfully finished playing')
-            } else {
-                console.log('playback failed due to audio decoding errors')
-                Alert.alert('Notice', 'audio file error. (Error code : 2)')
-            }
-            setPlayState('paused')
-            setPlaySeconds(0)
-            sound.setCurrentTime(0)
+
+        console.assert(sound != null)
+
+        if (success) {
+            console.log('successfully finished playing')
+        } else {
+            console.log('playback failed due to audio decoding errors')
+            Alert.alert('Notice', 'audio file error. (Error code : 2)')
         }
+        setPlayState('paused')
+        if (playingLanguage == 'english') {
+            setPlayingLanguage('chinese')
+        } else {
+            setPlayingLanguage('english')
+        }
+
+        // setSound(null)
+        setPlaySeconds(0)
+        sound.setCurrentTime(0)
+        loadSound()
     }
 
     const doPause = () => {
@@ -287,7 +306,9 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
                 ).toString()} s`}</Text>
             </View>
             <Text style={{ alignSelf: 'flex-start' }}>Loaded: {soundName}</Text>
-            <Text style={{ alignSelf: 'flex-start' }}>Play state: {playState}</Text>
+            <Text style={{ alignSelf: 'flex-start' }}>
+                Play state: {playState} Language: {playingLanguage}
+            </Text>
         </View>
     )
 }
