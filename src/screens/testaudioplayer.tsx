@@ -13,7 +13,6 @@ import Sound from 'react-native-sound'
 import { AudioEntryPair } from '../backend/audioentry'
 import { getSignedUrl } from '../views/card/util'
 
-const img_speaker = require('../../resources/ui_speaker.png')
 const img_pause = require('../../resources/ui_pause.png')
 const img_play = require('../../resources/ui_play.png')
 const img_playjumpleft = require('../../resources/ui_playjumpleft.png')
@@ -23,8 +22,14 @@ const test_mp3 = require('../../resources/file_example.mp3')
 const PLAYER_INTERVAL = 100
 const JUMP_SECONDS = 15
 const SMALL_BUTTON_SIZE = 30
-const SPEAKER_SIZE = 150
 const SMALL_BUTTON_TINT = 'gray'
+
+// TP: Could these modes be used as a source here?
+const PLAYER_MODES = {
+    english_chinese: ['english', 'pause', 'chinese', 'pause'],
+    chinese_only: ['chinese', 'pause'],
+    chinese_english: ['chinese', 'pause', 'english', 'pause'],
+}
 
 interface NewAudioPlayerProps {
     audioEntry: AudioEntryPair
@@ -128,7 +133,6 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
     }
 
     const playComplete = (success: boolean) => {
-
         console.assert(sound != null)
 
         if (success) {
