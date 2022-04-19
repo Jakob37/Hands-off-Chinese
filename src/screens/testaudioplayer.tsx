@@ -6,7 +6,6 @@ import {
     Slider,
     TouchableOpacity,
     Platform,
-    Alert,
 } from 'react-native'
 
 import Sound from 'react-native-sound'
@@ -20,7 +19,7 @@ const img_playjumpleft = require('../../resources/ui_playjumpleft.png')
 const img_playjumpright = require('../../resources/ui_playjumpright.png')
 const test_mp3 = require('../../resources/file_example.mp3')
 
-const JUMP_SECONDS = 15
+const JUMP_SECONDS = 1
 const SMALL_BUTTON_SIZE = 30
 const SMALL_BUTTON_TINT = 'gray'
 
@@ -37,54 +36,28 @@ interface NewAudioPlayerProps {
     audioEntry: AudioEntryPair
 }
 function NewAudioPlayer(props: NewAudioPlayerProps) {
-
     const [playingLanguage, setPlayingLanguage] =
         useState<'english' | 'chinese'>('english')
     const [playState, setPlayState] = useState<'paused' | 'playing'>('paused')
     const [playSeconds, setPlaySeconds] = useState(0)
     const [duration, setDuration] = useState(0)
     const [sliderEditing, setSliderEditing] = useState(false)
-    // const [sound, setSound] = useState<Sound | null>(null)
     const [soundName, setSoundName] = useState('')
-
-    // let timeout = null
 
     useEffect(() => {
         audioPlayer.init((time) => {
             setPlaySeconds(time)
         })
-        // timeout = setInterval(() => {
-        //     if (
-        //         sound != null &&
-        //         sound.isLoaded() &&
-        //         playState == 'playing' &&
-        //         !sliderEditing
-        //     ) {
-        //         sound.getCurrentTime((seconds, _isPlaying) => {
-        //             setPlaySeconds(seconds)
-        //         })
-        //     }
-        // }, PLAYER_INTERVAL)
 
         return () => {
             audioPlayer.detach()
-            // if (timeout != null) {
-            //     clearInterval(timeout)
-            // }
         }
     }, [playState, props.audioEntry])
 
-    // Clear sound when unmounting component
     useEffect(() => {
-        // Used to pre-load? But doesn't start playing?
         loadSound()
 
         return () => {
-            // if (sound != null) {
-            //     sound.release()
-            //     setSound(null)
-            //     setSoundName('')
-            // }
             audioPlayer.detach()
             setSoundName('')
         }
@@ -126,16 +99,6 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
         setSoundName(key)
     }
 
-    // const doPlay = async () => {
-        
-    //     // if (sound != null) {
-    //     //     sound.play(playComplete)
-    //     //     setPlayState('playing')
-    //     // } else {
-    //     //     loadSound()
-    //     // }
-    // }
-
     // const playComplete = (success: boolean) => {
     //     // console.assert(sound != null)
 
@@ -156,13 +119,6 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
     //     setPlaySeconds(0)
     //     sound.setCurrentTime(0)
     //     loadSound()
-    // }
-
-    // const doPause = () => {
-    //     if (sound != null) {
-    //         sound.pause()
-    //     }
-    //     setPlayState('paused')
     // }
 
     // const jumpSeconds = (secsDelta: number) => {
@@ -191,9 +147,9 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
                     marginVertical: 15,
                 }}
             >
-                {/* <TouchableOpacity
+                <TouchableOpacity
                     onPress={() => {
-                        jumpSeconds(-JUMP_SECONDS)
+                        audioPlayer.jump(-JUMP_SECONDS)
                     }}
                     style={{ justifyContent: 'center' }}
                 >
@@ -215,11 +171,14 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
                     >
                         15
                     </Text>
-                </TouchableOpacity> */}
+                </TouchableOpacity>
 
-                {/* {playState == 'playing' && (
+                {playState == 'playing' && (
                     <TouchableOpacity
-                        onPress={doPause}
+                        onPress={() => {
+                            audioPlayer.pause()
+                            setPlayState('paused')
+                        }}
                         style={{ marginHorizontal: 20 }}
                     >
                         <Image
@@ -231,14 +190,15 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
                             }}
                         />
                     </TouchableOpacity>
-                )} */}
+                )}
                 {playState == 'paused' && (
                     <TouchableOpacity
                         onPress={() => {
                             console.log('Pressing')
                             audioPlayer.play(() => {
-                                console.log('FIXME')
+                                setPlayState('paused')
                             })
+                            setPlayState('playing')
                         }}
                         style={{ marginHorizontal: 20 }}
                     >
@@ -252,9 +212,9 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
                         />
                     </TouchableOpacity>
                 )}
-                {/* <TouchableOpacity
+                <TouchableOpacity
                     onPress={() => {
-                        jumpSeconds(JUMP_SECONDS)
+                        audioPlayer.jump(JUMP_SECONDS)
                     }}
                     style={{ justifyContent: 'center' }}
                 >
@@ -277,7 +237,7 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
                     >
                         15
                     </Text>
-                </TouchableOpacity> */}
+                </TouchableOpacity>
             </View>
 
             {/* Slider */}

@@ -16,23 +16,42 @@ class NewAudioPlayerClass {
     }
 
     play(playCompleteCallback: () => void) {
-        console.log('Attempting play, with _sound', this._sound)
+        // console.log('Attempting play, with _sound', this._sound)
         if (this._sound != null) {
             console.log('Play audio')
             this._sound.play(playCompleteCallback)
+            this._playState = 'playing'
         }
     }
 
+    jump(seconds: number) {
+        this._playSeconds += seconds
+    }
+
+    pause() {
+        if (this._sound != null) {
+            this._sound.pause()
+        }
+        this._playState = 'paused'
+    }
+
     init(timeCallback: (time: number) => void) {
-        console.log('Running init')
+        console.log(': Running init')
         this._timeout = setInterval(() => {
-            // console.log('Tick')
+            console.log(
+                ': Tick, with audio:',
+                this._sound != null,
+                'Play state',
+                this._playState
+            )
             if (
                 this._sound != null &&
                 this._sound.isLoaded() &&
                 this._playState == 'playing'
             ) {
+                console.log(': Playing')
                 this._sound.getCurrentTime((seconds, _isPlaying) => {
+                    console.log(': Retrieving current time', seconds)
                     this._playSeconds = seconds
                     timeCallback(seconds)
                 })
