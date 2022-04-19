@@ -10,6 +10,7 @@ import {
 } from 'react-native'
 
 import Sound from 'react-native-sound'
+import { NewAudioPlayerClass } from '../audio/NewAudioPlayer'
 import { AudioEntryPair } from '../backend/audioentry'
 import { getSignedUrl } from '../views/card/util'
 
@@ -19,7 +20,6 @@ const img_playjumpleft = require('../../resources/ui_playjumpleft.png')
 const img_playjumpright = require('../../resources/ui_playjumpright.png')
 const test_mp3 = require('../../resources/file_example.mp3')
 
-const PLAYER_INTERVAL = 100
 const JUMP_SECONDS = 15
 const SMALL_BUTTON_SIZE = 30
 const SMALL_BUTTON_TINT = 'gray'
@@ -31,41 +31,48 @@ const PLAYER_MODES = {
     chinese_english: ['chinese', 'pause', 'english', 'pause'],
 }
 
+const audioPlayer = new NewAudioPlayerClass()
+
 interface NewAudioPlayerProps {
     audioEntry: AudioEntryPair
 }
 function NewAudioPlayer(props: NewAudioPlayerProps) {
+
     const [playingLanguage, setPlayingLanguage] =
         useState<'english' | 'chinese'>('english')
     const [playState, setPlayState] = useState<'paused' | 'playing'>('paused')
     const [playSeconds, setPlaySeconds] = useState(0)
     const [duration, setDuration] = useState(0)
     const [sliderEditing, setSliderEditing] = useState(false)
-    const [sound, setSound] = useState<Sound | null>(null)
+    // const [sound, setSound] = useState<Sound | null>(null)
     const [soundName, setSoundName] = useState('')
 
-    let timeout = null
+    // let timeout = null
 
     useEffect(() => {
-        timeout = setInterval(() => {
-            if (
-                sound != null &&
-                sound.isLoaded() &&
-                playState == 'playing' &&
-                !sliderEditing
-            ) {
-                sound.getCurrentTime((seconds, _isPlaying) => {
-                    setPlaySeconds(seconds)
-                })
-            }
-        }, PLAYER_INTERVAL)
+        audioPlayer.init((time) => {
+            setPlaySeconds(time)
+        })
+        // timeout = setInterval(() => {
+        //     if (
+        //         sound != null &&
+        //         sound.isLoaded() &&
+        //         playState == 'playing' &&
+        //         !sliderEditing
+        //     ) {
+        //         sound.getCurrentTime((seconds, _isPlaying) => {
+        //             setPlaySeconds(seconds)
+        //         })
+        //     }
+        // }, PLAYER_INTERVAL)
 
         return () => {
-            if (timeout != null) {
-                clearInterval(timeout)
-            }
+            audioPlayer.detach()
+            // if (timeout != null) {
+            //     clearInterval(timeout)
+            // }
         }
-    }, [sound, playState, props.audioEntry])
+    }, [playState, props.audioEntry])
 
     // Clear sound when unmounting component
     useEffect(() => {
@@ -73,105 +80,102 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
         loadSound()
 
         return () => {
-            if (sound != null) {
-                sound.release()
-                setSound(null)
-                setSoundName('')
-            }
+            // if (sound != null) {
+            //     sound.release()
+            //     setSound(null)
+            //     setSoundName('')
+            // }
+            audioPlayer.detach()
+            setSoundName('')
         }
     }, [props.audioEntry])
 
     const onSliderEditing = (seconds: number) => {
-        if (sound != null) {
-            sound.setCurrentTime(seconds)
-            setPlaySeconds(seconds)
-        }
+        audioPlayer.setCurrentTime(seconds)
+        setPlaySeconds(audioPlayer._playSeconds)
+        // if (sound != null) {
+        //     sound.setCurrentTime(seconds)
+        //     setPlaySeconds(seconds)
+        // }
     }
 
     const loadSound = async () => {
-        let url
-        let name
-        if (props.audioEntry != null) {
-            const user = props.audioEntry.user
-            const id =
-                playingLanguage == 'chinese'
-                    ? props.audioEntry.chineseKey
-                    : props.audioEntry.englishKey
-            const key = `${user}/${id}`
-            url = await getSignedUrl(key)
-            name = key
-        } else {
-            url = test_mp3
-            name = test_mp3
-        }
+        console.assert(props.audioEntry != null)
 
-        // For the duration to work correctly for a local file, the 'null' should be omitted
-        // as this one is running from a 'require' file.
-        const newSound = new Sound(url, null, (error) => {
-            console.log('Sound callback called')
-            if (error) {
+        const user = props.audioEntry.user
+        const id =
+            playingLanguage == 'chinese'
+                ? props.audioEntry.chineseKey
+                : props.audioEntry.englishKey
+        const key = `${user}/${id}`
+        const url = await getSignedUrl(key)
+        audioPlayer.loadAudio(
+            url,
+            key,
+            (error) => {
                 console.log('failed to load the sound', error)
-                Alert.alert('Notice', 'audio file error. (Error code : 1)')
                 setPlayState('paused')
-            } else {
+            },
+            (sound) => {
                 console.log('------ Successful load')
-                setDuration(newSound.getDuration())
+                setDuration(sound.getDuration())
             }
-        })
+        )
 
-        setSound(newSound)
-        setSoundName(name)
+        // setSound(newSound)
+        setSoundName(key)
     }
 
-    const doPlay = async () => {
-        if (sound != null) {
-            sound.play(playComplete)
-            setPlayState('playing')
-        } else {
-            loadSound()
-        }
-    }
+    // const doPlay = async () => {
+        
+    //     // if (sound != null) {
+    //     //     sound.play(playComplete)
+    //     //     setPlayState('playing')
+    //     // } else {
+    //     //     loadSound()
+    //     // }
+    // }
 
-    const playComplete = (success: boolean) => {
-        console.assert(sound != null)
+    // const playComplete = (success: boolean) => {
+    //     // console.assert(sound != null)
 
-        if (success) {
-            console.log('successfully finished playing')
-        } else {
-            console.log('playback failed due to audio decoding errors')
-            Alert.alert('Notice', 'audio file error. (Error code : 2)')
-        }
-        setPlayState('paused')
-        if (playingLanguage == 'english') {
-            setPlayingLanguage('chinese')
-        } else {
-            setPlayingLanguage('english')
-        }
+    //     if (success) {
+    //         console.log('successfully finished playing')
+    //     } else {
+    //         console.log('playback failed due to audio decoding errors')
+    //         Alert.alert('Notice', 'audio file error. (Error code : 2)')
+    //     }
+    //     setPlayState('paused')
+    //     if (playingLanguage == 'english') {
+    //         setPlayingLanguage('chinese')
+    //     } else {
+    //         setPlayingLanguage('english')
+    //     }
 
-        // setSound(null)
-        setPlaySeconds(0)
-        sound.setCurrentTime(0)
-        loadSound()
-    }
+    //     // setSound(null)
+    //     setPlaySeconds(0)
+    //     sound.setCurrentTime(0)
+    //     loadSound()
+    // }
 
-    const doPause = () => {
-        if (sound != null) {
-            sound.pause()
-        }
-        setPlayState('paused')
-    }
+    // const doPause = () => {
+    //     if (sound != null) {
+    //         sound.pause()
+    //     }
+    //     setPlayState('paused')
+    // }
 
-    const jumpSeconds = (secsDelta: number) => {
-        if (sound != null) {
-            sound.getCurrentTime((secs: number, isPlaying: boolean) => {
-                let nextSecs = secs + secsDelta
-                if (nextSecs < 0) nextSecs = 0
-                else if (nextSecs > duration) nextSecs = duration
-                sound.setCurrentTime(nextSecs)
-                setPlaySeconds(nextSecs)
-            })
-        }
-    }
+    // const jumpSeconds = (secsDelta: number) => {
+    //     if (sound != null) {
+    //         sound.getCurrentTime((secs: number, isPlaying: boolean) => {
+    //             let nextSecs = secs + secsDelta
+    //             if (nextSecs < 0) nextSecs = 0
+    //             else if (nextSecs > duration) nextSecs = duration
+    //             sound.setCurrentTime(nextSecs)
+    //             setPlaySeconds(nextSecs)
+    //         })
+    //     }
+    // }
 
     return (
         <View
@@ -187,7 +191,7 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
                     marginVertical: 15,
                 }}
             >
-                <TouchableOpacity
+                {/* <TouchableOpacity
                     onPress={() => {
                         jumpSeconds(-JUMP_SECONDS)
                     }}
@@ -211,9 +215,9 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
                     >
                         15
                     </Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
 
-                {playState == 'playing' && (
+                {/* {playState == 'playing' && (
                     <TouchableOpacity
                         onPress={doPause}
                         style={{ marginHorizontal: 20 }}
@@ -227,10 +231,15 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
                             }}
                         />
                     </TouchableOpacity>
-                )}
+                )} */}
                 {playState == 'paused' && (
                     <TouchableOpacity
-                        onPress={doPlay}
+                        onPress={() => {
+                            console.log('Pressing')
+                            audioPlayer.play(() => {
+                                console.log('FIXME')
+                            })
+                        }}
                         style={{ marginHorizontal: 20 }}
                     >
                         <Image
@@ -243,7 +252,7 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
                         />
                     </TouchableOpacity>
                 )}
-                <TouchableOpacity
+                {/* <TouchableOpacity
                     onPress={() => {
                         jumpSeconds(JUMP_SECONDS)
                     }}
@@ -268,7 +277,7 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
                     >
                         15
                     </Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
             </View>
 
             {/* Slider */}
