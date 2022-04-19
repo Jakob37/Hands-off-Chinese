@@ -1,7 +1,6 @@
 import Sound from 'react-native-sound'
-import { playTestSound } from 'src/test/util'
 
-const PLAYER_INTERVAL = 1000
+const PLAYER_INTERVAL = 100
 
 class NewAudioPlayerClass {
     _sound: Sound | null = null
@@ -11,6 +10,8 @@ class NewAudioPlayerClass {
     _soundName: string = ''
     _timeout = null
 
+    _playCompleteCallback: () => void = null
+
     constructor() {
         console.log('New constructor')
     }
@@ -18,7 +19,7 @@ class NewAudioPlayerClass {
     play(playCompleteCallback: () => void) {
         // console.log('Attempting play, with _sound', this._sound)
         if (this._sound != null) {
-            console.log('Play audio')
+            this._playCompleteCallback = playCompleteCallback
             this._sound.play(playCompleteCallback)
             this._playState = 'playing'
         }
@@ -35,23 +36,22 @@ class NewAudioPlayerClass {
         this._playState = 'paused'
     }
 
+    unpause() {
+        if (this._sound != null) {
+            this._sound.play(this._playCompleteCallback)
+            this._playState = 'playing'
+        }
+    }
+
     init(timeCallback: (time: number) => void) {
         console.log(': Running init')
         this._timeout = setInterval(() => {
-            console.log(
-                ': Tick, with audio:',
-                this._sound != null,
-                'Play state',
-                this._playState
-            )
             if (
                 this._sound != null &&
                 this._sound.isLoaded() &&
                 this._playState == 'playing'
             ) {
-                console.log(': Playing')
                 this._sound.getCurrentTime((seconds, _isPlaying) => {
-                    console.log(': Retrieving current time', seconds)
                     this._playSeconds = seconds
                     timeCallback(seconds)
                 })

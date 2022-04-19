@@ -8,7 +8,6 @@ import {
     Platform,
 } from 'react-native'
 
-import Sound from 'react-native-sound'
 import { NewAudioPlayerClass } from '../audio/NewAudioPlayer'
 import { AudioEntryPair } from '../backend/audioentry'
 import { getSignedUrl } from '../views/card/util'
@@ -25,10 +24,10 @@ const SMALL_BUTTON_TINT = 'gray'
 
 // TP: Could these modes be used as a source here?
 const PLAYER_MODES = {
-    english_chinese: ['english', 'pause', 'chinese', 'pause'],
+    english_chinese: ['english', 'chinese'],
     chinese_only: ['chinese', 'pause'],
     chinese_english: ['chinese', 'pause', 'english', 'pause'],
-}
+} as Record<string, ('english' | 'chinese' | 'pause')[]>
 
 const audioPlayer = new NewAudioPlayerClass()
 
@@ -36,12 +35,13 @@ interface NewAudioPlayerProps {
     audioEntry: AudioEntryPair
 }
 function NewAudioPlayer(props: NewAudioPlayerProps) {
-    const [playingLanguage, setPlayingLanguage] =
-        useState<'english' | 'chinese'>('english')
+    const [playModes, setPlayModes] = useState<
+        ('english' | 'chinese' | 'pause')[]
+    >(PLAYER_MODES.english_chinese)
+    const [playModeIndex, setPlayModeIndex] = useState(0)
     const [playState, setPlayState] = useState<'paused' | 'playing'>('paused')
     const [playSeconds, setPlaySeconds] = useState(0)
     const [duration, setDuration] = useState(0)
-    const [sliderEditing, setSliderEditing] = useState(false)
     const [soundName, setSoundName] = useState('')
 
     useEffect(() => {
@@ -63,17 +63,10 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
         }
     }, [props.audioEntry])
 
-    const onSliderEditing = (seconds: number) => {
-        audioPlayer.setCurrentTime(seconds)
-        setPlaySeconds(audioPlayer._playSeconds)
-        // if (sound != null) {
-        //     sound.setCurrentTime(seconds)
-        //     setPlaySeconds(seconds)
-        // }
-    }
-
     const loadSound = async () => {
         console.assert(props.audioEntry != null)
+
+        const playingLanguage = playModes[playModeIndex]
 
         const user = props.audioEntry.user
         const id =
@@ -95,43 +88,8 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
             }
         )
 
-        // setSound(newSound)
         setSoundName(key)
     }
-
-    // const playComplete = (success: boolean) => {
-    //     // console.assert(sound != null)
-
-    //     if (success) {
-    //         console.log('successfully finished playing')
-    //     } else {
-    //         console.log('playback failed due to audio decoding errors')
-    //         Alert.alert('Notice', 'audio file error. (Error code : 2)')
-    //     }
-    //     setPlayState('paused')
-    //     if (playingLanguage == 'english') {
-    //         setPlayingLanguage('chinese')
-    //     } else {
-    //         setPlayingLanguage('english')
-    //     }
-
-    //     // setSound(null)
-    //     setPlaySeconds(0)
-    //     sound.setCurrentTime(0)
-    //     loadSound()
-    // }
-
-    // const jumpSeconds = (secsDelta: number) => {
-    //     if (sound != null) {
-    //         sound.getCurrentTime((secs: number, isPlaying: boolean) => {
-    //             let nextSecs = secs + secsDelta
-    //             if (nextSecs < 0) nextSecs = 0
-    //             else if (nextSecs > duration) nextSecs = duration
-    //             sound.setCurrentTime(nextSecs)
-    //             setPlaySeconds(nextSecs)
-    //         })
-    //     }
-    // }
 
     return (
         <View
@@ -196,7 +154,9 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
                         onPress={() => {
                             console.log('Pressing')
                             audioPlayer.play(() => {
-                                setPlayState('paused')
+                                // setPlayState('paused')
+                                setPlayModeIndex(playModeIndex + 1)
+                                loadSound()
                             })
                             setPlayState('playing')
                         }}
@@ -254,15 +214,20 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
                 </Text>
                 <Slider
                     onTouchStart={() => {
-                        setSliderEditing(true)
+                        // setSliderEditing(true)
+                        audioPlayer.pause()
                     }}
-                    onTouchMove={() => console.log('onTouchMove')}
+                    // onTouchMove={() => console.log('onTouchMove')}
                     onTouchEnd={() => {
-                        setSliderEditing(false)
+                        // setSliderEditing(false)
+                        audioPlayer.unpause()
                     }}
-                    onTouchEndCapture={() => console.log('onTouchEndCapture')}
-                    onTouchCancel={() => console.log('onTouchCancel')}
-                    onValueChange={onSliderEditing}
+                    // onTouchEndCapture={() => console.log('onTouchEndCapture')}
+                    // onTouchCancel={() => console.log('onTouchCancel')}
+                    onValueChange={(seconds) => {
+                        audioPlayer.setCurrentTime(seconds)
+                        setPlaySeconds(audioPlayer._playSeconds)
+                    }}
                     value={playSeconds}
                     maximumValue={duration}
                     maximumTrackTintColor="gray"
@@ -280,7 +245,7 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
             </View>
             <Text style={{ alignSelf: 'flex-start' }}>Loaded: {soundName}</Text>
             <Text style={{ alignSelf: 'flex-start' }}>
-                Play state: {playState} Language: {playingLanguage}
+                Play state: {playState} Language: {playModeIndex}
             </Text>
         </View>
     )
