@@ -32,21 +32,34 @@ const PLAYER_MODES = {
 const audioPlayer = new NewAudioPlayerClass()
 
 interface NewAudioPlayerProps {
-    audioEntry: AudioEntryPair
+    audioEntries: AudioEntryPair[]
 }
 function NewAudioPlayer(props: NewAudioPlayerProps) {
     const [playModes, setPlayModes] = useState<
         ('english' | 'chinese' | 'pause')[]
     >(PLAYER_MODES.english_chinese)
-    const [playModeIndex, setPlayModeIndex] = useState(0)
+    const [playAudioIndices, setPlayAudioIndices] = useState({
+        play: 0,
+        audio: 0,
+    })
+    // const [audioEntryIndex, setAudioEntryIndex] = useState(0)
     const [playState, setPlayState] = useState<'paused' | 'playing'>('paused')
     const [playSeconds, setPlaySeconds] = useState(0)
     const [duration, setDuration] = useState(0)
     const [soundName, setSoundName] = useState('')
 
     const incrementPlayModeIndex = () => {
-        const updatedIndex = (playModeIndex + 1) % playModes.length
-        setPlayModeIndex(updatedIndex)
+        let playIndex = playAudioIndices.play + 1
+        let entryIndex = playAudioIndices.audio
+        if (playIndex >= playModes.length) {
+            playIndex -= playModes.length
+            entryIndex = (entryIndex + 1) % props.audioEntries.length
+        }
+
+        console.log('Play index', playIndex, 'Entry index', entryIndex)
+
+        setPlayAudioIndices({ play: playIndex, audio: entryIndex })
+        // setAudioEntryIndex(entryIndex)
     }
 
     useEffect(() => {
@@ -57,7 +70,7 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
         return () => {
             audioPlayer.detach()
         }
-    }, [playState, props.audioEntry])
+    }, [playState, props.audioEntries])
 
     useEffect(() => {
         loadSound()
@@ -66,29 +79,29 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
             audioPlayer.detach()
             setSoundName('')
         }
-    }, [props.audioEntry])
+    }, [props.audioEntries])
 
     useEffect(() => {
         loadSound()
-    }, [playModeIndex])
+    }, [playAudioIndices])
 
     const loadSound = async () => {
-        console.assert(props.audioEntry != null)
+        console.assert(props.audioEntries.length > 0)
 
-        const playingLanguage = playModes[playModeIndex]
+        const playingLanguage = playModes[playAudioIndices.play]
 
         console.log(
             '--- Loading language',
-            playingLanguage,
-            'from index',
-            playModeIndex
+            playAudioIndices,
         )
 
-        const user = props.audioEntry.user
+        const currAudioEntry = props.audioEntries[playAudioIndices.audio]
+
+        const user = currAudioEntry.user
         const id =
             playingLanguage == 'chinese'
-                ? props.audioEntry.chineseKey
-                : props.audioEntry.englishKey
+                ? currAudioEntry.chineseKey
+                : currAudioEntry.englishKey
         const key = `${user}/${id}`
         const url = await getSignedUrl(key)
         audioPlayer.loadAudio(
@@ -260,7 +273,7 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
             </View>
             <Text style={{ alignSelf: 'flex-start' }}>Loaded: {soundName}</Text>
             <Text style={{ alignSelf: 'flex-start' }}>
-                Play state: {playState} Language: {playModeIndex}
+                Play state: {playState} {playAudioIndices.play} Language: {playAudioIndices.audio}
             </Text>
         </View>
     )

@@ -136,7 +136,7 @@ function PlayerScreen({ route, navigation }: AudioPlayerProps) {
             {/* FIXME: Why is it pushed down into the bottom without the min height? */}
             <View style={{ justifyContent: 'flex-end', minHeight: '25%' }}>
                 <NewAudioPlayer
-                    audioEntry={route.params.audioEntries[0]}
+                    audioEntries={route.params.audioEntries}
                 ></NewAudioPlayer>
             </View>
 
