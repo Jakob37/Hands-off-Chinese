@@ -44,6 +44,11 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
     const [duration, setDuration] = useState(0)
     const [soundName, setSoundName] = useState('')
 
+    const incrementPlayModeIndex = () => {
+        const updatedIndex = (playModeIndex + 1) % playModes.length
+        setPlayModeIndex(updatedIndex)
+    }
+
     useEffect(() => {
         audioPlayer.init((time) => {
             setPlaySeconds(time)
@@ -63,10 +68,21 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
         }
     }, [props.audioEntry])
 
+    useEffect(() => {
+        loadSound()
+    }, [playModeIndex])
+
     const loadSound = async () => {
         console.assert(props.audioEntry != null)
 
         const playingLanguage = playModes[playModeIndex]
+
+        console.log(
+            '--- Loading language',
+            playingLanguage,
+            'from index',
+            playModeIndex
+        )
 
         const user = props.audioEntry.user
         const id =
@@ -154,9 +170,8 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
                         onPress={() => {
                             console.log('Pressing')
                             audioPlayer.play(() => {
-                                // setPlayState('paused')
-                                setPlayModeIndex(playModeIndex + 1)
-                                loadSound()
+                                setPlayState('paused')
+                                incrementPlayModeIndex()
                             })
                             setPlayState('playing')
                         }}
