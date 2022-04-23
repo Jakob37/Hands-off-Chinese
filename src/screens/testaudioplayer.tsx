@@ -33,6 +33,7 @@ const audioPlayer = new NewAudioPlayerClass()
 
 interface NewAudioPlayerProps {
     audioEntries: AudioEntryPair[]
+    newEntryCallback: (newEntry: AudioEntryPair) => void
 }
 function NewAudioPlayer(props: NewAudioPlayerProps) {
     const [playModes, setPlayModes] = useState<
@@ -90,12 +91,13 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
 
         const playingLanguage = playModes[playAudioIndices.play]
 
-        console.log(
-            '--- Loading language',
-            playAudioIndices,
-        )
+        console.log('--- Loading language', playAudioIndices)
 
         const currAudioEntry = props.audioEntries[playAudioIndices.audio]
+
+        if (playAudioIndices.play == 0) {
+            props.newEntryCallback(currAudioEntry)
+        }
 
         const user = currAudioEntry.user
         const id =
@@ -273,7 +275,8 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
             </View>
             <Text style={{ alignSelf: 'flex-start' }}>Loaded: {soundName}</Text>
             <Text style={{ alignSelf: 'flex-start' }}>
-                Play state: {playState} {playAudioIndices.play} Language: {playAudioIndices.audio}
+                Play state: {playState} {playAudioIndices.play} Language:{' '}
+                {playAudioIndices.audio}
             </Text>
         </View>
     )

@@ -137,6 +137,9 @@ function PlayerScreen({ route, navigation }: AudioPlayerProps) {
             <View style={{ justifyContent: 'flex-end', minHeight: '25%' }}>
                 <NewAudioPlayer
                     audioEntries={route.params.audioEntries}
+                    newEntryCallback={(audioEntry) => {
+                        setPlayedEntries([audioEntry, ...playedEntries])
+                    }}
                 ></NewAudioPlayer>
             </View>
 
