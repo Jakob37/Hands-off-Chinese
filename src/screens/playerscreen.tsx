@@ -58,10 +58,6 @@ function PlayerScreen({ route, navigation }: AudioPlayerProps) {
             this.audioState = AudioState.english_pause
             setCurrentAudioPair(audioEntry)
 
-            // for (const [name, hook] of Array.from(this.playHooks)) {
-            //     console.log('Hooking for label:', name)
-            //     hook(copyEntry(audioEntry))
-            // }
         } else if (this.audioState == AudioState.english_pause) {
             this.playPause(this.delay)
             this.audioState = AudioState.playing_chinese
@@ -81,11 +77,6 @@ function PlayerScreen({ route, navigation }: AudioPlayerProps) {
         }
 
     }
-
-    // const getRandom = () => {
-    //     const audioEntry = getRandomFromArray(route.params.audioEntries)
-
-    // }
 
     // FIXME: Look over the setup up the player!
     // FIXME: How is the user handled? Why in the db?
@@ -142,39 +133,6 @@ function PlayerScreen({ route, navigation }: AudioPlayerProps) {
                     }}
                 ></NewAudioPlayer>
             </View>
-
-            {/* <FloatingActionButton
-                icon="angle-up"
-                yPosition={2}
-                onPress={() => {
-                    setDelay(delay + delayDiff)
-                    audioPlayer.setDelay(delay)
-                    console.log('New delay:', delay)
-                }}
-            ></FloatingActionButton>
-
-            <FloatingActionButton
-                icon="angle-down"
-                yPosition={1}
-                onPress={() => {
-                    setDelay(delay - delayDiff)
-                    audioPlayer.setDelay(delay)
-                    console.log('New delay:', delay)
-                }}
-            ></FloatingActionButton>
-
-            <FloatingActionButton
-                icon={!isPlaying ? icons.play : icons.pause}
-                onPress={() => {
-                    if (!isPlaying) {
-                        setIsPlaying(true)
-                        audioPlayer.play()
-                    } else {
-                        setIsPlaying(false)
-                        audioPlayer.stop()
-                    }
-                }}
-            ></FloatingActionButton> */}
         </View>
     )
 }

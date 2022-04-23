@@ -74,7 +74,15 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
     }, [playState, props.audioEntries])
 
     useEffect(() => {
-        loadSound()
+        loadSound(() => {
+            if (playState == 'playing') {
+                console.log('--> Loading into playing, continuing')
+                audioPlayer.play(() => {
+                    // setPlayState('paused')
+                    incrementPlayModeIndex()
+                })
+            }
+        })
 
         return () => {
             audioPlayer.detach()
@@ -83,22 +91,26 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
     }, [props.audioEntries])
 
     useEffect(() => {
-        loadSound()
+        loadSound(() => {
+            if (playState == 'playing') {
+                console.log('--> Loading into playing, continuing')
+                audioPlayer.play(() => {
+                    // setPlayState('paused')
+                    incrementPlayModeIndex()
+                })
+            }
+        })
     }, [playAudioIndices])
 
-    const loadSound = async () => {
+    const loadSound = async (loadCompleteCallback: () => void) => {
         console.assert(props.audioEntries.length > 0)
 
         const playingLanguage = playModes[playAudioIndices.play]
 
-        console.log('--- Loading language', playAudioIndices)
-
         const currAudioEntry = props.audioEntries[playAudioIndices.audio]
-
         if (playAudioIndices.play == 0) {
             props.newEntryCallback(currAudioEntry)
         }
-
         const user = currAudioEntry.user
         const id =
             playingLanguage == 'chinese'
@@ -106,6 +118,9 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
                 : currAudioEntry.englishKey
         const key = `${user}/${id}`
         const url = await getSignedUrl(key)
+
+        setSoundName(key)
+
         audioPlayer.loadAudio(
             url,
             key,
@@ -116,10 +131,9 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
             (sound) => {
                 console.log('------ Successful load')
                 setDuration(sound.getDuration())
+                loadCompleteCallback()
             }
         )
-
-        setSoundName(key)
     }
 
     return (
@@ -158,7 +172,7 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
                             fontSize: 12,
                         }}
                     >
-                        15
+                        {JUMP_SECONDS}
                     </Text>
                 </TouchableOpacity>
 
@@ -185,7 +199,7 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
                         onPress={() => {
                             console.log('Pressing')
                             audioPlayer.play(() => {
-                                setPlayState('paused')
+                                // setPlayState('paused')
                                 incrementPlayModeIndex()
                             })
                             setPlayState('playing')
@@ -225,7 +239,7 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
                             fontSize: 12,
                         }}
                     >
-                        15
+                        {JUMP_SECONDS}
                     </Text>
                 </TouchableOpacity>
             </View>
