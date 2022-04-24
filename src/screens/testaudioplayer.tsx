@@ -67,6 +67,9 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
         audioPlayer.init((time) => {
             setPlaySeconds(time)
         })
+        audioPlayer.setPlayCompleteCallback(() => {
+            incrementPlayModeIndex()
+        })
         return () => {
             audioPlayer.detach()
             setSoundName('')
@@ -75,14 +78,18 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
 
     useEffect(() => {
         console.log('[Screen] audio indices', playAudioIndices)
-        loadSound(() => {
-            if (isPlaying) {
-                audioPlayer.playSound(() => {
-                    // setPlayState('paused')
-                    incrementPlayModeIndex()
-                })
-            }
+        audioPlayer.setPlayCompleteCallback(() => {
+            incrementPlayModeIndex()
         })
+        playNew()
+        // loadSound(() => {
+        //     if (isPlaying) {
+        //         audioPlayer.playSound(() => {
+        //             // setPlayState('paused')
+        //             incrementPlayModeIndex()
+        //         })
+        //     }
+        // })
 
         // return () => {
         //     audioPlayer.detach()
@@ -94,7 +101,9 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
         console.log('[Screen] is playing', isPlaying)
         // const playingState = playState[playStateIndices.]
         if (isPlaying) {
-            play()
+            audioPlayer.unpause()
+        } else {
+            audioPlayer.pause()
         }
     }, [isPlaying])
 
@@ -102,7 +111,7 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
 
     // }, [playState])
 
-    const play = () => {
+    const playNew = () => {
         const playingLanguage = playLanguages[playAudioIndices.language]
         console.log('[Screen] playingLanguage', playingLanguage)
         if (playingLanguage != 'silence') {
@@ -110,11 +119,7 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
             loadSound(() => {
                 console.log('[Screen] Loading completed')
                 if (isPlaying) {
-                    console.log('--> Loading into playing, continuing')
-                    audioPlayer.playSound(() => {
-                        setIsPlaying(false)
-                        incrementPlayModeIndex()
-                    })
+                    audioPlayer.playSound()
                 }
             })
             // setPlayState('playing', () => {
@@ -129,9 +134,7 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
             //     })
             // })
         } else {
-            audioPlayer.playSilence(SILENCE_SECONDS, () => {
-                incrementPlayModeIndex()
-            })
+            audioPlayer.playSilence(SILENCE_SECONDS)
             setDuration(SILENCE_SECONDS)
         }
     }
@@ -224,7 +227,6 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
                 {isPlaying && (
                     <TouchableOpacity
                         onPress={() => {
-                            audioPlayer.pause()
                             setIsPlaying(false)
                         }}
                         style={{ marginHorizontal: 20 }}
