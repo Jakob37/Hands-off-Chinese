@@ -21,13 +21,14 @@ const test_mp3 = require('../../resources/file_example.mp3')
 const JUMP_SECONDS = 1
 const SMALL_BUTTON_SIZE = 30
 const SMALL_BUTTON_TINT = 'gray'
+const SILENCE_SECONDS = 3
 
 // TP: Could these modes be used as a source here?
 const PLAYER_MODES = {
-    english_chinese: ['english', 'pause', 'chinese', 'pause'],
+    english_chinese: ['english', 'silence', 'chinese', 'silence'],
     chinese_only: ['chinese', 'pause'],
-    chinese_english: ['chinese', 'pause', 'english', 'pause'],
-} as Record<string, ('english' | 'chinese' | 'pause')[]>
+    chinese_english: ['chinese', 'silence', 'english', 'silence'],
+} as Record<string, ('english' | 'chinese' | 'silence')[]>
 
 const audioPlayer = new NewAudioPlayerClass()
 
@@ -36,54 +37,36 @@ interface NewAudioPlayerProps {
     newEntryCallback: (newEntry: AudioEntryPair) => void
 }
 function NewAudioPlayer(props: NewAudioPlayerProps) {
-    const [playModes, setPlayModes] = useState<
-        ('english' | 'chinese' | 'pause')[]
+    const [playLanguages, setPlayModes] = useState<
+        ('english' | 'chinese' | 'silence')[]
     >(PLAYER_MODES.english_chinese)
     const [playAudioIndices, setPlayAudioIndices] = useState({
-        play: 0,
+        language: 0,
         audio: 0,
     })
     // const [audioEntryIndex, setAudioEntryIndex] = useState(0)
-    const [playState, setPlayState] = useState<'paused' | 'playing'>('paused')
+    const [isPlaying, setIsPlaying] = useState(false)
     const [playSeconds, setPlaySeconds] = useState(0)
     const [duration, setDuration] = useState(0)
     const [soundName, setSoundName] = useState('')
 
     const incrementPlayModeIndex = () => {
-        let playIndex = playAudioIndices.play + 1
+        let playIndex = playAudioIndices.language + 1
         let entryIndex = playAudioIndices.audio
-        if (playIndex >= playModes.length) {
-            playIndex -= playModes.length
+        if (playIndex >= playLanguages.length) {
+            playIndex -= playLanguages.length
             entryIndex = (entryIndex + 1) % props.audioEntries.length
         }
 
-        console.log('Play index', playIndex, 'Entry index', entryIndex)
-
-        setPlayAudioIndices({ play: playIndex, audio: entryIndex })
+        setPlayAudioIndices({ language: playIndex, audio: entryIndex })
         // setAudioEntryIndex(entryIndex)
     }
 
     useEffect(() => {
+        console.log('[Screen] audioEntries')
         audioPlayer.init((time) => {
             setPlaySeconds(time)
         })
-
-        return () => {
-            audioPlayer.detach()
-        }
-    }, [playState, props.audioEntries])
-
-    useEffect(() => {
-        loadSound(() => {
-            if (playState == 'playing') {
-                console.log('--> Loading into playing, continuing')
-                audioPlayer.play(() => {
-                    // setPlayState('paused')
-                    incrementPlayModeIndex()
-                })
-            }
-        })
-
         return () => {
             audioPlayer.detach()
             setSoundName('')
@@ -91,33 +74,87 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
     }, [props.audioEntries])
 
     useEffect(() => {
-        const playingLanguage = playModes[playAudioIndices.play]
-        if (playingLanguage != 'pause') {
+        console.log('[Screen] audio indices', playAudioIndices)
+        loadSound(() => {
+            if (isPlaying) {
+                audioPlayer.playSound(() => {
+                    // setPlayState('paused')
+                    incrementPlayModeIndex()
+                })
+            }
+        })
+
+        // return () => {
+        //     audioPlayer.detach()
+        //     setSoundName('')
+        // }
+    }, [playAudioIndices])
+
+    useEffect(() => {
+        console.log('[Screen] is playing', isPlaying)
+        // const playingState = playState[playStateIndices.]
+        if (isPlaying) {
+            play()
+        }
+    }, [isPlaying])
+
+    // useEffect(() => {
+
+    // }, [playState])
+
+    const play = () => {
+        const playingLanguage = playLanguages[playAudioIndices.language]
+        console.log('[Screen] playingLanguage', playingLanguage)
+        if (playingLanguage != 'silence') {
+            console.log('[Screen] Loading sound')
             loadSound(() => {
-                if (playState == 'playing') {
+                console.log('[Screen] Loading completed')
+                if (isPlaying) {
                     console.log('--> Loading into playing, continuing')
-                    audioPlayer.play(() => {
-                        // setPlayState('paused')
+                    audioPlayer.playSound(() => {
+                        setIsPlaying(false)
                         incrementPlayModeIndex()
                     })
                 }
             })
+            // setPlayState('playing', () => {
+            //     loadSound(() => {
+            //         if (playState == 'playing') {
+            //             console.log('--> Loading into playing, continuing')
+            //             audioPlayer.playSound(() => {
+            //                 // setPlayState('paused')
+            //                 incrementPlayModeIndex()
+            //             })
+            //         }
+            //     })
+            // })
         } else {
-            const silenceSeconds = 5
-            audioPlayer.playSilence(silenceSeconds, () => {
+            audioPlayer.playSilence(SILENCE_SECONDS, () => {
                 incrementPlayModeIndex()
             })
-            setDuration(silenceSeconds)
+            setDuration(SILENCE_SECONDS)
         }
-    }, [playAudioIndices])
+    }
+
+    // useEffect(() => {
+    //     loadSound(() => {
+    //         if (playState == 'playing') {
+    //             console.log('--> Loading into playing, continuing')
+    //             audioPlayer.playSound(() => {
+    //                 // setPlayState('paused')
+    //                 incrementPlayModeIndex()
+    //             })
+    //         }
+    //     })
+    // }, [playState])
 
     const loadSound = async (loadCompleteCallback: () => void) => {
         console.assert(props.audioEntries.length > 0)
 
-        const playingLanguage = playModes[playAudioIndices.play]
+        const playingLanguage = playLanguages[playAudioIndices.language]
 
         const currAudioEntry = props.audioEntries[playAudioIndices.audio]
-        if (playAudioIndices.play == 0) {
+        if (playAudioIndices.language == 0) {
             props.newEntryCallback(currAudioEntry)
         }
         const user = currAudioEntry.user
@@ -135,10 +172,9 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
             key,
             (error) => {
                 console.log('failed to load the sound', error)
-                setPlayState('paused')
+                setIsPlaying(false)
             },
             (sound) => {
-                console.log('------ Successful load')
                 setDuration(sound.getDuration())
                 loadCompleteCallback()
             }
@@ -185,11 +221,11 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
                     </Text>
                 </TouchableOpacity>
 
-                {playState == 'playing' && (
+                {isPlaying && (
                     <TouchableOpacity
                         onPress={() => {
                             audioPlayer.pause()
-                            setPlayState('paused')
+                            setIsPlaying(false)
                         }}
                         style={{ marginHorizontal: 20 }}
                     >
@@ -203,15 +239,15 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
                         />
                     </TouchableOpacity>
                 )}
-                {playState == 'paused' && (
+                {!isPlaying && (
                     <TouchableOpacity
                         onPress={() => {
-                            console.log('Pressing')
-                            audioPlayer.play(() => {
-                                // setPlayState('paused')
-                                incrementPlayModeIndex()
-                            })
-                            setPlayState('playing')
+                            // audioPlayer.playSound(() => {
+                            //     // setPlayState('paused')
+                            //     incrementPlayModeIndex()
+                            // })
+                            setIsPlaying(true)
+                            // play()
                         }}
                         style={{ marginHorizontal: 20 }}
                     >
@@ -263,7 +299,7 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
                 }}
             >
                 <Text style={{ alignSelf: 'center' }}>
-                    {`${Math.round(playSeconds).toString()} s`}
+                    {`${(Math.round(playSeconds * 10) / 10).toString()} s`}
                 </Text>
                 <Slider
                     onTouchStart={() => {
@@ -292,13 +328,13 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
                         marginHorizontal: Platform.select({ ios: 5 }),
                     }}
                 />
-                <Text style={{ alignSelf: 'center' }}>{`${Math.round(
-                    duration
+                <Text style={{ alignSelf: 'center' }}>{`${(
+                    Math.round(duration * 10) / 10
                 ).toString()} s`}</Text>
             </View>
             <Text style={{ alignSelf: 'flex-start' }}>Loaded: {soundName}</Text>
             <Text style={{ alignSelf: 'flex-start' }}>
-                Play state: {playState} {playAudioIndices.play} Language:{' '}
+                Play state: {isPlaying} {playAudioIndices.language} Language:{' '}
                 {playAudioIndices.audio}
             </Text>
         </View>
