@@ -1,7 +1,7 @@
 import Sound from 'react-native-sound'
 
-const PLAYER_INTERVAL_MS = 100
-const DEBUG_PRINT = true
+const PLAYER_INTERVAL_MS = 500
+const DEBUG_PRINT = false
 
 const debugLog = (message: string) => {
     if (DEBUG_PRINT) {
@@ -12,7 +12,8 @@ const debugLog = (message: string) => {
 class NewAudioPlayerClass {
     _sound: Sound | null = null
     _duration: number = 0
-    _playState: 'playing' | 'playsilence' | 'paused' = 'paused'
+    _playSoundOrSilence: 'sound' | 'silence' = null
+    _isPlaying: boolean = false
     _playSeconds: number = 0
     _soundName: string = ''
     _timeout = null
@@ -26,55 +27,80 @@ class NewAudioPlayerClass {
     }
 
     init(
+        startSoundOrSilence: 'sound' | 'silence',
         timeCallback: (time: number) => void,
+        silenceDuration: number
     ) {
+        this._playSoundOrSilence = startSoundOrSilence
+        this._silence = {
+            duration: silenceDuration,
+        }
         this._timeout = setInterval(() => {
-            // console.log('[Audio player tick]', this._playState)
+            // console.log('[Audio player tick]', this._silence.duration, 'play seconds', this._playSeconds)
+
+            timeCallback(this._playSeconds)
+
+            if (!this._isPlaying) {
+                return
+            }
+
             if (
-                this._playState == 'playing' &&
+                this._playSoundOrSilence == 'sound' &&
                 this._sound != null &&
                 this._sound.isLoaded()
             ) {
                 this._sound.getCurrentTime((seconds, _isPlaying) => {
+                    console.log('!!! sound seconds:', seconds)
                     this._playSeconds = seconds
-                    timeCallback(seconds)
+                    // timeCallback(seconds)
                 })
-            } else if (
-                this._playState == 'playsilence' &&
-                this._silence != null
-            ) {
+            } else if (this._playSoundOrSilence == 'silence') {
                 if (this._playSeconds < this._silence.duration) {
                     this._playSeconds += PLAYER_INTERVAL_MS / 1000
-                    timeCallback(this._playSeconds)
+                    console.log(
+                        '--- silence duration',
+                        this._playSeconds,
+                        '/',
+                        this._silence.duration
+                    )
+                    // timeCallback(this._playSeconds)
                 } else {
                     debugLog('[Audio player] silence completed')
-                    this._silence = null
+                    console.log('--- silence done')
+                    this._playSeconds = 0
+                    // this._silence = null
                     this._playCompleteCallback()
                 }
+            } else {
+                console.log(
+                    '::: Skipping, mode',
+                    this._playSoundOrSilence,
+                    'has sound',
+                    this._sound != null,
+                    'sound loaded',
+                    this._sound.isLoaded()
+                )
             }
         }, PLAYER_INTERVAL_MS)
     }
 
     playSound() {
-        // this._silence = null
+        // this._isPlaying = true
+        this._playSoundOrSilence = 'sound'
         if (this._sound != null) {
             debugLog('[Audio player] play sound')
             this._sound.play(this._playCompleteCallback)
-            this._playState = 'playing'
         } else {
             console.warn('Unknown state')
         }
     }
 
-    playSilence(duration: number) {
+    playSilence() {
         debugLog('[Audio player] playsilence')
 
         this._playSeconds = 0
-
-        this._playState = 'playsilence'
-        this._silence = {
-            duration,
-        }
+        // this._isPlaying = true
+        this._playSoundOrSilence = 'silence'
     }
 
     jump(seconds: number) {
@@ -83,31 +109,35 @@ class NewAudioPlayerClass {
     }
 
     pause() {
-        debugLog('[Audio player] pause')
+        debugLog(
+            '[Audio player] pause, has sound: ' +
+                (this._sound != null).toString()
+        )
         if (this._sound != null) {
             this._sound.pause()
         }
-        this._playState = 'paused'
+        this._isPlaying = false
     }
 
     unpause() {
-        debugLog('[Audio player] unpause')
-        if (this._sound != null) {
+        this._isPlaying = true
+        if (this._sound != null && this._playSoundOrSilence == 'sound') {
             this._sound.play(this._playCompleteCallback)
-            this._playState = 'playing'
-        } else if (this._silence != null) {
-            this._playState = 'playsilence'
-        } else {
-            console.warn('Unknown state')
         }
+        debugLog(
+            '[Audio player] unpause to play state: ' +
+                this._isPlaying +
+                ' playOrSilence ' +
+                this._playSoundOrSilence
+        )
     }
 
     setCurrentTime(seconds: number) {
-        if (this._sound != null) {
-            this._playSeconds = seconds
-        } else {
-            this._playSeconds = 0
-        }
+        this._playSeconds = seconds
+        // if (this._sound != null) {
+        // } else {
+        //     this._playSeconds = 0
+        // }
     }
 
     detach() {

@@ -25,7 +25,8 @@ const SILENCE_SECONDS = 3
 
 // TP: Could these modes be used as a source here?
 const PLAYER_MODES = {
-    english_chinese: ['english', 'silence', 'chinese', 'silence'],
+    english_chinese: ['english', 'silence'],
+    // english_chinese: ['english', 'silence', 'chinese', 'silence'],
     chinese_only: ['chinese', 'pause'],
     chinese_english: ['chinese', 'silence', 'english', 'silence'],
 } as Record<string, ('english' | 'chinese' | 'silence')[]>
@@ -62,19 +63,39 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
         // setAudioEntryIndex(entryIndex)
     }
 
+    // When audio entries changes
     useEffect(() => {
-        console.log('[Screen] audioEntries')
-        audioPlayer.init((time) => {
-            setPlaySeconds(time)
-        })
-        audioPlayer.setPlayCompleteCallback(() => {
-            incrementPlayModeIndex()
-        })
         return () => {
+            console.log('--- Detaching')
             audioPlayer.detach()
             setSoundName('')
         }
     }, [props.audioEntries])
+
+    useEffect(() => {
+        audioPlayer.init(
+            playLanguages[playAudioIndices.language] != 'silence'
+                ? 'silence'
+                : 'sound',
+            (time) => {
+                setPlaySeconds(time)
+            },
+            SILENCE_SECONDS
+        )
+        audioPlayer.setPlayCompleteCallback(() => {
+            incrementPlayModeIndex()
+        })
+
+        if (isPlaying) {
+            console.log('[Screen] unpause')
+            audioPlayer.unpause()
+        } else {
+            console.log('[Screen] pause')
+            audioPlayer.pause()
+        }
+
+        // Seems like the 'isPlaying' is needed to update the callbacks on pause
+    }, [props.audioEntries, isPlaying])
 
     useEffect(() => {
         console.log('[Screen] audio indices', playAudioIndices)
@@ -82,34 +103,7 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
             incrementPlayModeIndex()
         })
         playNew()
-        // loadSound(() => {
-        //     if (isPlaying) {
-        //         audioPlayer.playSound(() => {
-        //             // setPlayState('paused')
-        //             incrementPlayModeIndex()
-        //         })
-        //     }
-        // })
-
-        // return () => {
-        //     audioPlayer.detach()
-        //     setSoundName('')
-        // }
     }, [playAudioIndices])
-
-    useEffect(() => {
-        console.log('[Screen] is playing', isPlaying)
-        // const playingState = playState[playStateIndices.]
-        if (isPlaying) {
-            audioPlayer.unpause()
-        } else {
-            audioPlayer.pause()
-        }
-    }, [isPlaying])
-
-    // useEffect(() => {
-
-    // }, [playState])
 
     const playNew = () => {
         const playingLanguage = playLanguages[playAudioIndices.language]
@@ -122,37 +116,16 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
                     audioPlayer.playSound()
                 }
             })
-            // setPlayState('playing', () => {
-            //     loadSound(() => {
-            //         if (playState == 'playing') {
-            //             console.log('--> Loading into playing, continuing')
-            //             audioPlayer.playSound(() => {
-            //                 // setPlayState('paused')
-            //                 incrementPlayModeIndex()
-            //             })
-            //         }
-            //     })
-            // })
         } else {
-            audioPlayer.playSilence(SILENCE_SECONDS)
+            audioPlayer.playSilence()
             setDuration(SILENCE_SECONDS)
         }
     }
 
-    // useEffect(() => {
-    //     loadSound(() => {
-    //         if (playState == 'playing') {
-    //             console.log('--> Loading into playing, continuing')
-    //             audioPlayer.playSound(() => {
-    //                 // setPlayState('paused')
-    //                 incrementPlayModeIndex()
-    //             })
-    //         }
-    //     })
-    // }, [playState])
-
     const loadSound = async (loadCompleteCallback: () => void) => {
         console.assert(props.audioEntries.length > 0)
+
+        console.log('[Screen] loadSound')
 
         const playingLanguage = playLanguages[playAudioIndices.language]
 
