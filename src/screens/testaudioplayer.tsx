@@ -24,7 +24,7 @@ const SMALL_BUTTON_TINT = 'gray'
 
 // TP: Could these modes be used as a source here?
 const PLAYER_MODES = {
-    english_chinese: ['english', 'chinese'],
+    english_chinese: ['english', 'pause', 'chinese', 'pause'],
     chinese_only: ['chinese', 'pause'],
     chinese_english: ['chinese', 'pause', 'english', 'pause'],
 } as Record<string, ('english' | 'chinese' | 'pause')[]>
@@ -91,15 +91,24 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
     }, [props.audioEntries])
 
     useEffect(() => {
-        loadSound(() => {
-            if (playState == 'playing') {
-                console.log('--> Loading into playing, continuing')
-                audioPlayer.play(() => {
-                    // setPlayState('paused')
-                    incrementPlayModeIndex()
-                })
-            }
-        })
+        const playingLanguage = playModes[playAudioIndices.play]
+        if (playingLanguage != 'pause') {
+            loadSound(() => {
+                if (playState == 'playing') {
+                    console.log('--> Loading into playing, continuing')
+                    audioPlayer.play(() => {
+                        // setPlayState('paused')
+                        incrementPlayModeIndex()
+                    })
+                }
+            })
+        } else {
+            const silenceSeconds = 5
+            audioPlayer.playSilence(silenceSeconds, () => {
+                incrementPlayModeIndex()
+            })
+            setDuration(silenceSeconds)
+        }
     }, [playAudioIndices])
 
     const loadSound = async (loadCompleteCallback: () => void) => {
