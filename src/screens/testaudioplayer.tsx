@@ -25,7 +25,7 @@ const SILENCE_SECONDS = 3
 
 // TP: Could these modes be used as a source here?
 const PLAYER_MODES = {
-    english_chinese: ['english', 'silence'],
+    english_chinese: ['chinese', 'silence'],
     // english_chinese: ['english', 'silence', 'chinese', 'silence'],
     chinese_only: ['chinese', 'pause'],
     chinese_english: ['chinese', 'silence', 'english', 'silence'],
@@ -51,6 +51,9 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
     const [duration, setDuration] = useState(0)
     const [soundName, setSoundName] = useState('')
 
+    const [soundOrSilence, setSoundOrSilence] =
+        useState<'sound' | 'silence'>('sound')
+
     const incrementPlayModeIndex = () => {
         let playIndex = playAudioIndices.language + 1
         let entryIndex = playAudioIndices.audio
@@ -73,10 +76,9 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
     }, [props.audioEntries])
 
     useEffect(() => {
+        console.log('>>> Initializing audio player')
         audioPlayer.init(
-            playLanguages[playAudioIndices.language] != 'silence'
-                ? 'silence'
-                : 'sound',
+            soundOrSilence,
             (time) => {
                 setPlaySeconds(time)
             },
@@ -87,10 +89,20 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
         })
 
         if (isPlaying) {
-            console.log('[Screen] unpause')
+            console.log(
+                '[Screen] unpause, state:',
+                playAudioIndices,
+                'is playing',
+                isPlaying
+            )
             audioPlayer.unpause()
         } else {
-            console.log('[Screen] pause')
+            console.log(
+                '[Screen] pause, state:',
+                playAudioIndices,
+                'is playing',
+                isPlaying
+            )
             audioPlayer.pause()
         }
 
@@ -99,24 +111,32 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
 
     useEffect(() => {
         console.log('[Screen] audio indices', playAudioIndices)
+        setSoundOrSilence(playAudioIndices.language == 1 ? 'silence' : 'sound')
         audioPlayer.setPlayCompleteCallback(() => {
             incrementPlayModeIndex()
         })
-        playNew()
+        // playNew()
     }, [playAudioIndices])
 
+    useEffect(() => {
+        playNew()
+    }, [soundOrSilence])
+
     const playNew = () => {
-        const playingLanguage = playLanguages[playAudioIndices.language]
-        console.log('[Screen] playingLanguage', playingLanguage)
-        if (playingLanguage != 'silence') {
+        // const playingLanguage = playLanguages[playAudioIndices.language]
+        console.log('[Screen] playingLanguage', soundOrSilence)
+        if (soundOrSilence != 'silence') {
             console.log('[Screen] Loading sound')
             loadSound(() => {
                 console.log('[Screen] Loading completed')
-                if (isPlaying) {
-                    audioPlayer.playSound()
-                }
+                // FIXME: This is the issue, isn't it?
+                // if (isPlaying) {
+                //     audioPlayer.playSound()
+                // }
             })
         } else {
+            // FIXME: Return this
+            console.log('[Screen] Playing silence')
             audioPlayer.playSilence()
             setDuration(SILENCE_SECONDS)
         }

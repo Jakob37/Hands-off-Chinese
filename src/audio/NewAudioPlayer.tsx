@@ -1,6 +1,6 @@
 import Sound from 'react-native-sound'
 
-const PLAYER_INTERVAL_MS = 500
+const PLAYER_INTERVAL_MS = 100
 const DEBUG_PRINT = false
 
 const debugLog = (message: string) => {
@@ -31,10 +31,12 @@ class NewAudioPlayerClass {
         timeCallback: (time: number) => void,
         silenceDuration: number
     ) {
+        // this._playSeconds = 0
         this._playSoundOrSilence = startSoundOrSilence
         this._silence = {
             duration: silenceDuration,
         }
+        clearInterval(this._timeout)
         this._timeout = setInterval(() => {
             // console.log('[Audio player tick]', this._silence.duration, 'play seconds', this._playSeconds)
 
@@ -52,7 +54,6 @@ class NewAudioPlayerClass {
                 this._sound.getCurrentTime((seconds, _isPlaying) => {
                     console.log('!!! sound seconds:', seconds)
                     this._playSeconds = seconds
-                    // timeCallback(seconds)
                 })
             } else if (this._playSoundOrSilence == 'silence') {
                 if (this._playSeconds < this._silence.duration) {
@@ -61,9 +62,8 @@ class NewAudioPlayerClass {
                         '--- silence duration',
                         this._playSeconds,
                         '/',
-                        this._silence.duration
+                        Math.round(this._silence.duration * 10) / 10
                     )
-                    // timeCallback(this._playSeconds)
                 } else {
                     debugLog('[Audio player] silence completed')
                     console.log('--- silence done')
@@ -86,10 +86,14 @@ class NewAudioPlayerClass {
 
     playSound() {
         // this._isPlaying = true
-        this._playSoundOrSilence = 'sound'
+        console.log('>>> Assigning new sound');
+        // this._playSoundOrSilence = 'sound'
         if (this._sound != null) {
             debugLog('[Audio player] play sound')
-            this._sound.play(this._playCompleteCallback)
+            this._sound.play(() => {
+                this._playCompleteCallback()
+                this._playSeconds = 0
+            })
         } else {
             console.warn('Unknown state')
         }
@@ -99,7 +103,7 @@ class NewAudioPlayerClass {
         debugLog('[Audio player] playsilence')
 
         this._playSeconds = 0
-        // this._isPlaying = true
+        this._isPlaying = true
         this._playSoundOrSilence = 'silence'
     }
 
@@ -121,8 +125,13 @@ class NewAudioPlayerClass {
 
     unpause() {
         this._isPlaying = true
+        console.log('sound or silence', this._playSoundOrSilence)
         if (this._sound != null && this._playSoundOrSilence == 'sound') {
-            this._sound.play(this._playCompleteCallback)
+            console.log('Playing sound')
+            this._sound.play(() => {
+                this._playCompleteCallback()
+                this._playSeconds = 0
+            })
         }
         debugLog(
             '[Audio player] unpause to play state: ' +
