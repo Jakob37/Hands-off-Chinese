@@ -116,13 +116,15 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
 
     useEffect(() => {
         console.log('[Screen] audio indices', playAudioIndices)
-        setSoundOrSilence(playAudioIndices.language == 1 ? 'silence' : 'sound')
+        const soundOrSilence =
+            playAudioIndices.language == 1 ? 'silence' : 'sound'
+        setSoundOrSilence(soundOrSilence)
         audioPlayer.setPlayCompleteCallback(
             () => {
                 incrementPlayModeIndex()
             },
             true,
-            null
+            soundOrSilence
         )
         // playNew()
     }, [playAudioIndices])
@@ -139,9 +141,9 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
             loadSound(() => {
                 console.log('[Screen] Loading completed')
                 // FIXME: This is the issue, isn't it?
-                // if (isPlaying) {
-                //     audioPlayer.playSound()
-                // }
+                if (isPlaying) {
+                    audioPlayer.playSound()
+                }
             })
         } else {
             // FIXME: Return this
