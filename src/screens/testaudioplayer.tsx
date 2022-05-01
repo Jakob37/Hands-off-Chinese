@@ -70,6 +70,7 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
     useEffect(() => {
         return () => {
             console.log('--- Detaching')
+            setPlaySeconds(0)
             audioPlayer.detach()
             setSoundName('')
         }
@@ -84,9 +85,13 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
             },
             SILENCE_SECONDS
         )
-        audioPlayer.setPlayCompleteCallback(() => {
-            incrementPlayModeIndex()
-        })
+        audioPlayer.setPlayCompleteCallback(
+            () => {
+                incrementPlayModeIndex()
+            },
+            false,
+            null
+        )
 
         if (isPlaying) {
             console.log(
@@ -112,9 +117,13 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
     useEffect(() => {
         console.log('[Screen] audio indices', playAudioIndices)
         setSoundOrSilence(playAudioIndices.language == 1 ? 'silence' : 'sound')
-        audioPlayer.setPlayCompleteCallback(() => {
-            incrementPlayModeIndex()
-        })
+        audioPlayer.setPlayCompleteCallback(
+            () => {
+                incrementPlayModeIndex()
+            },
+            true,
+            null
+        )
         // playNew()
     }, [playAudioIndices])
 

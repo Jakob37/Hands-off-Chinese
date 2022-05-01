@@ -22,7 +22,17 @@ class NewAudioPlayerClass {
 
     _playCompleteCallback: () => void = null
 
-    setPlayCompleteCallback(playCompleteCallback: () => void) {
+    setPlayCompleteCallback(
+        playCompleteCallback: () => void,
+        resetTime: boolean,
+        playMode: string | null
+    ) {
+        if (resetTime) {
+            this._playSeconds = 0
+        }
+        if (playMode != null) {
+            this._playSoundOrSilence = playMode as 'sound' | 'silence'
+        }
         this._playCompleteCallback = playCompleteCallback
     }
 
@@ -46,15 +56,15 @@ class NewAudioPlayerClass {
                 return
             }
 
-            if (
-                this._playSoundOrSilence == 'sound' &&
-                this._sound != null &&
-                this._sound.isLoaded()
-            ) {
-                this._sound.getCurrentTime((seconds, _isPlaying) => {
-                    console.log('!!! sound seconds:', seconds)
-                    this._playSeconds = seconds
-                })
+            if (this._playSoundOrSilence == 'sound') {
+                if (this._sound != null && this._sound.isLoaded()) {
+                    this._sound.getCurrentTime((seconds, _isPlaying) => {
+                        console.log('!!! sound seconds:', seconds)
+                        this._playSeconds = seconds
+                    })
+                } else {
+                    console.log('!!! loading')
+                }
             } else if (this._playSoundOrSilence == 'silence') {
                 if (this._playSeconds < this._silence.duration) {
                     this._playSeconds += PLAYER_INTERVAL_MS / 1000
@@ -86,7 +96,7 @@ class NewAudioPlayerClass {
 
     playSound() {
         // this._isPlaying = true
-        console.log('>>> Assigning new sound');
+        console.log('>>> Assigning new sound')
         // this._playSoundOrSilence = 'sound'
         if (this._sound != null) {
             debugLog('[Audio player] play sound')
