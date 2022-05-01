@@ -25,8 +25,8 @@ const SILENCE_SECONDS = 3
 
 // TP: Could these modes be used as a source here?
 const PLAYER_MODES = {
-    english_chinese: ['chinese', 'silence'],
-    // english_chinese: ['english', 'silence', 'chinese', 'silence'],
+    // english_chinese: ['chinese', 'silence'],
+    english_chinese: ['english', 'silence', 'chinese', 'silence'],
     chinese_only: ['chinese', 'pause'],
     chinese_english: ['chinese', 'silence', 'english', 'silence'],
 } as Record<string, ('english' | 'chinese' | 'silence')[]>
@@ -116,8 +116,12 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
 
     useEffect(() => {
         console.log('[Screen] audio indices', playAudioIndices)
+        // const soundOrSilence =
+        //     playAudioIndices.language == 1 ? 'silence' : 'sound'
         const soundOrSilence =
-            playAudioIndices.language == 1 ? 'silence' : 'sound'
+            playLanguages[playAudioIndices.language] == 'silence'
+                ? 'silence'
+                : 'sound'
         setSoundOrSilence(soundOrSilence)
         audioPlayer.setPlayCompleteCallback(
             () => {
@@ -129,6 +133,8 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
         // playNew()
     }, [playAudioIndices])
 
+    // FIXME: Reduce away the 'soundOrSilence' state, and calculate directly
+    // from the indices
     useEffect(() => {
         playNew()
     }, [soundOrSilence])
