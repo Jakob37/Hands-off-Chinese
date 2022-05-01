@@ -310,18 +310,22 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
                 <Slider
                     onTouchStart={() => {
                         // setSliderEditing(true)
-                        audioPlayer.pause()
+                        if (isPlaying) {
+                            audioPlayer.pause()
+                        }
                     }}
                     // onTouchMove={() => console.log('onTouchMove')}
                     onTouchEnd={() => {
                         // setSliderEditing(false)
-                        audioPlayer.unpause()
+                        if (isPlaying) {
+                            audioPlayer.unpause()
+                        }
                     }}
                     // onTouchEndCapture={() => console.log('onTouchEndCapture')}
                     // onTouchCancel={() => console.log('onTouchCancel')}
                     onValueChange={(seconds) => {
                         audioPlayer.setCurrentTime(seconds)
-                        setPlaySeconds(audioPlayer._playSeconds)
+                        // setPlaySeconds(audioPlayer._playSeconds)
                     }}
                     value={playSeconds}
                     maximumValue={duration}

@@ -1,7 +1,7 @@
 import Sound from 'react-native-sound'
 
 const PLAYER_INTERVAL_MS = 100
-const DEBUG_PRINT = false
+const DEBUG_PRINT = true
 
 const debugLog = (message: string) => {
     if (DEBUG_PRINT) {
@@ -118,8 +118,13 @@ class NewAudioPlayerClass {
     }
 
     jump(seconds: number) {
-        debugLog('[Audio player] jump')
+        debugLog(
+            `[Audio player] jump ${seconds} to ${this._playSeconds + seconds}`
+        )
         this._playSeconds += seconds
+        if (this._playSoundOrSilence == 'sound' && this._sound != null) {
+            this._sound.setCurrentTime(this._playSeconds)
+        }
     }
 
     pause() {
@@ -153,6 +158,9 @@ class NewAudioPlayerClass {
 
     setCurrentTime(seconds: number) {
         this._playSeconds = seconds
+        if (this._playSoundOrSilence == 'sound' && this._sound != null) {
+            this._sound.setCurrentTime(this._playSeconds)
+        }
         // if (this._sound != null) {
         // } else {
         //     this._playSeconds = 0
