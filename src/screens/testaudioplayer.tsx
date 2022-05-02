@@ -348,11 +348,11 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
                     Math.round(duration * 10) / 10
                 ).toString()} s`}</Text>
             </View>
-            <Text style={{ alignSelf: 'flex-start' }}>Loaded: {soundName}</Text>
+            {/* <Text style={{ alignSelf: 'flex-start' }}>Loaded: {soundName}</Text>
             <Text style={{ alignSelf: 'flex-start' }}>
                 Play state: {isPlaying} {playAudioIndices.language} Language:{' '}
                 {playAudioIndices.audio}
-            </Text>
+            </Text> */}
         </View>
     )
 }

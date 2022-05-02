@@ -2,7 +2,7 @@ import { VoiceId } from 'aws-sdk/clients/lexmodelsv2'
 import Sound from 'react-native-sound'
 import { Silence } from './silence'
 
-const PLAYER_INTERVAL_MS = 100
+const PLAYER_INTERVAL_MS = 50
 const DEBUG_PRINT = true
 
 const debugLog = (message: string) => {
@@ -87,8 +87,13 @@ class NewAudioPlayerClass {
     playSilence() {
         debugLog('[Audio player] playsilence')
 
+        if (this._silence != null) {
+            this._silence.detach()
+        }
+
         // this._playSeconds = 0
-        this._silence = new Silence(3000, () => {
+        this._silence = new Silence(3000)
+        this._silence.play(() => {
             console.log('Play complete callback!')
             this._playCompleteCallback()
         })
@@ -127,10 +132,12 @@ class NewAudioPlayerClass {
             this._sound.play(() => {
                 this._playCompleteCallback()
                 this._playSeconds = 0
+                this._sound.pause()
             })
         } else {
             this._silence.play(() => {
-
+                this._playCompleteCallback()
+                this._playSeconds = 0
             })
         }
         debugLog(
@@ -152,7 +159,9 @@ class NewAudioPlayerClass {
 
     detach() {
         clearInterval(this._timeout)
-        this._silence.detach()
+        if (this._silence != null) {
+            this._silence.detach()
+        }
     }
 
     loadAudio(
