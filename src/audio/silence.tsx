@@ -17,12 +17,20 @@ class Silence {
                 this._currentTime += 100
             }
             if (this._currentTime > this._duration) {
-                
+                console.log('Passed silence duration')
+                this._completeCallback()
+                this._currentTime = 0
             }
         }, 100)
     }
 
+    detach() {
+        clearInterval(this._timeout)
+    }
+
     play(completeCallback: () => void) {
+        this._completeCallback = completeCallback
+        this._paused = false
     }
 
     setCurrentTime(time: number) {
@@ -35,6 +43,10 @@ class Silence {
 
     isLoaded(): boolean {
         return true
+    }
+
+    pause() {
+        this._paused = true
     }
 }
 

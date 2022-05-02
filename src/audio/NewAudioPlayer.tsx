@@ -1,3 +1,4 @@
+import { VoiceId } from 'aws-sdk/clients/lexmodelsv2'
 import Sound from 'react-native-sound'
 import { Silence } from './silence'
 
@@ -11,15 +12,15 @@ const debugLog = (message: string) => {
 }
 
 class NewAudioPlayerClass {
-    _sound: Sound | Silence | null = null
+    _sound: Sound | null = null
+    _silence: Silence | null = null
+
     _duration: number = 0
     _playSoundOrSilence: 'sound' | 'silence' = null
     _isPlaying: boolean = false
     _playSeconds: number = 0
     _soundName: string = ''
     _timeout = null
-
-    _silence: { duration: number; started: boolean } | null = null
 
     _playCompleteCallback: () => void = null
 
@@ -39,15 +40,12 @@ class NewAudioPlayerClass {
 
     init(
         startSoundOrSilence: 'sound' | 'silence',
-        timeCallback: (time: number) => void,
-        silenceDuration: number
+        timeCallback: (time: number) => VoiceId
     ) {
         // this._playSeconds = 0
         this._playSoundOrSilence = startSoundOrSilence
         clearInterval(this._timeout)
         this._timeout = setInterval(() => {
-            // console.log('[Audio player tick]', this._silence.duration, 'play seconds', this._playSeconds)
-
             timeCallback(this._playSeconds)
 
             if (!this._isPlaying) {
@@ -64,37 +62,11 @@ class NewAudioPlayerClass {
                     console.log('!!! loading')
                 }
             } else {
-                this._playSeconds = this._silence.getCurrentTime()
+                if (this._silence != null) {
+                    this._playSeconds = this._silence.getCurrentTime() / 1000
+                    console.log('!!! silence seconds:', this._playSeconds)
+                }
             }
-            // else if (this._playSoundOrSilence == 'silence') {
-            //     if (!this._silence.started) {
-            //         this._silence.started = true
-            //     }
-            //     if (this._playSeconds < this._silence.duration) {
-            //         // this._playSeconds += PLAYER_INTERVAL_MS / 1000
-            //         console.log(
-            //             '--- silence duration',
-            //             this._playSeconds,
-            //             '/',
-            //             Math.round(this._silence.duration * 10) / 10
-            //         )
-            //     } else {
-            //         debugLog('[Audio player] silence completed')
-            //         console.log('--- silence done')
-            //         this._playSeconds = 0
-            //         // this._silence = null
-            //         this._playCompleteCallback()
-            //     }
-            // } else {
-            //     console.log(
-            //         '::: Skipping, mode',
-            //         this._playSoundOrSilence,
-            //         'has sound',
-            //         this._sound != null,
-            //         'sound loaded',
-            //         this._sound.isLoaded()
-            //     )
-            // }
         }, PLAYER_INTERVAL_MS)
     }
 
@@ -106,7 +78,6 @@ class NewAudioPlayerClass {
             debugLog('[Audio player] play sound')
             this._sound.play(() => {
                 this._playCompleteCallback()
-                this._playSeconds = 0
             })
         } else {
             console.warn('Unknown state')
@@ -116,18 +87,21 @@ class NewAudioPlayerClass {
     playSilence() {
         debugLog('[Audio player] playsilence')
 
-        this._playSeconds = 0
+        // this._playSeconds = 0
+        this._silence = new Silence(3000, () => {
+            console.log('Play complete callback!')
+            this._playCompleteCallback()
+        })
         this._isPlaying = true
         this._playSoundOrSilence = 'silence'
     }
 
     jump(seconds: number) {
-        debugLog(
-            `[Audio player] jump ${seconds} to ${this._playSeconds + seconds}`
-        )
         this._playSeconds += seconds
-        if (this._playSoundOrSilence == 'sound' && this._sound != null) {
-            this._sound.setCurrentTime(this._playSeconds)
+        if (this._playSoundOrSilence == 'sound') {
+            this._sound.setCurrentTime(this._playSeconds + seconds)
+        } else {
+            this._silence.setCurrentTime(this._playSeconds + seconds)
         }
     }
 
@@ -139,17 +113,24 @@ class NewAudioPlayerClass {
         if (this._sound != null) {
             this._sound.pause()
         }
+        if (this._silence != null) {
+            this._silence.pause()
+        }
         this._isPlaying = false
     }
 
     unpause() {
         this._isPlaying = true
         console.log('sound or silence', this._playSoundOrSilence)
-        if (this._sound != null && this._playSoundOrSilence == 'sound') {
+        if (this._playSoundOrSilence == 'sound') {
             console.log('Playing sound')
             this._sound.play(() => {
                 this._playCompleteCallback()
                 this._playSeconds = 0
+            })
+        } else {
+            this._silence.play(() => {
+
             })
         }
         debugLog(
@@ -165,16 +146,13 @@ class NewAudioPlayerClass {
         if (this._playSoundOrSilence == 'sound' && this._sound != null) {
             this._sound.setCurrentTime(this._playSeconds)
         } else if (this._playSoundOrSilence == 'silence') {
-
+            this._silence.setCurrentTime(this._playSeconds)
         }
-        // if (this._sound != null) {
-        // } else {
-        //     this._playSeconds = 0
-        // }
     }
 
     detach() {
         clearInterval(this._timeout)
+        this._silence.detach()
     }
 
     loadAudio(
