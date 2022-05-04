@@ -37,7 +37,6 @@
     "@babel/plugin-transform-runtime": "^7.17.0",
     "@babel/runtime": "^7.17.2",
     "@react-native-community/eslint-config": "^2.0.0",
-    "@types/jest": "^27.0.3",
     "@types/react": "^18.0.5",
     "@types/react-native": "^0.64.19",
     "@types/react-test-renderer": "^17.0.1",
