@@ -26,6 +26,9 @@ const styleConstants = {
         medium: 10,
         large: 20,
     },
+    input: {
+        nbrRows: 3
+    }
 }
 
 const styleLibrary = {

@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { ScrollView, View } from 'react-native'
 import { Overlay } from 'react-native-elements'
 import { AddEntryOverlay } from '../uicomponents/addentryoverlay'
@@ -8,18 +8,36 @@ import { FloatingActionButton } from '../uicomponents/buttons'
 import { icons } from '../uicomponents/style'
 import { AudioCardList } from '../views/list/audiocardlist'
 import { AudioEntriesProps } from './navigationutils'
+import { makeNewAudioEntry } from '../backend/apicalls'
+
+const SPECIAL_CATEGORIES = 'Flagged'
 
 function AudioCardScreen({ route, navigation }: AudioEntriesProps) {
     const { db } = useContext(DbContext)
+
+    const [audioEntries, setAudioEntries] = useState(route.params.audioEntries)
     const [menuOpen, setMenuOpen] = useState(false)
+
+    const refreshDatabase = () => {
+        if (!SPECIAL_CATEGORIES.includes(route.params.category)) {
+            db.initDatabase(() => {
+                const categoryEntries = db.getAudioEntries(
+                    route.params.category
+                )
+                setAudioEntries(categoryEntries)
+            })
+        }
+    }
+    useEffect(refreshDatabase, [])
+
+    const isSpecialCategory = (): boolean => {
+        return SPECIAL_CATEGORIES.includes(route.params.category)
+    }
 
     return (
         <View style={{ flex: 1 }}>
             <ScrollView>
-                <AudioCardList
-                    user={db.getUser()}
-                    listEntries={route.params.audioEntries}
-                />
+                <AudioCardList user={db.getUser()} listEntries={audioEntries} />
             </ScrollView>
 
             <Overlay
@@ -29,11 +47,21 @@ function AudioCardScreen({ route, navigation }: AudioEntriesProps) {
                 }}
             >
                 <AddEntryOverlay
-                    category={'test'}
+                    category={route.params.category}
                     baseLanguage={'English'}
                     learnedLanguage={'Chinese'}
-                    onSubmit={() => {
-                        console.log('On submit')
+                    onSubmit={(category, base, learned) => {
+                        makeNewAudioEntry(
+                            base,
+                            learned,
+                            category,
+                            db.getUser(),
+                            () => {},
+                            () => {
+                                refreshDatabase()
+                            }
+                        )
+                        setMenuOpen(false)
                     }}
                 ></AddEntryOverlay>
             </Overlay>
@@ -45,19 +73,19 @@ function AudioCardScreen({ route, navigation }: AudioEntriesProps) {
                     onPress={() => {
                         navigation.navigate(NAVIGATION.audioPlayer, {
                             audioEntries: route.params.audioEntries,
+                            category: route.params.category,
                         })
                     }}
                 ></FloatingActionButton>
-                <FloatingActionButton
-                    icon={icons.plus}
-                    yPosition={1}
-                    onPress={() => {
-                        setMenuOpen(!menuOpen)
-                        // navigation.navigate(NAVIGATION.audioPlayer, {
-                        //     audioEntries: route.params.audioEntries,
-                        // })
-                    }}
-                ></FloatingActionButton>
+                {!SPECIAL_CATEGORIES.includes(route.params.category) && (
+                    <FloatingActionButton
+                        icon={icons.plus}
+                        yPosition={1}
+                        onPress={() => {
+                            setMenuOpen(!menuOpen)
+                        }}
+                    ></FloatingActionButton>
+                )}
             </View>
         </View>
     )

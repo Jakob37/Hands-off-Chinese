@@ -6,12 +6,12 @@ import {
     DbContext,
     FlaggedIdsContext,
     PausedIdsContext,
-    ShownIdsContext
+    ShownIdsContext,
 } from '../../store/contexts/contexts'
 import {
     getUserDataRequest,
     makeNewAudioEntry,
-    putUserDataRequest
+    putUserDataRequest,
 } from '../backend/apicalls'
 import { AudioEntryPair } from '../backend/audioentry'
 import { AddEntryOverlay } from '../uicomponents/addentryoverlay'
@@ -96,6 +96,7 @@ const MainScreen = ({ navigation }: HomeProps) => {
                     const flagged = retrieveFlaggedEntriesList()
                     navigation.navigate('Audio entries', {
                         audioEntries: flagged,
+                        category: 'Flagged'
                     })
                 }}
             ></BasicCard>
@@ -109,6 +110,7 @@ const MainScreen = ({ navigation }: HomeProps) => {
                             retrieveCategoryEntriesList(category)
                         navigation.navigate('Audio entries', {
                             audioEntries: newAudioEntries,
+                            category: category,
                         })
                     }}
                     db={db}

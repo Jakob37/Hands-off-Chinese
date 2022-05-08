@@ -29,39 +29,34 @@ const AddEntryOverlay = (props: AddEntryOverlayProps) => {
             >
                 Please enter a sentence
             </Text>
-            {props.category == null && (
+            {props.category == null ? (
                 <Input
                     placeholder="Category"
                     onChangeText={(text) => setCategoryInput(text)}
                 ></Input>
+            ) : (
+                <Text>Current category: {props.category}</Text>
             )}
 
             <Input
                 placeholder={props.learnedLanguage}
                 onChangeText={(text) => setLearnedLanguageInput(text)}
+                multiline={true}
+                numberOfLines={sc.input.nbrRows}
             ></Input>
             <Input
                 placeholder={props.baseLanguage}
                 onChangeText={(text) => setBaseLanguageInput(text)}
+                multiline={true}
+                numberOfLines={sc.input.nbrRows}
             ></Input>
             <Button
                 onPress={() => {
                     props.onSubmit(
-                        categoryInput,
+                        props.category == null ? categoryInput : props.category,
                         baseLanguageInput,
                         learnedLanguageInput
                     )
-                    // makeNewAudioEntry(
-                    //     baseLanguageInput,
-                    //     learnedLanguageInput,
-                    //     categoryInput,
-                    //     db.getUser(),
-                    //     () => {},
-                    //     () => {
-                    //         refreshDatabase()
-                    //     }
-                    // )
-                    // setMenuOpen(false)
                 }}
                 title={'Submit'}
             ></Button>

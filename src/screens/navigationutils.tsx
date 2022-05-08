@@ -9,8 +9,8 @@ const NAVIGATION = {
 
 type RootStackParamList = {
     Home: undefined
-    'Audio entries': { audioEntries: AudioEntryPair[] }
-    'Audio player': { audioEntries: AudioEntryPair[] }
+    'Audio entries': { audioEntries: AudioEntryPair[], category: string }
+    'Audio player': { audioEntries: AudioEntryPair[], category: string }
 }
 type HomeProps = NativeStackScreenProps<RootStackParamList, 'Home'>
 type AudioEntriesProps = NativeStackScreenProps<
