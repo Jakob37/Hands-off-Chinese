@@ -39,6 +39,8 @@ const icons = {
     plus: 'plus',
     pause: 'pause',
     gear: 'gear',
+    download: 'cloud-download',
+    upload: 'cloud-upload'
 }
 
 export {
