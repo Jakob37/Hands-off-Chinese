@@ -7,6 +7,7 @@ import {
     TouchableOpacity,
     Platform,
 } from 'react-native'
+import ClickableIcon from '../uicomponents/clickableicon'
 
 import { NewAudioPlayerClass } from '../audio/NewAudioPlayer'
 import { AudioEntryPair } from '../backend/audioentry'
@@ -38,7 +39,7 @@ interface NewAudioPlayerProps {
     newEntryCallback: (newEntry: AudioEntryPair) => void
 }
 function NewAudioPlayer(props: NewAudioPlayerProps) {
-    const [playLanguages, setPlayModes] = useState<
+    const [playLanguages, setPlayLanguages] = useState<
         ('english' | 'chinese' | 'silence')[]
     >(PLAYER_MODES.english_chinese)
     const [playAudioIndices, setPlayAudioIndices] = useState({
@@ -50,6 +51,7 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
     const [playSeconds, setPlaySeconds] = useState(0)
     const [duration, setDuration] = useState(0)
     const [soundName, setSoundName] = useState('')
+    const [silenceDurationSeconds, setSilenceDuration] = useState(SILENCE_SECONDS)
 
     const [soundOrSilence, setSoundOrSilence] =
         useState<'sound' | 'silence'>('sound')
@@ -66,6 +68,11 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
         // setAudioEntryIndex(entryIndex)
     }
 
+    useEffect(() => {
+        console.log('Changing silence duration to', silenceDurationSeconds)
+        audioPlayer.changeSilenceDuration(silenceDurationSeconds)
+    }, [silenceDurationSeconds])
+
     // When audio entries changes
     useEffect(() => {
         return () => {
@@ -78,13 +85,9 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
 
     useEffect(() => {
         console.log('>>> Initializing audio player')
-        audioPlayer.init(
-            soundOrSilence,
-            (time) => {
-                setPlaySeconds(time)
-            },
-            SILENCE_SECONDS
-        )
+        audioPlayer.init(soundOrSilence, (time) => {
+            setPlaySeconds(time)
+        })
         audioPlayer.setPlayCompleteCallback(
             () => {
                 incrementPlayModeIndex()
@@ -154,8 +157,8 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
         } else {
             // FIXME: Return this
             console.log('[Screen] Playing silence')
-            audioPlayer.playSilence()
-            setDuration(SILENCE_SECONDS)
+            audioPlayer.playSilence(silenceDurationSeconds * 1000)
+            setDuration(silenceDurationSeconds)
         }
     }
 
@@ -208,31 +211,23 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
                     marginVertical: 15,
                 }}
             >
-                <TouchableOpacity
-                    onPress={() => {
-                        audioPlayer.jump(-JUMP_SECONDS)
+                <ClickableIcon
+                    icon="minus-square-o"
+                    clickCallback={() => {
+                        setSilenceDuration(silenceDurationSeconds - 1)
                     }}
-                    style={{ justifyContent: 'center' }}
-                >
-                    <Image
-                        source={img_playjumpleft}
-                        style={{
-                            width: SMALL_BUTTON_SIZE,
-                            height: SMALL_BUTTON_SIZE,
-                            tintColor: 'gray',
-                        }}
-                    />
-                    <Text
-                        style={{
-                            position: 'absolute',
-                            alignSelf: 'center',
-                            marginTop: 1,
-                            fontSize: 12,
-                        }}
-                    >
-                        {JUMP_SECONDS}
-                    </Text>
-                </TouchableOpacity>
+                ></ClickableIcon>
+
+                <View style={{ justifyContent: 'center' }}>
+                    <Text>{silenceDurationSeconds}s</Text>
+                </View>
+
+                <ClickableIcon
+                    icon="plus-square-o"
+                    clickCallback={() => {
+                        setSilenceDuration(silenceDurationSeconds + 1)
+                    }}
+                ></ClickableIcon>
 
                 {isPlaying && (
                     <TouchableOpacity
@@ -273,32 +268,20 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
                         />
                     </TouchableOpacity>
                 )}
-                <TouchableOpacity
-                    onPress={() => {
+
+                <ClickableIcon
+                    icon="chevron-left"
+                    clickCallback={() => {
+                        audioPlayer.jump(-JUMP_SECONDS)
+                    }}
+                ></ClickableIcon>
+
+                <ClickableIcon
+                    icon="chevron-right"
+                    clickCallback={() => {
                         audioPlayer.jump(JUMP_SECONDS)
                     }}
-                    style={{ justifyContent: 'center' }}
-                >
-                    <Image
-                        source={img_playjumpright}
-                        style={{
-                            width: SMALL_BUTTON_SIZE,
-                            height: SMALL_BUTTON_SIZE,
-                            tintColor: SMALL_BUTTON_TINT,
-                        }}
-                    />
-                    <Text
-                        style={{
-                            position: 'absolute',
-                            alignSelf: 'center',
-                            marginTop: 1,
-                            // color: 'white',
-                            fontSize: 12,
-                        }}
-                    >
-                        {JUMP_SECONDS}
-                    </Text>
-                </TouchableOpacity>
+                ></ClickableIcon>
             </View>
 
             {/* Slider */}

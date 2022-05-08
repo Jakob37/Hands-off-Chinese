@@ -1,15 +1,14 @@
 const deltaMs = 50
 
 class Silence {
-
     _duration: number
     _currentTime: number
     _paused: boolean
     _timeout = null
     _completeCallback: () => void
 
-    constructor(duration: number) {
-        this._duration = duration
+    constructor(durationMs: number) {
+        this._duration = durationMs
         this._currentTime = 0
         this._paused = false
 
@@ -19,9 +18,7 @@ class Silence {
             }
             if (this._currentTime > this._duration) {
                 console.log('Passed silence duration')
-                this._completeCallback()
-                this._currentTime = 0
-                this._paused = true
+                this._silenceDone()
             }
         }, deltaMs)
     }
@@ -41,6 +38,19 @@ class Silence {
 
     getCurrentTime(): number {
         return this._currentTime
+    }
+
+    setDuration(newDurationMs: number) {
+        this._duration = newDurationMs
+        if (!this._paused && this._currentTime > this._duration) {
+            this._silenceDone()
+        }
+    }
+
+    _silenceDone() {
+        this._completeCallback()
+        this._currentTime = 0
+        this._paused = true
     }
 
     isLoaded(): boolean {

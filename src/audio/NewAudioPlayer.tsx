@@ -40,7 +40,7 @@ class NewAudioPlayerClass {
 
     init(
         startSoundOrSilence: 'sound' | 'silence',
-        timeCallback: (time: number) => VoiceId
+        timeCallback: (time: number) => void
     ) {
         // this._playSeconds = 0
         this._playSoundOrSilence = startSoundOrSilence
@@ -84,7 +84,7 @@ class NewAudioPlayerClass {
         }
     }
 
-    playSilence() {
+    playSilence(silenceDuration: number) {
         debugLog('[Audio player] playsilence')
 
         if (this._silence != null) {
@@ -92,13 +92,19 @@ class NewAudioPlayerClass {
         }
 
         // this._playSeconds = 0
-        this._silence = new Silence(3000)
+        this._silence = new Silence(silenceDuration)
         this._silence.play(() => {
             console.log('Play complete callback!')
             this._playCompleteCallback()
         })
         this._isPlaying = true
         this._playSoundOrSilence = 'silence'
+    }
+
+    changeSilenceDuration(newDuration: number) {
+        if (this._silence != null) {
+            this._silence._duration = newDuration
+        }
     }
 
     jump(seconds: number) {
