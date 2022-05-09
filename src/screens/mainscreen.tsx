@@ -1,7 +1,7 @@
 import { Auth } from 'aws-amplify'
 import React, { useContext, useEffect, useState } from 'react'
 import { ScrollView, View } from 'react-native'
-import { Overlay } from 'react-native-elements'
+import { ButtonGroup, Overlay } from 'react-native-elements'
 import {
     DbContext,
     FlaggedIdsContext,
@@ -34,6 +34,7 @@ const MainScreen = ({ navigation }: HomeProps) => {
     const { db } = useContext(DbContext)
     const { flaggedIds, setFlaggedIds } = useContext(FlaggedIdsContext)
     const { pausedIds, setPausedIds } = useContext(PausedIdsContext)
+    const [selectedIndex, setSelectedIndex] = useState(0)
 
     const refreshDatabase = () => {
         db.initDatabase(() => {
@@ -82,6 +83,17 @@ const MainScreen = ({ navigation }: HomeProps) => {
 
     return (
         <View style={{ flex: 1 }}>
+
+            <View>
+                <ButtonGroup
+                    buttons={['Chinese', 'Swedish']}
+                    selectedIndex={selectedIndex}
+                    onPress={(value) => {
+                        setSelectedIndex(value)
+                    }}
+                ></ButtonGroup>
+            </View>
+
             <BasicCard
                 key="test"
                 text={`${flaggedIds.length}`}

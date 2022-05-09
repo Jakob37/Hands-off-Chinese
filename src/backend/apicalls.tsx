@@ -30,9 +30,6 @@ interface NewMeta {
 
 const _getAllMeta = async (): Promise<{ Items: NewMeta[] }> => {
     const params = {}
-    console.log('Retrieving meta')
-    console.log('URL', ALL_ENTRIES_URL)
-    console.log('Params', params)
     const promise = axios
         .get(ALL_ENTRIES_URL, params)
         .then(function (response) {
@@ -40,11 +37,10 @@ const _getAllMeta = async (): Promise<{ Items: NewMeta[] }> => {
             return response.data
         })
         .catch(function (error) {
-            console.log('Catching', error)
             if (error.response) {
                 console.log(error.response.data)
             } else {
-                console.log(error)
+                console.log(`Axios simple error: ${error}`)
             }
         })
 
