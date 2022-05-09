@@ -24,6 +24,8 @@ import { HomeProps } from './navigationutils'
 const FLAGS_ID = 'flags'
 const PAUSED_ID = 'paused'
 
+const LANGUAGES = ['swedish', 'chinese'] as ('chinese' | 'swedish')[]
+
 const MainScreen = ({ navigation }: HomeProps) => {
     const [currentCategories, setCurrentCategories] = useState([
         'Loading from AWS...',
@@ -83,10 +85,9 @@ const MainScreen = ({ navigation }: HomeProps) => {
 
     return (
         <View style={{ flex: 1 }}>
-
             <View>
                 <ButtonGroup
-                    buttons={['Chinese', 'Swedish']}
+                    buttons={LANGUAGES}
                     selectedIndex={selectedIndex}
                     onPress={(value) => {
                         setSelectedIndex(value)
@@ -108,7 +109,7 @@ const MainScreen = ({ navigation }: HomeProps) => {
                     const flagged = retrieveFlaggedEntriesList()
                     navigation.navigate('Audio entries', {
                         audioEntries: flagged,
-                        category: 'Flagged'
+                        category: 'Flagged',
                     })
                 }}
             ></BasicCard>
@@ -138,12 +139,16 @@ const MainScreen = ({ navigation }: HomeProps) => {
                 <AddEntryOverlay
                     category={null}
                     baseLanguage={'English'}
-                    learnedLanguage={'Chinese'}
+                    learnedLanguage={
+                        LANGUAGES[selectedIndex][0].toUpperCase() +
+                        LANGUAGES[selectedIndex].slice(1)
+                    }
                     onSubmit={(category, base, learned) => {
                         makeNewAudioEntry(
                             base,
                             learned,
                             category,
+                            LANGUAGES[selectedIndex],
                             db.getUser(),
                             () => {},
                             () => {
