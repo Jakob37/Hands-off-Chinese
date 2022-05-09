@@ -2,6 +2,7 @@ import { Auth } from 'aws-amplify'
 import React, { useContext, useEffect, useState } from 'react'
 import { ScrollView, View } from 'react-native'
 import { ButtonGroup, Overlay } from 'react-native-elements'
+import { upperCaseFirst } from '../util/util'
 import {
     DbContext,
     FlaggedIdsContext,
@@ -87,7 +88,7 @@ const MainScreen = ({ navigation }: HomeProps) => {
         <View style={{ flex: 1 }}>
             <View>
                 <ButtonGroup
-                    buttons={LANGUAGES}
+                    buttons={LANGUAGES.map((str) => upperCaseFirst(str))}
                     selectedIndex={selectedIndex}
                     onPress={(value) => {
                         setSelectedIndex(value)
@@ -110,6 +111,7 @@ const MainScreen = ({ navigation }: HomeProps) => {
                     navigation.navigate('Audio entries', {
                         audioEntries: flagged,
                         category: 'Flagged',
+                        learnedLanguage: LANGUAGES[selectedIndex],
                     })
                 }}
             ></BasicCard>
@@ -124,6 +126,7 @@ const MainScreen = ({ navigation }: HomeProps) => {
                         navigation.navigate('Audio entries', {
                             audioEntries: newAudioEntries,
                             category: category,
+                            learnedLanguage: LANGUAGES[selectedIndex],
                         })
                     }}
                     db={db}
@@ -139,10 +142,7 @@ const MainScreen = ({ navigation }: HomeProps) => {
                 <AddEntryOverlay
                     category={null}
                     baseLanguage={'English'}
-                    learnedLanguage={
-                        LANGUAGES[selectedIndex][0].toUpperCase() +
-                        LANGUAGES[selectedIndex].slice(1)
-                    }
+                    learnedLanguage={upperCaseFirst(LANGUAGES[selectedIndex])}
                     onSubmit={(category, base, learned) => {
                         makeNewAudioEntry(
                             base,

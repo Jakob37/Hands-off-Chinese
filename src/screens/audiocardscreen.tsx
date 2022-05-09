@@ -9,6 +9,7 @@ import { icons } from '../uicomponents/style'
 import { AudioCardList } from '../views/list/audiocardlist'
 import { AudioEntriesProps } from './navigationutils'
 import { makeNewAudioEntry } from '../backend/apicalls'
+import { upperCaseFirst } from '../util/util'
 
 const SPECIAL_CATEGORIES = 'Flagged'
 
@@ -49,12 +50,13 @@ function AudioCardScreen({ route, navigation }: AudioEntriesProps) {
                 <AddEntryOverlay
                     category={route.params.category}
                     baseLanguage={'English'}
-                    learnedLanguage={'Chinese'}
+                    learnedLanguage={upperCaseFirst(route.params.learnedLanguage)}
                     onSubmit={(category, base, learned) => {
                         makeNewAudioEntry(
                             base,
                             learned,
                             category,
+                            route.params.learnedLanguage,
                             db.getUser(),
                             () => {},
                             () => {
@@ -74,6 +76,7 @@ function AudioCardScreen({ route, navigation }: AudioEntriesProps) {
                         navigation.navigate(NAVIGATION.audioPlayer, {
                             audioEntries: route.params.audioEntries,
                             category: route.params.category,
+                            learnedLanguage: route.params.learnedLanguage,
                         })
                     }}
                 ></FloatingActionButton>
