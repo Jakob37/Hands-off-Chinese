@@ -36,7 +36,7 @@ function AudioCardScreen({ route, navigation }: AudioEntriesProps) {
 
     return (
         <View style={{ flex: 1 }}>
-            <ScrollView>
+            <ScrollView contentContainerStyle={{paddingBottom: 150}}>
                 <AudioCardList user={db.getUser()} listEntries={audioEntries} />
             </ScrollView>
 

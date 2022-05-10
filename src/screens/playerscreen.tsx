@@ -125,7 +125,7 @@ function PlayerScreen({ route, navigation }: AudioPlayerProps) {
             </ScrollView>
 
             {/* FIXME: Why is it pushed down into the bottom without the min height? */}
-            <View style={{ justifyContent: 'flex-end', minHeight: '25%' }}>
+            <View style={{ justifyContent: 'flex-end', minHeight: '15%' }}>
                 <NewAudioPlayer
                     audioEntries={route.params.audioEntries}
                     newEntryCallback={(audioEntry) => {

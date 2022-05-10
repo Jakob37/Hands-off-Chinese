@@ -51,7 +51,8 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
     const [playSeconds, setPlaySeconds] = useState(0)
     const [duration, setDuration] = useState(0)
     const [soundName, setSoundName] = useState('')
-    const [silenceDurationSeconds, setSilenceDuration] = useState(SILENCE_SECONDS)
+    const [silenceDurationSeconds, setSilenceDuration] =
+        useState(SILENCE_SECONDS)
 
     const [soundOrSilence, setSoundOrSilence] =
         useState<'sound' | 'silence'>('sound')
@@ -208,7 +209,6 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
                 style={{
                     flexDirection: 'row',
                     justifyContent: 'center',
-                    marginVertical: 15,
                 }}
             >
                 <ClickableIcon
@@ -219,7 +219,7 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
                 ></ClickableIcon>
 
                 <View style={{ justifyContent: 'center' }}>
-                    <Text>{silenceDurationSeconds}s</Text>
+                    <Text>{silenceDurationSeconds}s pause</Text>
                 </View>
 
                 <ClickableIcon
@@ -282,60 +282,13 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
                         audioPlayer.jump(JUMP_SECONDS)
                     }}
                 ></ClickableIcon>
-            </View>
 
-            {/* Slider */}
-
-            <View
-                style={{
-                    marginVertical: 15,
-                    marginHorizontal: 15,
-                    flexDirection: 'row',
-                }}
-            >
                 <Text style={{ alignSelf: 'center' }}>
-                    {`${(Math.round(playSeconds * 10) / 10).toString()} s`}
+                    {`${(Math.round(playSeconds * 10) / 10).toString()} / ${(
+                        Math.round(duration * 10) / 10
+                    ).toString()} s`}
                 </Text>
-                <Slider
-                    onTouchStart={() => {
-                        // setSliderEditing(true)
-                        if (isPlaying) {
-                            audioPlayer.pause()
-                        }
-                    }}
-                    // onTouchMove={() => console.log('onTouchMove')}
-                    onTouchEnd={() => {
-                        // setSliderEditing(false)
-                        if (isPlaying) {
-                            audioPlayer.unpause()
-                        }
-                    }}
-                    // onTouchEndCapture={() => console.log('onTouchEndCapture')}
-                    // onTouchCancel={() => console.log('onTouchCancel')}
-                    onValueChange={(seconds) => {
-                        audioPlayer.setCurrentTime(seconds)
-                        // setPlaySeconds(audioPlayer._playSeconds)
-                    }}
-                    value={playSeconds}
-                    maximumValue={duration}
-                    maximumTrackTintColor="gray"
-                    minimumTrackTintColor="white"
-                    thumbTintColor="white"
-                    style={{
-                        flex: 1,
-                        alignSelf: 'center',
-                        marginHorizontal: Platform.select({ ios: 5 }),
-                    }}
-                />
-                <Text style={{ alignSelf: 'center' }}>{`${(
-                    Math.round(duration * 10) / 10
-                ).toString()} s`}</Text>
             </View>
-            {/* <Text style={{ alignSelf: 'flex-start' }}>Loaded: {soundName}</Text>
-            <Text style={{ alignSelf: 'flex-start' }}>
-                Play state: {isPlaying} {playAudioIndices.language} Language:{' '}
-                {playAudioIndices.audio}
-            </Text> */}
         </View>
     )
 }
