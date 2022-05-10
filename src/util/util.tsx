@@ -28,9 +28,14 @@ function toggleEntryInArray<V>(sourceIds: V[], id: V): V[] {
     return updatedArr
 }
 
+function upperCaseFirst(str: string): string {
+    return str[0].toUpperCase() + str.slice(1)
+}
+
 export {
     getTimestamp,
     getRandomFromArray,
     removeFromArray,
     toggleEntryInArray,
+    upperCaseFirst,
 }

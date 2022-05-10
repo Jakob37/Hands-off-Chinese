@@ -1,5 +1,10 @@
 # Installation
 
+## Setup
+
+* Retrieve the 'custom-aws-exports.js' settings
+* Setup the 'api' variables file
+
 ## Getting it running on Mac
 
 Outline
@@ -13,3 +18,4 @@ Issues
 * `Icon.loadFont()` needed when loading icons.
 * Clearing previous builds needed when re-building app.
 * See how to build directly to an iPhone device
+

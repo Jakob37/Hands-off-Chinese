@@ -40,7 +40,7 @@ const _getAllMeta = async (): Promise<{ Items: NewMeta[] }> => {
             if (error.response) {
                 console.log(error.response.data)
             } else {
-                console.log(error)
+                console.log(`Axios simple error: ${error}`)
             }
         })
 
@@ -72,9 +72,10 @@ const getMetaAsAudioEntries = async (): Promise<
 }
 
 const makeNewAudioEntry = async (
-    english: string,
-    chinese: string,
+    englishText: string,
+    learnedText: string,
     category: string,
+    learnedLanguage: 'chinese' | 'swedish',
     user: string,
     onAudioFileReadyCall: () => void,
     onAllCompletedCall: () => void
@@ -83,21 +84,22 @@ const makeNewAudioEntry = async (
         throw new Error('Category must be non-empty')
     }
 
-    const { englishFilename, chineseFilename } = await generatePollyAudio(
-        english,
-        chinese,
+    const { englishFilename, learnedFilename } = await generatePollyAudio(
+        englishText,
+        learnedText,
+        learnedLanguage,
         user,
         onAudioFileReadyCall
     )
-    const id = `id-${english}-${chinese}`
+    const id = `id-${englishText}-${learnedText}`
 
     await submitMetaDataNew(
         id,
         user,
-        english,
-        chinese,
+        englishText,
+        learnedText,
         englishFilename,
-        chineseFilename,
+        learnedFilename,
         new Date().getTime().toString(),
         category,
         onAllCompletedCall
@@ -262,6 +264,7 @@ const generateAudio = (
 }
 
 const makeMultipleAudioEntries = async (
+    learnedLanguage: 'chinese' | 'swedish',
     user: string,
     entries: string[],
     onCompletedCall: () => void
@@ -287,6 +290,7 @@ const makeMultipleAudioEntries = async (
             english,
             chinese,
             category,
+            learnedLanguage,
             user,
             () => {},
             onCompletedCall
@@ -296,34 +300,38 @@ const makeMultipleAudioEntries = async (
 
 interface GeneratePollyAudioReturned {
     englishFilename: string
-    chineseFilename: string
+    learnedFilename: string
 }
 
 const generatePollyAudio = async (
-    english: string,
-    chinese: string,
+    englishText: string,
+    learnedText: string,
+    learnedLanguage: 'chinese' | 'swedish',
     user: string,
     onReadyCall: () => void
 ): Promise<GeneratePollyAudioReturned> => {
+    // FIXME: Move these to central location
     const englishVoice = 'Emma'
     const chineseVoice = 'Zhiyu'
+    const swedishVoice = 'Astrid'
 
-    console.log('starting generating')
+    const learnedVoice =
+        learnedLanguage == 'chinese' ? chineseVoice : swedishVoice
 
-    const chineseFilename = await generateAudio(
+    const learnedFilename = await generateAudio(
         POLLY_URL,
-        chinese,
-        chineseVoice,
+        learnedText,
+        learnedVoice,
         getTimestamp(),
         user,
         onReadyCall
     )
 
-    console.log('generated chinese', chineseFilename)
+    console.log('generated chinese', learnedFilename)
 
     const englishFilename = await generateAudio(
         POLLY_URL,
-        english,
+        englishText,
         englishVoice,
         getTimestamp(),
         user,
@@ -331,11 +339,11 @@ const generatePollyAudio = async (
     )
     console.log(
         'Generating english audio for',
-        english,
+        englishText,
         'got filename',
         englishFilename
     )
-    return { chineseFilename, englishFilename }
+    return { englishFilename, learnedFilename }
 }
 
 export {

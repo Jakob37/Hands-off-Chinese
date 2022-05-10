@@ -1,7 +1,8 @@
 import { Auth } from 'aws-amplify'
 import React, { useContext, useEffect, useState } from 'react'
 import { ScrollView, View } from 'react-native'
-import { Overlay } from 'react-native-elements'
+import { ButtonGroup, Overlay } from 'react-native-elements'
+import { upperCaseFirst } from '../util/util'
 import {
     DbContext,
     FlaggedIdsContext,
@@ -24,6 +25,8 @@ import { HomeProps } from './navigationutils'
 const FLAGS_ID = 'flags'
 const PAUSED_ID = 'paused'
 
+const LANGUAGES = ['swedish', 'chinese'] as ('chinese' | 'swedish')[]
+
 const MainScreen = ({ navigation }: HomeProps) => {
     const [currentCategories, setCurrentCategories] = useState([
         'Loading from AWS...',
@@ -34,6 +37,7 @@ const MainScreen = ({ navigation }: HomeProps) => {
     const { db } = useContext(DbContext)
     const { flaggedIds, setFlaggedIds } = useContext(FlaggedIdsContext)
     const { pausedIds, setPausedIds } = useContext(PausedIdsContext)
+    const [selectedIndex, setSelectedIndex] = useState(0)
 
     const refreshDatabase = () => {
         db.initDatabase(() => {
@@ -82,6 +86,16 @@ const MainScreen = ({ navigation }: HomeProps) => {
 
     return (
         <View style={{ flex: 1 }}>
+            <View>
+                <ButtonGroup
+                    buttons={LANGUAGES.map((str) => upperCaseFirst(str))}
+                    selectedIndex={selectedIndex}
+                    onPress={(value) => {
+                        setSelectedIndex(value)
+                    }}
+                ></ButtonGroup>
+            </View>
+
             <BasicCard
                 key="test"
                 text={`${flaggedIds.length}`}
@@ -96,7 +110,8 @@ const MainScreen = ({ navigation }: HomeProps) => {
                     const flagged = retrieveFlaggedEntriesList()
                     navigation.navigate('Audio entries', {
                         audioEntries: flagged,
-                        category: 'Flagged'
+                        category: 'Flagged',
+                        learnedLanguage: LANGUAGES[selectedIndex],
                     })
                 }}
             ></BasicCard>
@@ -111,6 +126,7 @@ const MainScreen = ({ navigation }: HomeProps) => {
                         navigation.navigate('Audio entries', {
                             audioEntries: newAudioEntries,
                             category: category,
+                            learnedLanguage: LANGUAGES[selectedIndex],
                         })
                     }}
                     db={db}
@@ -126,12 +142,13 @@ const MainScreen = ({ navigation }: HomeProps) => {
                 <AddEntryOverlay
                     category={null}
                     baseLanguage={'English'}
-                    learnedLanguage={'Chinese'}
+                    learnedLanguage={upperCaseFirst(LANGUAGES[selectedIndex])}
                     onSubmit={(category, base, learned) => {
                         makeNewAudioEntry(
                             base,
                             learned,
                             category,
+                            LANGUAGES[selectedIndex],
                             db.getUser(),
                             () => {},
                             () => {
