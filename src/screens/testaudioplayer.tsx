@@ -1,23 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import {
-    View,
-    Image,
-    Text,
-    Slider,
-    TouchableOpacity,
-    Platform,
-} from 'react-native'
-import ClickableIcon from '../uicomponents/clickableicon'
-
+import { Text, View } from 'react-native'
 import { NewAudioPlayerClass } from '../audio/NewAudioPlayer'
 import { AudioEntryPair } from '../backend/audioentry'
+import ClickableIcon from '../uicomponents/clickableicon'
+import { icons, styleConstants } from '../uicomponents/style'
 import { getSignedUrl } from '../views/card/util'
-
-const img_pause = require('../../resources/ui_pause.png')
-const img_play = require('../../resources/ui_play.png')
-const img_playjumpleft = require('../../resources/ui_playjumpleft.png')
-const img_playjumpright = require('../../resources/ui_playjumpright.png')
-const test_mp3 = require('../../resources/file_example.mp3')
 
 const JUMP_SECONDS = 1
 const SMALL_BUTTON_SIZE = 30
@@ -209,78 +196,64 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
                 style={{
                     flexDirection: 'row',
                     justifyContent: 'center',
+                    alignContent: 'center',
                 }}
             >
-                <ClickableIcon
-                    icon="minus-square-o"
-                    clickCallback={() => {
-                        setSilenceDuration(silenceDurationSeconds - 1)
-                    }}
-                ></ClickableIcon>
+                <View>
+                    <ClickableIcon
+                        icon={icons.minusCircled}
+                        clickCallback={() => {
+                            setSilenceDuration(silenceDurationSeconds - 1)
+                        }}
+                        size={styleConstants.iconSizes.large}
+                    ></ClickableIcon>
+                </View>
 
                 <View style={{ justifyContent: 'center' }}>
                     <Text>{silenceDurationSeconds}s pause</Text>
                 </View>
 
                 <ClickableIcon
-                    icon="plus-square-o"
+                    icon={icons.plusCircled}
                     clickCallback={() => {
                         setSilenceDuration(silenceDurationSeconds + 1)
                     }}
+                    size={styleConstants.iconSizes.large}
                 ></ClickableIcon>
 
                 {isPlaying && (
-                    <TouchableOpacity
-                        onPress={() => {
+                    <ClickableIcon
+                        icon={icons.pause}
+                        clickCallback={() => {
                             setIsPlaying(false)
                         }}
-                        style={{ marginHorizontal: 20 }}
-                    >
-                        <Image
-                            source={img_pause}
-                            style={{
-                                width: SMALL_BUTTON_SIZE,
-                                height: SMALL_BUTTON_SIZE,
-                                tintColor: SMALL_BUTTON_TINT,
-                            }}
-                        />
-                    </TouchableOpacity>
+                        size={styleConstants.iconSizes.large}
+                    ></ClickableIcon>
                 )}
                 {!isPlaying && (
-                    <TouchableOpacity
-                        onPress={() => {
-                            // audioPlayer.playSound(() => {
-                            //     // setPlayState('paused')
-                            //     incrementPlayModeIndex()
-                            // })
+                    <ClickableIcon
+                        icon={icons.play}
+                        clickCallback={() => {
                             setIsPlaying(true)
-                            // play()
                         }}
-                        style={{ marginHorizontal: 20 }}
-                    >
-                        <Image
-                            source={img_play}
-                            style={{
-                                width: SMALL_BUTTON_SIZE,
-                                height: SMALL_BUTTON_SIZE,
-                                tintColor: SMALL_BUTTON_TINT,
-                            }}
-                        />
-                    </TouchableOpacity>
+                        size={styleConstants.iconSizes.large}
+                    ></ClickableIcon>
                 )}
 
                 <ClickableIcon
-                    icon="chevron-left"
+                    icon={icons.leftArrow}
                     clickCallback={() => {
                         audioPlayer.jump(-JUMP_SECONDS)
                     }}
+                    size={styleConstants.iconSizes.large}
                 ></ClickableIcon>
 
                 <ClickableIcon
-                    icon="chevron-right"
+                    icon={icons.rightArrow}
                     clickCallback={() => {
                         audioPlayer.jump(JUMP_SECONDS)
                     }}
+                    size={styleConstants.iconSizes.large}
                 ></ClickableIcon>
 
                 <Text style={{ alignSelf: 'center' }}>

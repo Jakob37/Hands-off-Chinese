@@ -43,7 +43,11 @@ const icons = {
     pause: 'pause',
     gear: 'gear',
     download: 'cloud-download',
-    upload: 'cloud-upload'
+    upload: 'cloud-upload',
+    leftArrow: 'chevron-left',
+    rightArrow: 'chevron-right',
+    plusCircled: 'plus-square-o',
+    minusCircled: 'minus-square-o',
 }
 
 export {

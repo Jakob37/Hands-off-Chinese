@@ -37,7 +37,7 @@ function AudioCardScreen({ route, navigation }: AudioEntriesProps) {
 
     return (
         <View style={{ flex: 1 }}>
-            <ScrollView contentContainerStyle={{paddingBottom: 150}}>
+            <ScrollView contentContainerStyle={{ paddingBottom: 150 }}>
                 <AudioCardList user={db.getUser()} listEntries={audioEntries} />
             </ScrollView>
 
@@ -50,7 +50,9 @@ function AudioCardScreen({ route, navigation }: AudioEntriesProps) {
                 <AddEntryOverlay
                     category={route.params.category}
                     baseLanguage={'English'}
-                    learnedLanguage={upperCaseFirst(route.params.learnedLanguage)}
+                    learnedLanguage={upperCaseFirst(
+                        route.params.learnedLanguage
+                    )}
                     onSubmit={(category, base, learned) => {
                         makeNewAudioEntry(
                             base,
