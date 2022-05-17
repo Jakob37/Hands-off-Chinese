@@ -14,7 +14,6 @@ import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import AudioCardScreen from './src/screens/audiocardscreen'
 import PlayerScreen from './src/screens/playerscreen'
-import TestAudioPlayer from './src/screens/testaudioplayer'
 
 // Analytics is explicitly disabled to prevent a warning according to following:
 // https://github.com/aws-amplify/amplify-js/issues/5918
