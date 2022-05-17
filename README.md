@@ -7,11 +7,18 @@
 
 ## Getting it running on Mac
 
+Setup
+
+* `git pull`
+* `npm install`
+* `pod install --verbose` <- Fixes linking of ios packages, verbose is good to see what it is doing if taking long time
+
 Outline
 
 * You need a running emulator
 * Start the local server (required?) `npm run start`
 * Run the app (automatically starting emulator) `npm run ios`
+
 
 Issues
 
