@@ -10,8 +10,10 @@ import {
     ShownIdsContext,
 } from '../../store/contexts/contexts'
 import {
+    FLAGS_ID,
     getUserDataRequest,
     makeNewAudioEntry,
+    PAUSED_ID,
     putUserDataRequest,
 } from '../backend/apicalls'
 import { AudioEntryPair } from '../backend/audioentry'
@@ -22,8 +24,6 @@ import { icons, sc } from '../uicomponents/style'
 import CategoryCardList from '../views/list/categorycardlist'
 import { HomeProps } from './navigationutils'
 
-const FLAGS_ID = 'flags'
-const PAUSED_ID = 'paused'
 
 const LANGUAGES = ['swedish', 'chinese'] as ('chinese' | 'swedish')[]
 
@@ -193,14 +193,14 @@ const MainScreen = ({ navigation }: HomeProps) => {
                     }}
                 ></FloatingActionButton>
 
-                <FloatingActionButton
+                {/* <FloatingActionButton
                     icon={icons.upload}
                     yPosition={2}
                     onPress={() => {
                         putUserDataRequest(FLAGS_ID, db.getUser(), flaggedIds)
                         putUserDataRequest(PAUSED_ID, db.getUser(), pausedIds)
                     }}
-                ></FloatingActionButton>
+                ></FloatingActionButton> */}
             </View>
         </View>
     )

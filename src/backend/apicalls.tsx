@@ -28,6 +28,9 @@ interface NewMeta {
     id: string
 }
 
+const FLAGS_ID = 'flags'
+const PAUSED_ID = 'paused'
+
 const _getAllMeta = async (): Promise<{ Items: NewMeta[] }> => {
     const params = {}
     const promise = axios
@@ -353,4 +356,6 @@ export {
     makeMultipleAudioEntries,
     putUserDataRequest,
     getUserDataRequest,
+    FLAGS_ID,
+    PAUSED_ID,
 }
