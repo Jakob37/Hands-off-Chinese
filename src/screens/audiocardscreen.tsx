@@ -21,7 +21,7 @@ function AudioCardScreen({ route, navigation }: AudioEntriesProps) {
 
     const refreshDatabase = () => {
         if (!SPECIAL_CATEGORIES.includes(route.params.category)) {
-            db.initDatabase(() => {
+            db.initDatabase(db.getUser(), () => {
                 const categoryEntries = db.getAudioEntries(
                     route.params.category
                 )
@@ -43,9 +43,8 @@ function AudioCardScreen({ route, navigation }: AudioEntriesProps) {
 
             <Overlay
                 isVisible={menuOpen}
-                onBackdropPress={() => {
-                    setMenuOpen(!menuOpen)
-                }}
+                // onBackdropPress={() => {
+                // }}
             >
                 <AddEntryOverlay
                     category={route.params.category}
@@ -54,6 +53,7 @@ function AudioCardScreen({ route, navigation }: AudioEntriesProps) {
                         route.params.learnedLanguage
                     )}
                     onSubmit={(category, base, learned) => {
+                        console.log('Attempting new onSubmit')
                         makeNewAudioEntry(
                             base,
                             learned,
@@ -66,6 +66,9 @@ function AudioCardScreen({ route, navigation }: AudioEntriesProps) {
                             }
                         )
                         setMenuOpen(false)
+                    }}
+                    onCancel={() => {
+                        setMenuOpen(!menuOpen)
                     }}
                 ></AddEntryOverlay>
             </Overlay>

@@ -3,12 +3,14 @@ import { View } from 'react-native'
 import { AudioEntryPair } from '../../backend/audioentry'
 import { IconsCard, TwoLineCard } from '../../uicomponents/cards'
 import {
+    DbContext,
     FlaggedIdsContext,
     PausedIdsContext,
 } from '../../../store/contexts/contexts'
 import { sc } from '../../uicomponents/style'
 import { toggleEntryInArray } from '../../util/util'
 import { playAudio } from '../card/util'
+import { FLAGS_ID, putUserDataRequest } from '../../backend/apicalls'
 
 interface AudioCardListProps {
     listEntries: AudioEntryPair[]
@@ -49,6 +51,7 @@ const AudioCard = (props: AudioCardProps) => {
 
     const { pausedIds, setPausedIds } = useContext(PausedIdsContext)
     const { flaggedIds, setFlaggedIds } = useContext(FlaggedIdsContext)
+    const { db } = useContext(DbContext)
 
     return (
         <View key={props.id}>
@@ -80,11 +83,12 @@ const AudioCard = (props: AudioCardProps) => {
                         {
                             icon: 'flag',
                             action: () => {
-                                const updatedArr = toggleEntryInArray(
+                                const updatedFlaggedIds = toggleEntryInArray(
                                     flaggedIds,
                                     props.id
                                 )
-                                setFlaggedIds(updatedArr)
+                                setFlaggedIds(updatedFlaggedIds)
+                                putUserDataRequest(FLAGS_ID, db.getUser(), updatedFlaggedIds)
                             },
                             color: flaggedIds.includes(props.id)
                                 ? sc.colors.blue

@@ -12,6 +12,7 @@ interface AddEntryOverlayProps {
         baseLanguageInput: string,
         learnedLanguageInput: string
     ) => void
+    onCancel: () => void
 }
 const AddEntryOverlay = (props: AddEntryOverlayProps) => {
     const [categoryInput, setCategoryInput] = useState('')
@@ -50,16 +51,27 @@ const AddEntryOverlay = (props: AddEntryOverlayProps) => {
                 multiline={true}
                 numberOfLines={sc.input.nbrRows}
             ></Input>
-            <Button
-                onPress={() => {
-                    props.onSubmit(
-                        props.category == null ? categoryInput : props.category,
-                        baseLanguageInput,
-                        learnedLanguageInput
-                    )
-                }}
-                title={'Submit'}
-            ></Button>
+            <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                <Button
+                    onPress={() => {
+                        props.onCancel()
+                    }}
+                    title={'Back'}
+                ></Button>
+                <Button
+                    onPress={() => {
+                        console.log('Add entry overlay called')
+                        props.onSubmit(
+                            props.category == null
+                                ? categoryInput
+                                : props.category,
+                            baseLanguageInput,
+                            learnedLanguageInput
+                        )
+                    }}
+                    title={'Submit'}
+                ></Button>
+            </View>
         </View>
     )
 }

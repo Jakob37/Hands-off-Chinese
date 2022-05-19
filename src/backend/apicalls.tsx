@@ -28,6 +28,9 @@ interface NewMeta {
     id: string
 }
 
+const FLAGS_ID = 'flags'
+const PAUSED_ID = 'paused'
+
 const _getAllMeta = async (): Promise<{ Items: NewMeta[] }> => {
     const params = {}
     const promise = axios
@@ -47,11 +50,14 @@ const _getAllMeta = async (): Promise<{ Items: NewMeta[] }> => {
     return promise
 }
 
-const getMetaAsAudioEntries = async (): Promise<
-    Map<string, AudioEntryPair>
-> => {
+const getMetaAsAudioEntries = async (
+    targetUserEmail: string
+): Promise<Map<string, AudioEntryPair>> => {
+
     const items = await _getAllMeta()
-    const entries = items.Items.map((item) => {
+    const entries = items.Items.filter((item) => {
+        return item.user == targetUserEmail
+    }).map((item) => {
         return [
             item.id,
             getAudioEntryPair(
@@ -80,6 +86,7 @@ const makeNewAudioEntry = async (
     onAudioFileReadyCall: () => void,
     onAllCompletedCall: () => void
 ) => {
+    console.log('Function call: makeNewAudioEntry')
     if (category == '') {
         throw new Error('Category must be non-empty')
     }
@@ -353,4 +360,6 @@ export {
     makeMultipleAudioEntries,
     putUserDataRequest,
     getUserDataRequest,
+    FLAGS_ID,
+    PAUSED_ID,
 }

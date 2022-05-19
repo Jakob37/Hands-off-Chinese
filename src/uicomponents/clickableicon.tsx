@@ -14,9 +14,7 @@ interface ClickableIconInterface {
 const ClickableIcon = (param: ClickableIconInterface) => {
     return (
         <>
-            <TouchableOpacity
-                onPress={param.clickCallback}
-            >
+            <TouchableOpacity onPress={param.clickCallback}>
                 <Icon
                     style={{
                         backgroundColor: param.backgroundColor,
@@ -25,6 +23,7 @@ const ClickableIcon = (param: ClickableIconInterface) => {
                         height: param.size + sc.iconPaddings.medium,
                         textAlign: 'center',
                         textAlignVertical: 'center',
+                        overflow: 'hidden',
                     }}
                     name={param.icon}
                     size={param.size}
