@@ -38,13 +38,7 @@ const MainScreen = ({ navigation }: HomeProps) => {
     const { flaggedIds, setFlaggedIds } = useContext(FlaggedIdsContext)
     const { pausedIds, setPausedIds } = useContext(PausedIdsContext)
     const [selectedIndex, setSelectedIndex] = useState(0)
-
-    const refreshDatabase = () => {
-        db.initDatabase(() => {
-            setCurrentCategories(db.getCategories())
-        })
-    }
-    useEffect(refreshDatabase, [])
+    const [userEmail, setUserEmail] = useState(null)
 
     const retrieveCategoryEntriesList = (
         category: string
@@ -65,7 +59,8 @@ const MainScreen = ({ navigation }: HomeProps) => {
 
     const setUserData = () => {
         Auth.currentAuthenticatedUser().then((currUser) => {
-            db.setUser(currUser.attributes.email)
+            const user = currUser.attributes.email
+            db.setUser(user)
             getUserDataRequest(
                 FLAGS_ID,
                 db.getUser(),
@@ -80,9 +75,19 @@ const MainScreen = ({ navigation }: HomeProps) => {
                     setFlaggedIds(retrievedPausedIds as string[])
                 }
             )
+            setUserEmail(user)
         })
     }
     useEffect(setUserData, [])
+
+    const refreshDatabase = () => {
+        if (userEmail != null) {
+            db.initDatabase(userEmail, () => {
+                setCurrentCategories(db.getCategories())
+            })
+        }
+    }
+    useEffect(refreshDatabase, [userEmail])
 
     return (
         <View style={{ flex: 1 }}>

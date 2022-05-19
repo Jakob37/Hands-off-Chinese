@@ -14,8 +14,8 @@ class HocDb {
         return this._user
     }
 
-    async initDatabase(doneCallback: (db: HocDb) => void = (db: HocDb) => {}) {
-        this._idToEntry = await getMetaAsAudioEntries()
+    async initDatabase(userEmail: string, doneCallback: (db: HocDb) => void = (db: HocDb) => {}) {
+        this._idToEntry = await getMetaAsAudioEntries(userEmail)
         this._idToActive = new Map()
         for (const id of Array.from(this._idToEntry.keys())) {
             this._idToActive.set(id, true)
