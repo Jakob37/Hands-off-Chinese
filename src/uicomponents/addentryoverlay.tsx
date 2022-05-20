@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, Text, KeyboardAvoidingView } from 'react-native'
+import { View, Text, KeyboardAvoidingView, Platform } from 'react-native'
 import { Button, Input } from 'react-native-elements'
 import { sc } from './style'
 
@@ -20,7 +20,9 @@ const AddEntryOverlay = (props: AddEntryOverlayProps) => {
     const [learnedLanguageInput, setLearnedLanguageInput] = useState('')
 
     return (
-        <KeyboardAvoidingView>
+        <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        >
             <Text
                 style={{
                     marginHorizontal: sc.componentMargins.medium,
@@ -51,7 +53,12 @@ const AddEntryOverlay = (props: AddEntryOverlayProps) => {
                 multiline={true}
                 numberOfLines={sc.input.nbrRows}
             ></Input>
-            <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+            <View
+                style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                }}
+            >
                 <Button
                     onPress={() => {
                         props.onCancel()
