@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, Text } from 'react-native'
+import { View, Text, KeyboardAvoidingView } from 'react-native'
 import { Button, Input } from 'react-native-elements'
 import { sc } from './style'
 
@@ -20,7 +20,7 @@ const AddEntryOverlay = (props: AddEntryOverlayProps) => {
     const [learnedLanguageInput, setLearnedLanguageInput] = useState('')
 
     return (
-        <View>
+        <KeyboardAvoidingView>
             <Text
                 style={{
                     marginHorizontal: sc.componentMargins.medium,
@@ -72,7 +72,7 @@ const AddEntryOverlay = (props: AddEntryOverlayProps) => {
                     title={'Submit'}
                 ></Button>
             </View>
-        </View>
+        </KeyboardAvoidingView>
     )
 }
 
