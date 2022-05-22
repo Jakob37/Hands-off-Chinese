@@ -1,6 +1,6 @@
 import { Auth } from 'aws-amplify'
 import React, { useContext, useEffect, useState } from 'react'
-import { ScrollView, View } from 'react-native'
+import { Modal, ScrollView, View } from 'react-native'
 import { ButtonGroup, Overlay } from 'react-native-elements'
 import { upperCaseFirst } from '../util/util'
 import {
@@ -23,9 +23,8 @@ import { BasicCard } from '../uicomponents/cards'
 import { icons, sc } from '../uicomponents/style'
 import CategoryCardList from '../views/list/categorycardlist'
 import { HomeProps } from './navigationutils'
+import { LANGUAGES } from '../../config'
 
-
-const LANGUAGES = ['swedish', 'chinese'] as ('chinese' | 'swedish')[]
 
 const MainScreen = ({ navigation }: HomeProps) => {
     const [currentCategories, setCurrentCategories] = useState([
@@ -91,15 +90,7 @@ const MainScreen = ({ navigation }: HomeProps) => {
 
     return (
         <View style={{ flex: 1 }}>
-            <View>
-                <ButtonGroup
-                    buttons={LANGUAGES.map((str) => upperCaseFirst(str))}
-                    selectedIndex={selectedIndex}
-                    onPress={(value) => {
-                        setSelectedIndex(value)
-                    }}
-                ></ButtonGroup>
-            </View>
+
 
             <BasicCard
                 key="test"
@@ -138,32 +129,34 @@ const MainScreen = ({ navigation }: HomeProps) => {
                 />
             </ScrollView>
 
-            <Overlay
-                isVisible={menuOpen}
-                onBackdropPress={() => {
-                    setMenuOpen(!menuOpen)
-                }}
-            >
-                <AddEntryOverlay
-                    category={null}
-                    baseLanguage={'English'}
-                    learnedLanguage={upperCaseFirst(LANGUAGES[selectedIndex])}
-                    onSubmit={(category, base, learned) => {
-                        makeNewAudioEntry(
-                            base,
-                            learned,
-                            category,
-                            LANGUAGES[selectedIndex],
-                            db.getUser(),
-                            () => {},
-                            () => {
-                                refreshDatabase()
-                            }
-                        )
-                        setMenuOpen(false)
-                    }}
-                ></AddEntryOverlay>
-            </Overlay>
+            {menuOpen ? (
+                <Modal>
+                    <AddEntryOverlay
+                        category={null}
+                        baseLanguage={'English'}
+                        learnedLanguage={upperCaseFirst(
+                            LANGUAGES[selectedIndex]
+                        )}
+                        onSubmit={(language, category, baseText, learnedText) => {
+                            makeNewAudioEntry(
+                                baseText,
+                                learnedText,
+                                category,
+                                language,
+                                db.getUser(),
+                                () => {},
+                                () => {
+                                    refreshDatabase()
+                                }
+                            )
+                            setMenuOpen(false)
+                        }}
+                        onCancel={() => {
+                            setMenuOpen(false)
+                        }}
+                    ></AddEntryOverlay>
+                </Modal>
+            ) : undefined}
 
             <View>
                 <FloatingActionButton
