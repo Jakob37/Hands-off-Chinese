@@ -48,6 +48,7 @@ const theme = {
     },
 }
 
+
 const App = ({ _signOut, _user }) => {
     const [pausedIds, setPausedIds] = useState([])
     const [shownIds, setShownIds] = useState([])

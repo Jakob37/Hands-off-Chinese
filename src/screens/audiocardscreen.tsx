@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { ScrollView, View } from 'react-native'
+import { Modal, ScrollView, View } from 'react-native'
 import { Overlay } from 'react-native-elements'
 import { AddEntryOverlay } from '../uicomponents/addentryoverlay'
 import { DbContext } from '../../store/contexts/contexts'
@@ -41,37 +41,34 @@ function AudioCardScreen({ route, navigation }: AudioEntriesProps) {
                 <AudioCardList user={db.getUser()} listEntries={audioEntries} />
             </ScrollView>
 
-            <Overlay
-                isVisible={menuOpen}
-                // onBackdropPress={() => {
-                // }}
-            >
-                <AddEntryOverlay
-                    category={route.params.category}
-                    baseLanguage={'English'}
-                    learnedLanguage={upperCaseFirst(
-                        route.params.learnedLanguage
-                    )}
-                    onSubmit={(category, base, learned) => {
-                        console.log('Attempting new onSubmit')
-                        makeNewAudioEntry(
-                            base,
-                            learned,
-                            category,
-                            route.params.learnedLanguage,
-                            db.getUser(),
-                            () => {},
-                            () => {
-                                refreshDatabase()
-                            }
-                        )
-                        setMenuOpen(false)
-                    }}
-                    onCancel={() => {
-                        setMenuOpen(!menuOpen)
-                    }}
-                ></AddEntryOverlay>
-            </Overlay>
+            {menuOpen ? (
+                <Modal>
+                    <AddEntryOverlay
+                        category={route.params.category}
+                        baseLanguage={'English'}
+                        learnedLanguage={upperCaseFirst(
+                            route.params.learnedLanguage
+                        )}
+                        onSubmit={(language, category, base, learned) => {
+                            makeNewAudioEntry(
+                                base,
+                                learned,
+                                category,
+                                language,
+                                db.getUser(),
+                                () => {},
+                                () => {
+                                    refreshDatabase()
+                                }
+                            )
+                            setMenuOpen(false)
+                        }}
+                        onCancel={() => {
+                            setMenuOpen(!menuOpen)
+                        }}
+                    ></AddEntryOverlay>
+                </Modal>
+            ) : undefined}
 
             <View>
                 <FloatingActionButton

@@ -1,13 +1,16 @@
-import React, { useState } from 'react'
+import { LANGUAGES } from '../../config'
+import React, { useEffect, useState } from 'react'
 import { View, Text, KeyboardAvoidingView, Platform } from 'react-native'
-import { Button, Input } from 'react-native-elements'
+import { Button, ButtonGroup, Input } from 'react-native-elements'
 import { sc } from './style'
+import { upperCaseFirst } from '../util/util'
 
 interface AddEntryOverlayProps {
     category: string | null
     baseLanguage: string
     learnedLanguage: string
     onSubmit: (
+        learnedLanguage: 'swedish'|'chinese',
         categoryInput: string,
         baseLanguageInput: string,
         learnedLanguageInput: string
@@ -19,10 +22,22 @@ const AddEntryOverlay = (props: AddEntryOverlayProps) => {
     const [baseLanguageInput, setBaseLanguageInput] = useState('')
     const [learnedLanguageInput, setLearnedLanguageInput] = useState('')
 
+    const [selectedIndex, setSelectedIndex] = useState(0)
+
     return (
         <KeyboardAvoidingView
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         >
+            <View>
+                <ButtonGroup
+                    buttons={LANGUAGES.map((str) => upperCaseFirst(str))}
+                    selectedIndex={selectedIndex}
+                    onPress={(value) => {
+                        setSelectedIndex(value)
+                    }}
+                ></ButtonGroup>
+            </View>
+
             <Text
                 style={{
                     marginHorizontal: sc.componentMargins.medium,
@@ -42,7 +57,7 @@ const AddEntryOverlay = (props: AddEntryOverlayProps) => {
             )}
 
             <Input
-                placeholder={props.learnedLanguage}
+                placeholder={upperCaseFirst(LANGUAGES[selectedIndex])}
                 onChangeText={(text) => setLearnedLanguageInput(text)}
                 multiline={true}
                 numberOfLines={sc.input.nbrRows}
@@ -53,10 +68,11 @@ const AddEntryOverlay = (props: AddEntryOverlayProps) => {
                 multiline={true}
                 numberOfLines={sc.input.nbrRows}
             ></Input>
+
             <View
                 style={{
                     flexDirection: 'row',
-                    justifyContent: 'space-between',
+                    justifyContent: 'space-evenly',
                 }}
             >
                 <Button
@@ -67,8 +83,8 @@ const AddEntryOverlay = (props: AddEntryOverlayProps) => {
                 ></Button>
                 <Button
                     onPress={() => {
-                        console.log('Add entry overlay called')
                         props.onSubmit(
+                            LANGUAGES[selectedIndex],
                             props.category == null
                                 ? categoryInput
                                 : props.category,
