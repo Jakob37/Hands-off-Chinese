@@ -41,6 +41,7 @@ const icons = {
     play: 'play',
     plus: 'plus',
     pause: 'pause',
+    repeat: 'repeat',
     gear: 'gear',
     download: 'cloud-download',
     upload: 'cloud-upload',
