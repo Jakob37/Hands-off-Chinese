@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { Text, View } from 'react-native'
+import { Text, TouchableOpacity, View } from 'react-native'
+import { CheckBox } from 'react-native-elements'
 import { NewAudioPlayerClass } from '../audio/NewAudioPlayer'
 import { AudioEntryPair } from '../backend/audioentry'
 import ClickableIcon from '../uicomponents/clickableicon'
@@ -38,8 +39,23 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
     const [playSeconds, setPlaySeconds] = useState(0)
     const [duration, setDuration] = useState(0)
     const [soundName, setSoundName] = useState('')
+    const [isRepeating, setIsRepeating] = useState(false)
+
+    const [adaptivePause, setAdaptivePause] = useState(false)
+    const [silenceSetting, setSilenceSetting] = useState(SILENCE_SECONDS)
+
+    useEffect(() => {
+        setIsPlaying(false)
+        if (!adaptivePause) {
+            setSilenceDuration(silenceSetting)
+        } else {
+            setSilenceDuration(silenceSetting * lastSoundDuration)
+        }
+    }, [adaptivePause, silenceSetting])
+
     const [silenceDurationSeconds, setSilenceDuration] =
         useState(SILENCE_SECONDS)
+    const [lastSoundDuration, setLastSoundDuration] = useState(1)
 
     const [soundOrSilence, setSoundOrSilence] =
         useState<'sound' | 'silence'>('sound')
@@ -49,7 +65,9 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
         let entryIndex = playAudioIndices.audio
         if (playIndex >= playLanguages.length) {
             playIndex -= playLanguages.length
-            entryIndex = (entryIndex + 1) % props.audioEntries.length
+            if (!isRepeating) {
+                entryIndex = (entryIndex + 1) % props.audioEntries.length
+            }
         }
 
         setPlayAudioIndices({ language: playIndex, audio: entryIndex })
@@ -179,7 +197,9 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
                 setIsPlaying(false)
             },
             (sound) => {
-                setDuration(sound.getDuration())
+                const soundDuration = sound.getDuration()
+                setDuration(soundDuration)
+                setLastSoundDuration(soundDuration)
                 loadCompleteCallback()
             }
         )
@@ -203,20 +223,29 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
                     <ClickableIcon
                         icon={icons.minusCircled}
                         clickCallback={() => {
-                            setSilenceDuration(silenceDurationSeconds - 1)
+                            setSilenceSetting(silenceSetting - 1)
                         }}
                         size={styleConstants.iconSizes.large}
                     ></ClickableIcon>
                 </View>
 
                 <View style={{ justifyContent: 'center' }}>
-                    <Text>{silenceDurationSeconds}s pause</Text>
+                    <TouchableOpacity
+                        onPress={() => {
+                            setAdaptivePause(!adaptivePause)
+                        }}
+                    >
+                        <Text style={{ alignSelf: 'center' }}>
+                            {silenceSetting}
+                            {adaptivePause ? 'x' : 's'} pause
+                        </Text>
+                    </TouchableOpacity>
                 </View>
 
                 <ClickableIcon
                     icon={icons.plusCircled}
                     clickCallback={() => {
-                        setSilenceDuration(silenceDurationSeconds + 1)
+                        setSilenceSetting(silenceSetting + 1)
                     }}
                     size={styleConstants.iconSizes.large}
                 ></ClickableIcon>
@@ -240,7 +269,26 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
                     ></ClickableIcon>
                 )}
 
+                <Text style={{ alignSelf: 'center' }}>
+                    {`${(Math.round(playSeconds * 10) / 10).toString()} / ${(
+                        Math.round(duration * 10) / 10
+                    ).toString()} s`}
+                </Text>
+
                 <ClickableIcon
+                    icon={icons.repeat}
+                    iconColor={
+                        isRepeating
+                            ? styleConstants.colors.blue
+                            : styleConstants.colors.black
+                    }
+                    clickCallback={() => {
+                        setIsRepeating(!isRepeating)
+                    }}
+                    size={styleConstants.iconSizes.large}
+                ></ClickableIcon>
+
+                {/* <ClickableIcon
                     icon={icons.leftArrow}
                     clickCallback={() => {
                         audioPlayer.jump(-JUMP_SECONDS)
@@ -254,13 +302,7 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
                         audioPlayer.jump(JUMP_SECONDS)
                     }}
                     size={styleConstants.iconSizes.large}
-                ></ClickableIcon>
-
-                <Text style={{ alignSelf: 'center' }}>
-                    {`${(Math.round(playSeconds * 10) / 10).toString()} / ${(
-                        Math.round(duration * 10) / 10
-                    ).toString()} s`}
-                </Text>
+                ></ClickableIcon> */}
             </View>
         </View>
     )
