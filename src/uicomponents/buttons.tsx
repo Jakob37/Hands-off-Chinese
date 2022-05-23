@@ -41,7 +41,7 @@ const FloatingActionButton = (props: FloatingActionButtonProps) => {
                 flexDirection: 'column',
             }}
         >
-            <View style={{ alignItems: 'flex-end' }}>
+            <View style={{ alignItems: 'center' }}>
                 <ClickableIcon
                     iconColor={props.iconColor}
                     backgroundColor={props.backgroundColor}
