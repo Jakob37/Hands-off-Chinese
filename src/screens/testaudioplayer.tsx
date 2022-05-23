@@ -43,22 +43,25 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
 
     const [adaptivePause, setAdaptivePause] = useState(false)
     const [silenceSetting, setSilenceSetting] = useState(SILENCE_SECONDS)
+    const [lastSoundDuration, setLastSoundDuration] = useState(1)
+    const [silenceDurationSeconds, setSilenceDuration] =
+        useState(SILENCE_SECONDS)
+
+    const [soundOrSilence, setSoundOrSilence] =
+        useState<'sound' | 'silence'>('sound')
+
 
     useEffect(() => {
-        setIsPlaying(false)
         if (!adaptivePause) {
             setSilenceDuration(silenceSetting)
         } else {
             setSilenceDuration(silenceSetting * lastSoundDuration)
         }
+    }, [adaptivePause, silenceSetting, lastSoundDuration])
+
+    useEffect(() => {
+        setIsPlaying(false)
     }, [adaptivePause, silenceSetting])
-
-    const [silenceDurationSeconds, setSilenceDuration] =
-        useState(SILENCE_SECONDS)
-    const [lastSoundDuration, setLastSoundDuration] = useState(1)
-
-    const [soundOrSilence, setSoundOrSilence] =
-        useState<'sound' | 'silence'>('sound')
 
     const incrementPlayModeIndex = () => {
         let playIndex = playAudioIndices.language + 1
@@ -155,7 +158,6 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
             console.log('[Screen] Loading sound')
             loadSound(() => {
                 console.log('[Screen] Loading completed')
-                // FIXME: This is the issue, isn't it?
                 if (isPlaying) {
                     audioPlayer.playSound()
                 }

@@ -15,7 +15,7 @@ class NewAudioPlayerClass {
     _sound: Sound | null = null
     _silence: Silence | null = null
 
-    _duration: number = 0
+    // _duration: number = 0
     _playSoundOrSilence: 'sound' | 'silence' = null
     _isPlaying: boolean = false
     _playSeconds: number = 0
@@ -70,10 +70,12 @@ class NewAudioPlayerClass {
         }, PLAYER_INTERVAL_MS)
     }
 
+    getSoundDuration(): number {
+        return this._sound.getDuration()
+    }
+
     playSound() {
-        // this._isPlaying = true
         console.log('>>> Assigning new sound')
-        // this._playSoundOrSilence = 'sound'
         if (this._sound != null) {
             debugLog('[Audio player] play sound')
             this._sound.play(() => {
