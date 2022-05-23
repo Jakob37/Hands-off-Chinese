@@ -20,9 +20,10 @@ const ClickableIcon = (param: ClickableIconInterface) => {
                         backgroundColor: param.backgroundColor,
                         borderRadius: param.size,
                         width: param.size + sc.iconPaddings.medium,
-                        height: param.size + sc.iconPaddings.medium,
+                        // height: param.size + sc.iconPaddings.medium,
+                        lineHeight: param.size + sc.iconPaddings.medium,
                         textAlign: 'center',
-                        textAlignVertical: 'center',
+                        // textAlignVertical: 'center',
                         overflow: 'hidden',
                     }}
                     name={param.icon}
