@@ -1,15 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { Text, TouchableOpacity, View } from 'react-native'
-import { CheckBox } from 'react-native-elements'
+import { TextSettings } from '../uicomponents/buttons'
 import { NewAudioPlayerClass } from '../audio/NewAudioPlayer'
 import { AudioEntryPair } from '../backend/audioentry'
 import ClickableIcon from '../uicomponents/clickableicon'
 import { icons, styleConstants } from '../uicomponents/style'
 import { getSignedUrl } from '../views/card/util'
 
-const JUMP_SECONDS = 1
-const SMALL_BUTTON_SIZE = 30
-const SMALL_BUTTON_TINT = 'gray'
 const SILENCE_SECONDS = 3
 
 // TP: Could these modes be used as a source here?
@@ -49,7 +46,6 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
 
     const [soundOrSilence, setSoundOrSilence] =
         useState<'sound' | 'silence'>('sound')
-
 
     useEffect(() => {
         if (!adaptivePause) {
@@ -289,6 +285,24 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
                     }}
                     size={styleConstants.iconSizes.large}
                 ></ClickableIcon>
+
+                <View style={{ alignSelf: 'center' }}>
+                    <TextSettings
+                        onValueUpdate={(newValue) => {
+                            audioPlayer._playSpeed = newValue
+                            console.log('Setting play speed', newValue)
+                        }}
+                        settings={[0.6, 0.7, 0.8, 0.9, 1, 1.25, 1.5, 1.75, 2].map(
+                            (val) => {
+                                return {
+                                    value: val,
+                                    display: `${val}x`,
+                                }
+                            }
+                        )}
+                        defaultIndex={4}
+                    ></TextSettings>
+                </View>
 
                 {/* <ClickableIcon
                     icon={icons.leftArrow}

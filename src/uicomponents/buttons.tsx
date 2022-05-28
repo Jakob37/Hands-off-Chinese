@@ -1,5 +1,5 @@
-import React from 'react'
-import { View } from 'react-native'
+import React, { useState } from 'react'
+import { View, Text, TouchableOpacity } from 'react-native'
 import { Button } from 'react-native-elements'
 import ClickableIcon from './clickableicon'
 import { sc } from './style'
@@ -59,4 +59,31 @@ FloatingActionButton.defaultProps = {
     yPosition: 0,
 }
 
-export { FooterButton, FoldableMenuButton, FloatingActionButton }
+interface TextSettingsProps {
+    settings: { value: number; display: string }[]
+    onValueUpdate: (value: number) => void
+    defaultIndex: number
+}
+const TextSettings = (props: TextSettingsProps) => {
+    const [currIndex, setCurrIndex] = useState(props.defaultIndex)
+
+    const updateIndex = () => {
+        let nextIndex = currIndex + 1
+        if (nextIndex >= props.settings.length) {
+            nextIndex -= props.settings.length
+        }
+        setCurrIndex(nextIndex)
+        props.onValueUpdate(props.settings[nextIndex].value)
+    }
+
+    return (
+        <TouchableOpacity onPress={updateIndex}>
+            <Text>{props.settings[currIndex].display}</Text>
+        </TouchableOpacity>
+    )
+}
+TextSettings.defaultProps = {
+    defaultIndex: 0
+}
+
+export { FooterButton, FoldableMenuButton, FloatingActionButton, TextSettings }

@@ -22,6 +22,8 @@ class NewAudioPlayerClass {
     _soundName: string = ''
     _timeout = null
 
+    _playSpeed = 1
+
     _playCompleteCallback: () => void = null
 
     setPlayCompleteCallback(
@@ -81,6 +83,7 @@ class NewAudioPlayerClass {
             this._sound.play(() => {
                 this._playCompleteCallback()
             })
+            this._sound.setSpeed(this._playSpeed)
         } else {
             console.warn('Unknown state')
         }
@@ -142,6 +145,8 @@ class NewAudioPlayerClass {
                 this._playSeconds = 0
                 this._sound.pause()
             })
+            this._sound.setSpeed(this._playSpeed)
+            console.log('-- in unpause')
         } else {
             this._silence.play(() => {
                 this._playCompleteCallback()
