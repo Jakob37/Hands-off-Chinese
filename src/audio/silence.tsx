@@ -1,3 +1,5 @@
+import BackgroundTimer from 'react-native-background-timer'
+
 const deltaMs = 50
 
 class Silence {
@@ -12,7 +14,7 @@ class Silence {
         this._currentTime = 0
         this._paused = false
 
-        this._timeout = setInterval(() => {
+        this._timeout = BackgroundTimer.setInterval(() => {
             if (!this._paused) {
                 this._currentTime += deltaMs
             }

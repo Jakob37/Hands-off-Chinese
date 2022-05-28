@@ -1,6 +1,7 @@
 import { VoiceId } from 'aws-sdk/clients/lexmodelsv2'
 import Sound from 'react-native-sound'
 import { Silence } from './silence'
+import BackgroundTimer from 'react-native-background-timer'
 
 const PLAYER_INTERVAL_MS = 50
 const DEBUG_PRINT = true
@@ -46,13 +47,17 @@ class NewAudioPlayerClass {
     ) {
         // this._playSeconds = 0
         this._playSoundOrSilence = startSoundOrSilence
-        clearInterval(this._timeout)
-        this._timeout = setInterval(() => {
+        BackgroundTimer.clearInterval(this._timeout)
+        // clearInterval(this._timeout)
+        this._timeout = BackgroundTimer.setInterval(() => {
+
+
             timeCallback(this._playSeconds)
 
             if (!this._isPlaying) {
                 return
             }
+            console.log('Tick')
 
             if (this._playSoundOrSilence == 'sound') {
                 if (this._sound != null && this._sound.isLoaded()) {
