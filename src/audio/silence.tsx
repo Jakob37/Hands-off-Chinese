@@ -1,55 +1,60 @@
-const deltaMs = 50
+// import BackgroundTimer from 'react-native-background-timer'
+// const deltaMs = 50
 
 class Silence {
     _duration: number
-    _currentTime: number
+
+    _currentStart: number
+
+    _prevElapsed: number
+    _currElapsed: number
     _paused: boolean
     _timeout = null
     _completeCallback: () => void
 
     constructor(durationMs: number) {
         this._duration = durationMs
-        this._currentTime = 0
+        this._prevElapsed = 0
+        this._currElapsed = 0
         this._paused = false
 
-        this._timeout = setInterval(() => {
-            if (!this._paused) {
-                this._currentTime += deltaMs
-            }
-            if (this._currentTime > this._duration) {
-                console.log('Passed silence duration')
-                this._silenceDone()
-            }
-        }, deltaMs)
+        this._currentStart = new Date().getTime()
     }
 
-    detach() {
-        clearInterval(this._timeout)
+    update() {
+        this._currElapsed = new Date().getTime() - this._currentStart
+        const totElapsed = this._prevElapsed + this._currElapsed
+        if (totElapsed > this._duration) {
+            this._onComplete()
+        }
     }
 
     play(completeCallback: () => void) {
         this._completeCallback = completeCallback
         this._paused = false
-    }
 
-    setCurrentTime(time: number) {
-        this._currentTime = time
+        this._currentStart = new Date().getTime()
     }
 
     getCurrentTime(): number {
-        return this._currentTime
+        console.log(
+            'Prev elapsed',
+            this._prevElapsed,
+            'curr elapsed',
+            this._currElapsed
+        )
+        return this._prevElapsed + this._currElapsed
     }
 
     setDuration(newDurationMs: number) {
         this._duration = newDurationMs
-        if (!this._paused && this._currentTime > this._duration) {
-            this._silenceDone()
-        }
+        this._onComplete()
     }
 
-    _silenceDone() {
+    _onComplete() {
         this._completeCallback()
-        this._currentTime = 0
+        this._prevElapsed = 0
+        this._currElapsed = 0
         this._paused = true
     }
 
@@ -59,6 +64,12 @@ class Silence {
 
     pause() {
         this._paused = true
+        this._prevElapsed += this._currElapsed
+        this._currElapsed = 0
+    }
+
+    isPlaying(): boolean {
+        return !this._paused
     }
 }
 
