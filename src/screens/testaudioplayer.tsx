@@ -292,7 +292,7 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
                             audioPlayer._playSpeed = newValue
                             console.log('Setting play speed', newValue)
                         }}
-                        settings={[0.6, 0.7, 0.8, 0.9, 1, 1.25, 1.5, 1.75, 2].map(
+                        settings={[0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.25, 1.5, 1.75, 2].map(
                             (val) => {
                                 return {
                                     value: val,
@@ -300,7 +300,7 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
                                 }
                             }
                         )}
-                        defaultIndex={4}
+                        defaultIndex={5}
                     ></TextSettings>
                 </View>
 

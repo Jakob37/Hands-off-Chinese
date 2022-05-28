@@ -1,9 +1,8 @@
-import { VoiceId } from 'aws-sdk/clients/lexmodelsv2'
 import Sound from 'react-native-sound'
 import { Silence } from './silence'
 import BackgroundTimer from 'react-native-background-timer'
 
-const PLAYER_INTERVAL_MS = 200
+const PLAYER_INTERVAL_MS = 50
 const DEBUG_PRINT = true
 
 const debugLog = (message: string) => {
