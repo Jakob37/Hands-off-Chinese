@@ -3,7 +3,7 @@ import Sound from 'react-native-sound'
 import { Silence } from './silence'
 import BackgroundTimer from 'react-native-background-timer'
 
-const PLAYER_INTERVAL_MS = 50
+const PLAYER_INTERVAL_MS = 200
 const DEBUG_PRINT = true
 
 const debugLog = (message: string) => {
@@ -49,15 +49,15 @@ class NewAudioPlayerClass {
         this._playSoundOrSilence = startSoundOrSilence
         BackgroundTimer.clearInterval(this._timeout)
         // clearInterval(this._timeout)
-        this._timeout = BackgroundTimer.setInterval(() => {
-
+        this._timeout = BackgroundTimer.runBackgroundTimer(() => {
+            // this._timeout = BackgroundTimer.setInterval(() => {
 
             timeCallback(this._playSeconds)
 
             if (!this._isPlaying) {
                 return
             }
-            console.log('Tick')
+            // console.log('Tick')
 
             if (this._playSoundOrSilence == 'sound') {
                 if (this._sound != null && this._sound.isLoaded()) {
@@ -69,7 +69,8 @@ class NewAudioPlayerClass {
                     console.log('!!! loading')
                 }
             } else {
-                if (this._silence != null) {
+                if (this._silence.isPlaying()) {
+                    this._silence.update()
                     this._playSeconds = this._silence.getCurrentTime() / 1000
                     console.log('!!! silence seconds:', this._playSeconds)
                 }
@@ -97,9 +98,9 @@ class NewAudioPlayerClass {
     playSilence(silenceDuration: number) {
         debugLog('[Audio player] playsilence')
 
-        if (this._silence != null) {
-            this._silence.detach()
-        }
+        // if (this._silence != null) {
+        //     this._silence.detach()
+        // }
 
         // this._playSeconds = 0
         this._silence = new Silence(silenceDuration)
@@ -121,9 +122,10 @@ class NewAudioPlayerClass {
         this._playSeconds += seconds
         if (this._playSoundOrSilence == 'sound') {
             this._sound.setCurrentTime(this._playSeconds + seconds)
-        } else {
-            this._silence.setCurrentTime(this._playSeconds + seconds)
         }
+        //  else {
+        //     this._silence.setCurrentTime(this._playSeconds + seconds)
+        // }
     }
 
     pause() {
@@ -170,16 +172,17 @@ class NewAudioPlayerClass {
         this._playSeconds = seconds
         if (this._playSoundOrSilence == 'sound' && this._sound != null) {
             this._sound.setCurrentTime(this._playSeconds)
-        } else if (this._playSoundOrSilence == 'silence') {
-            this._silence.setCurrentTime(this._playSeconds)
         }
+        //  else if (this._playSoundOrSilence == 'silence') {
+        //     this._silence.setCurrentTime(this._playSeconds)
+        // }
     }
 
     detach() {
         clearInterval(this._timeout)
-        if (this._silence != null) {
-            this._silence.detach()
-        }
+        // if (this._silence != null) {
+        //     this._silence.detach()
+        // }
     }
 
     loadAudio(
