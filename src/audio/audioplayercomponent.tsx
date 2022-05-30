@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Text, TouchableOpacity, View } from 'react-native'
 import { TextSettings } from '../uicomponents/buttons'
-import { NewAudioPlayerClass } from '../audio/NewAudioPlayer'
+import { AudioPlayer } from './AudioPlayer'
 import { AudioEntryPair } from '../backend/audioentry'
 import ClickableIcon from '../uicomponents/clickableicon'
 import { icons, styleConstants } from '../uicomponents/style'
@@ -17,13 +17,13 @@ const PLAYER_MODES = {
     chinese_english: ['chinese', 'silence', 'english', 'silence'],
 } as Record<string, ('english' | 'chinese' | 'silence')[]>
 
-const audioPlayer = new NewAudioPlayerClass()
+const audioPlayer = new AudioPlayer()
 
 interface NewAudioPlayerProps {
     audioEntries: AudioEntryPair[]
     newEntryCallback: (newEntry: AudioEntryPair) => void
 }
-function NewAudioPlayer(props: NewAudioPlayerProps) {
+function AudioPlayerComponent(props: NewAudioPlayerProps) {
     const [playLanguages, setPlayLanguages] = useState<
         ('english' | 'chinese' | 'silence')[]
     >(PLAYER_MODES.english_chinese)
@@ -70,7 +70,6 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
         }
 
         setPlayAudioIndices({ language: playIndex, audio: entryIndex })
-        // setAudioEntryIndex(entryIndex)
     }
 
     useEffect(() => {
@@ -124,8 +123,6 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
 
     useEffect(() => {
         console.log('[Screen] audio indices', playAudioIndices)
-        // const soundOrSilence =
-        //     playAudioIndices.language == 1 ? 'silence' : 'sound'
         const soundOrSilence =
             playLanguages[playAudioIndices.language] == 'silence'
                 ? 'silence'
@@ -148,7 +145,6 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
     }, [soundOrSilence])
 
     const playNew = () => {
-        // const playingLanguage = playLanguages[playAudioIndices.language]
         console.log('[Screen] playingLanguage', soundOrSilence)
         if (soundOrSilence != 'silence') {
             console.log('[Screen] Loading sound')
@@ -303,25 +299,9 @@ function NewAudioPlayer(props: NewAudioPlayerProps) {
                         defaultIndex={5}
                     ></TextSettings>
                 </View>
-
-                {/* <ClickableIcon
-                    icon={icons.leftArrow}
-                    clickCallback={() => {
-                        audioPlayer.jump(-JUMP_SECONDS)
-                    }}
-                    size={styleConstants.iconSizes.large}
-                ></ClickableIcon>
-
-                <ClickableIcon
-                    icon={icons.rightArrow}
-                    clickCallback={() => {
-                        audioPlayer.jump(JUMP_SECONDS)
-                    }}
-                    size={styleConstants.iconSizes.large}
-                ></ClickableIcon> */}
             </View>
         </View>
     )
 }
 
-export default NewAudioPlayer
+export default AudioPlayerComponent

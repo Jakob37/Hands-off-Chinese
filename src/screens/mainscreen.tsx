@@ -1,29 +1,27 @@
 import { Auth } from 'aws-amplify'
 import React, { useContext, useEffect, useState } from 'react'
 import { Modal, ScrollView, View } from 'react-native'
-import { ButtonGroup, Overlay } from 'react-native-elements'
-import { upperCaseFirst } from '../util/util'
+import { LANGUAGES } from '../../config'
 import {
     DbContext,
     FlaggedIdsContext,
     PausedIdsContext,
-    ShownIdsContext,
+    ShownIdsContext
 } from '../../store/contexts/contexts'
 import {
     FLAGS_ID,
     getUserDataRequest,
     makeNewAudioEntry,
-    PAUSED_ID,
-    putUserDataRequest,
+    PAUSED_ID
 } from '../backend/apicalls'
 import { AudioEntryPair } from '../backend/audioentry'
 import { AddEntryOverlay } from '../uicomponents/addentryoverlay'
 import { FloatingActionButton } from '../uicomponents/buttons'
 import { BasicCard } from '../uicomponents/cards'
 import { icons, sc } from '../uicomponents/style'
+import { upperCaseFirst } from '../util/util'
 import CategoryCardList from '../views/list/categorycardlist'
 import { HomeProps } from './navigationutils'
-import { LANGUAGES } from '../../config'
 
 
 const MainScreen = ({ navigation }: HomeProps) => {
@@ -35,8 +33,8 @@ const MainScreen = ({ navigation }: HomeProps) => {
     const [menuOpen, setMenuOpen] = useState(false)
     const { db } = useContext(DbContext)
     const { flaggedIds, setFlaggedIds } = useContext(FlaggedIdsContext)
-    const { pausedIds, setPausedIds } = useContext(PausedIdsContext)
-    const [selectedIndex, setSelectedIndex] = useState(0)
+    const { setPausedIds } = useContext(PausedIdsContext)
+    const [selectedIndex, _setSelectedIndex] = useState(0)
     const [userEmail, setUserEmail] = useState(null)
 
     const retrieveCategoryEntriesList = (
@@ -190,15 +188,6 @@ const MainScreen = ({ navigation }: HomeProps) => {
                         )
                     }}
                 ></FloatingActionButton>
-
-                {/* <FloatingActionButton
-                    icon={icons.upload}
-                    yPosition={2}
-                    onPress={() => {
-                        putUserDataRequest(FLAGS_ID, db.getUser(), flaggedIds)
-                        putUserDataRequest(PAUSED_ID, db.getUser(), pausedIds)
-                    }}
-                ></FloatingActionButton> */}
             </View>
         </View>
     )
